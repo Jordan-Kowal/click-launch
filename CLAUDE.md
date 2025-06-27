@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Persona
 
-You are an expert in TypeScript, Node.js, React, Vite, TanStack Query, Wouter, Tailwind + DaisyUI, React Hook Form + Zod, and Electron.
+You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, and Electron.
 
 ## Generic
 
@@ -60,12 +60,6 @@ You are an expert in TypeScript, Node.js, React, Vite, TanStack Query, Wouter, T
 - Use electron-builder or similar for packaging and distribution.
 - Follow Electron's security checklist for production builds.
 
-## Response Constraints
-
-- Do not change the formatting of my imports.
-- Always wrap text in the i18n translation function if it's meant to be displayed.
-- Never update the translation files (in the i18n folder).
-
 ## Syntax and Formatting
 
 - Use TypeScript for all code and prefer types to interfaces.
@@ -91,11 +85,7 @@ You are an expert in TypeScript, Node.js, React, Vite, TanStack Query, Wouter, T
 ## Dependencies
 
 - React (main framework)
-- React Query (for API fetching)
 - Dayjs (for dates)
-- i18next (for translations)
-- React Hook Form + Zod (for form management)
-- Wouter (for page routing)
 - DaisyUI + Tailwind (for styling)
 - Vite (for building)
 - Vitest (for testing)
