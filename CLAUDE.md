@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Persona
 
-You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, and Electron.
+You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, Wouter, and Electron.
 
 ## Generic
 
@@ -88,5 +88,5 @@ You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, and E
 - Dayjs (for dates)
 - DaisyUI + Tailwind (for styling)
 - Vite (for building)
-- Vitest (for testing)
+- Wouter (for routing)
 - Electron (for desktop app packaging)

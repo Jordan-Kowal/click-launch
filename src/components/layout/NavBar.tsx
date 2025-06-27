@@ -1,0 +1,54 @@
+import { LogOut, Settings } from "lucide-react";
+import type React from "react";
+import { memo } from "react";
+import { Link } from "wouter";
+import { routeConfigMap } from "@/router";
+import { Logo } from "../ui";
+
+export const NavBar: React.FC = memo(() => {
+  return (
+    <div
+      data-testid="navbar"
+      className="navbar fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-100"
+    >
+      <div className="navbar-start">
+        <Link
+          data-testid={"navbar-logo-link"}
+          className="w-8"
+          href={routeConfigMap.homepage.path}
+        >
+          <Logo />
+        </Link>
+      </div>
+      <div className="navbar-center">
+        <Link
+          href={routeConfigMap.homepage.path}
+          data-testid={"navbar-home-link"}
+        >
+          <span className="text-xl font-bold">Devbox Services GUI</span>
+        </Link>
+      </div>
+      <div className="navbar-end">
+        <div className="tooltip tooltip-bottom" data-tip="Settings">
+          <Link
+            type="button"
+            className="btn btn-ghost btn-circle"
+            href={routeConfigMap.homepage.path}
+            data-testid={"navbar-settings-link"}
+          >
+            <Settings />
+          </Link>
+        </div>
+        <div className="tooltip tooltip-bottom" data-tip="Logout">
+          <button
+            type="button"
+            className="btn btn-ghost btn-circle"
+            data-testid={"navbar-logout-button"}
+          >
+            <LogOut />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
