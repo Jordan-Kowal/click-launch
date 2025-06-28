@@ -1,4 +1,3 @@
-import { render } from "@/tests/utils";
 import {
   fireEvent,
   getByTestId,
@@ -7,6 +6,7 @@ import {
 } from "@testing-library/react";
 import { useRef } from "react";
 import { describe, test, vi } from "vitest";
+import { render } from "@/tests/utils";
 import { Modal } from "./Modal";
 
 const onConfirmMock = vi.fn();

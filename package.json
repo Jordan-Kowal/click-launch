@@ -29,17 +29,14 @@
     "README.md"
   ],
   "scripts": {
-    "dev": "vite",
+    "clean": "rimraf dist dist-electron release",
+    "dev": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
     "build": "tsc && vite build && electron-builder",
-    "preview": "vite preview",
-    "electron": "IS_DEV=true electron .",
-    "electron:pack": "electron-builder",
-    "electron:dev": "concurrently \"npm run dev\" \"npm run electron\"",
-    "electron:preview": "npm run build && electron-builder --publish=never",
-    "lint": "biome lint ./src ./electron",
-    "format": "biome format ./src ./electron --write",
-    "check": "biome check ./src ./electron",
-    "typecheck": "tsc --noEmit"
+    "biome:lint": "biome lint ./src ./electron",
+    "biome:format": "biome format ./src ./electron --write",
+    "biome:organize": "biome check ./src ./electron --write --unsafe",
+    "biome:check": "biome check ./src ./electron --write --unsafe",
+    "quality": "yarn biome check ./src ./electron && yarn tsc"
   },
   "dependencies": {
     "dayjs": "1.11.13",
