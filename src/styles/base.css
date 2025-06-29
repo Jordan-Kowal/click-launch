@@ -16,3 +16,12 @@ html {
   --default-font-family: "Nunito Sans", sans-serif;
   --toastify-font-family: "Nunito Sans", sans-serif;
 }
+
+/* Electron window dragging */
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}

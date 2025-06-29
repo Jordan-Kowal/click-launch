@@ -17,17 +17,17 @@ describe.concurrent("NavBar", () => {
     const { container } = render(<NavBar />);
 
     const navbar = getByTestId<HTMLDivElement>(container, "navbar");
-    const logoLink = getByTestId<HTMLLinkElement>(
-      container,
-      "navbar-logo-link",
-    );
     const homeLink = getByTestId<HTMLLinkElement>(
       container,
       "navbar-home-link",
     );
+    const settingsLink = getByTestId<HTMLLinkElement>(
+      container,
+      "navbar-settings-link",
+    );
 
     expect(navbar).toBeVisible();
-    expect(logoLink.href).toMatch(/\/$/);
     expect(homeLink.href).toMatch(/\/$/);
+    expect(settingsLink.href).toMatch(/\/$/);
   });
 });
