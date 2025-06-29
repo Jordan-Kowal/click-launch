@@ -76,4 +76,39 @@ export default defineConfig(({ mode }) => ({
     outDir: "dist",
     emptyOutDir: true,
   },
+  test: {
+    include: ["**/*.test.ts", "**/*.test.tsx"],
+    setupFiles: ["src/tests/setup.ts"],
+    environment: "jsdom",
+    coverage: {
+      exclude: [
+        // Builds
+        "dist/**",
+        "dist-electron/**",
+        // Configs
+        "vite.config.ts",
+        "postcss.config.js",
+        "tailwind.config.js",
+        // Types
+        "src/types/**",
+        "src/api/types.ts",
+        // Special cases
+        "src/App.tsx",
+        "src/main.tsx",
+        "electron/**",
+        "src/tests/**",
+      ],
+      all: true,
+      thresholds: {
+        perFile: false,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+        statements: 90,
+      },
+    },
+    css: true,
+    isolate: true,
+    retry: 1,
+  },
 }));

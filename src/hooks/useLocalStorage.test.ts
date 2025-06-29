@@ -1,15 +1,10 @@
-import { beforeEach, describe, test } from "vitest";
-import { LOCALE_STORAGE_KEY } from "@/config/i18n";
+import { describe, test } from "vitest";
 import { renderHook } from "@/tests/utils";
 import { useLocalStorage } from "./useLocalStorage";
 
-const TEMPORARY_KEY = "django-react-starter-test-temp";
+const TEMPORARY_KEY = "devbox-services-gui-test-key";
 
 describe.concurrent("useLocalStorage", () => {
-  beforeEach(() => {
-    localStorage.removeItem(LOCALE_STORAGE_KEY);
-  });
-
   test("should use the default value if no value is stored", ({ expect }) => {
     const { result } = renderHook(() =>
       useLocalStorage(TEMPORARY_KEY, "default"),

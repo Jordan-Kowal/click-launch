@@ -2,11 +2,7 @@
 
 ## Technical spec
 
-- Vite config
 - Understand how electron works
-- Does local storage work? Where is it stored?
-- Add vitest config and libs and ensure it works
-- githooks
 
 ## Feature: Choosing a process-compose and a root folder
 
