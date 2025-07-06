@@ -2,6 +2,14 @@ import { vi } from "vitest";
 
 export const navigateMock = vi.fn();
 export const useLocationMock = vi.fn(() => ["/", navigateMock]);
+export const useSearchMock = vi.fn(() => "");
+
+export const openFileDialogMock = vi.fn();
+export const electronAPIMock = {
+  platform: "darwin",
+  version: "1.0.0",
+  openFileDialog: openFileDialogMock,
+};
 
 export const toastErrorMock = vi.fn();
 export const toastWarningMock = vi.fn();
@@ -29,6 +37,9 @@ export const registerGlobalMocks = () => {
       dispatchEvent: vi.fn(),
     }));
 
+  // Electron API
+  global.window.electronAPI = electronAPIMock;
+
   // HTMLDialogElement
   HTMLDialogElement.prototype.showModal = vi.fn(function (
     this: HTMLDialogElement,
@@ -55,6 +66,7 @@ export const registerGlobalMocks = () => {
     return {
       ...mod,
       useLocation: useLocationMock,
+      useSearch: useSearchMock,
     };
   });
 };

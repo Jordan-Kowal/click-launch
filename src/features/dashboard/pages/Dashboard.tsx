@@ -5,10 +5,14 @@ import { useLocation, useSearch } from "wouter";
 import { Main } from "@/components/layout";
 import { routeConfigMap } from "@/router";
 
+type DashboardParams = {
+  file?: string;
+};
+
 const Dashboard: React.FC = memo(() => {
   const search = useSearch();
   const params = new URLSearchParams(search);
-  const selectedFile = params.get("file");
+  const selectedFile = params.get("file") as DashboardParams["file"];
   const [, navigate] = useLocation();
 
   useEffect(() => {
@@ -30,6 +34,7 @@ const Dashboard: React.FC = memo(() => {
             type="button"
             className="btn btn-ghost btn-sm"
             onClick={() => navigate(routeConfigMap.homepage.path)}
+            data-testid="back-button"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>

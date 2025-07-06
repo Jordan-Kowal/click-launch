@@ -34,6 +34,7 @@ const ProjectSelection: React.FC = memo(() => {
               type="button"
               className="btn btn-primary btn-xl"
               onClick={handleOpenProject}
+              data-testid="open-project-button"
             >
               <FolderOpen />
               Open new project
