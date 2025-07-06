@@ -1,13 +1,13 @@
 import type { RouteConfig } from "@/router";
-import Homepage from "./pages/Homepage";
+import ProjectSelection from "./pages/ProjectSelection";
 
 export type HomeRouteKey = "homepage";
 
 export const homeRoutes: Record<HomeRouteKey, RouteConfig> = {
   homepage: {
     path: "/",
-    // component: lazy(() => import("./pages/Homepage")),
-    component: Homepage,
+    // component: lazy(() => import("./pages/ProjectSelection")),
+    component: ProjectSelection,
     key: "homepage",
     authAccess: "private",
   },
