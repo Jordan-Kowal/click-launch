@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
-import { isDev } from "./utils";
+import { isDev } from "./utils/constants";
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({

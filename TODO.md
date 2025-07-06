@@ -10,6 +10,7 @@
   - Ensure yaml is valid. If error:
     - Show error messages
     - Reload button / back button
+    - Add tests
   - On valid, save it in previous projects locally
 
 ## Feature: SHow available processes
