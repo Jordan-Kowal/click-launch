@@ -18,10 +18,12 @@ describe.concurrent("Routes", () => {
     expect(container).toBeDefined();
   });
 
-  test("should render the homepage when authenticated", async ({ expect }) => {
+  test("should render the project selection page by default", async ({
+    expect,
+  }) => {
     const { container } = render(<Routes />);
     await new Promise((resolve) => setTimeout(resolve, 100));
-    const homepage = getByTestId(container, "homepage");
+    const homepage = getByTestId(container, "project-selection");
 
     expect(homepage).toBeVisible();
   });

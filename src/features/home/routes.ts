@@ -9,6 +9,5 @@ export const homeRoutes: Record<HomeRouteKey, RouteConfig> = {
     // component: lazy(() => import("./pages/ProjectSelection")),
     component: ProjectSelection,
     key: "homepage",
-    authAccess: "private",
   },
 };

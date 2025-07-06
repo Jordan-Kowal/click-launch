@@ -1,11 +1,28 @@
 import { FolderOpen, History } from "lucide-react";
 import { memo } from "react";
+import { useLocation } from "wouter";
 import { Main } from "@/components/layout";
 import { Logo } from "@/components/ui";
+import { routeConfigMap } from "@/router";
 
 const ProjectSelection: React.FC = memo(() => {
+  const [, navigate] = useLocation();
+
+  const handleOpenProject = async () => {
+    try {
+      const filePath = await window.electronAPI.openFileDialog();
+      if (filePath) {
+        navigate(
+          `${routeConfigMap.dashboard.path}?file=${encodeURIComponent(filePath)}`,
+        );
+      }
+    } catch (error) {
+      console.error("Error opening file dialog:", error);
+    }
+  };
+
   return (
-    <Main dataTestId="homepage">
+    <Main dataTestId="project-selection">
       <div className="text-center">
         <div className="max-w-50 mx-auto mb-6">
           <Logo />
@@ -13,7 +30,11 @@ const ProjectSelection: React.FC = memo(() => {
         <h1>Devbox Services GUI</h1>
         <div className="flex w-full flex-col lg:flex-row">
           <div className="card rounded-box p-6 flex-1 flex items-center justify-center">
-            <button type="button" className="btn btn-primary btn-xl">
+            <button
+              type="button"
+              className="btn btn-primary btn-xl"
+              onClick={handleOpenProject}
+            >
               <FolderOpen />
               Open new project
             </button>

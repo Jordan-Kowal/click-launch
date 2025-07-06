@@ -1,22 +1,16 @@
 # TODO
 
-## Technical spec
-
-- Understand how electron works
-
 ## Feature: Find a .yml file in a folder to load project
 
-- Split screen: Show "New project" or "Open previous projects"
 - On start, remove invalid previous projects/paths
   - Show toaster
-- New:
-  - File manager to find a .yml file
-  - On select, save it in previous projects locally
-  - Then redirect to homepage
 - Open:
   - On select, redirect to homepage
-- On homepage:
-  - Ensure yaml is valid otherwise show error screen
+- On dashboard:
+  - Ensure yaml is valid. If error:
+    - Show error messages
+    - Reload button / back button
+  - On valid, save it in previous projects locally
 
 ## Feature: SHow available processes
 
@@ -49,6 +43,11 @@
 ## Feature: Settings
 
 - Settings (theme)
+
+## Improvements
+
+- Test electron?
+- Better split electron code
 
 ## Doc
 

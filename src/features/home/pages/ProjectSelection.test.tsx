@@ -6,7 +6,10 @@ import ProjectSelection from "./ProjectSelection";
 describe.concurrent("ProjectSelection", () => {
   test("should render the page", ({ expect }) => {
     const { container } = render(<ProjectSelection />);
-    const homepage = getByTestId<HTMLDivElement>(container, "homepage");
+    const homepage = getByTestId<HTMLDivElement>(
+      container,
+      "project-selection",
+    );
 
     expect(homepage).toBeVisible();
     expect(homepage).toHaveTextContent("Devbox Services GUI");

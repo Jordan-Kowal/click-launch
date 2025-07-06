@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import { isDev } from "./utils";
 
 const createWindow = (): void => {
@@ -33,6 +33,18 @@ const createWindow = (): void => {
 
 app.whenReady().then(() => {
   createWindow();
+
+  // IPC handler for file dialog
+  ipcMain.handle("dialog:openFile", async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [
+        { name: "YAML files", extensions: ["yml", "yaml"] },
+        { name: "All files", extensions: ["*"] },
+      ],
+    });
+    return result.filePaths[0];
+  });
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
