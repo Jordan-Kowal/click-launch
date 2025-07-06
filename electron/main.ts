@@ -6,13 +6,21 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    titleBarStyle: "hiddenInset",
-    trafficLightPosition: { x: 20, y: 24 },
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
     },
+    // Don't show immediately
+    show: false,
+    // Move traffic lights to the top left within our own nav bar
+    titleBarStyle: "hiddenInset",
+    trafficLightPosition: { x: 20, y: 24 },
+  });
+
+  // Show window when ready to prevent flash
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
   });
 
   if (isDev) {

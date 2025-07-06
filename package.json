@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist dist-electron release",
-    "dev": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
+    "start": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
     "build": "tsc && vite build && electron-builder",
     "biome:lint": "biome lint ./src ./electron",
     "biome:format": "biome format ./src ./electron --write",

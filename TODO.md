@@ -4,24 +4,47 @@
 
 - Understand how electron works
 
-## Feature: Choosing a process-compose and a root folder
+## Feature: Find a .yml file in a folder to load project
 
-- Selection page
-- Save entry
-- On load, remove entry that no longer exists + show toaster
-- On picking one, load new (empty) page and save it
-- Figure out how to save it
+- Split screen: Show "New project" or "Open previous projects"
+- On start, remove invalid previous projects/paths
+  - Show toaster
+- New:
+  - File manager to find a .yml file
+  - On select, save it in previous projects locally
+  - Then redirect to homepage
+- Open:
+  - On select, redirect to homepage
+- On homepage:
+  - Ensure yaml is valid otherwise show error screen
 
-## Feature: Read process compose a show list
+## Feature: SHow available processes
 
-- Show list of things like docker-compose grouped by namespace
+- Handle row to display process
+- Handle options:
+  - Boolean
+  - Text
+  - Radio
+  - Select
+  - Free input
+- Show final output based on selected options
+- Make them readonly when running
 
-## Feature: Allow starting devbox and read output
+## Feature: Handle actions
 
-- Start, stop, restart
-- Show current status
-- Show logs
-- Filter/Search (status, namespace, title)
+- Handle actions:
+  - Start
+  - Stop
+  - Restart
+  - View logs
+- Handle status:
+  - Running
+  - Stopped
+  - Crashed
+- Handle logs:
+  - Show logs
+  - Search logs
+- Ensure process is stopped when closing app
 
 ## Feature: Settings
 
@@ -29,6 +52,8 @@
 
 ## Doc
 
+- Change name
+- Provide logo
 - Changelog
 - Readme
 - Contributing
