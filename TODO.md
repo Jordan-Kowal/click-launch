@@ -4,14 +4,18 @@
 
 - On start, remove invalid previous projects/paths
   - Show toaster
+- Allow removing recent projects
+- On new:
+  - Add to recent
 - Open:
   - On select, redirect to homepage
+  - Move to first position of recent
 - On dashboard:
   - Ensure yaml is valid. If error:
     - Show error messages
     - Reload button / back button
     - Add tests
-  - On valid, save it in previous projects locally
+  - On valid, show dashboard
 
 ## Feature: SHow available processes
 
