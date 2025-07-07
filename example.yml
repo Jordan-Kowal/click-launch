@@ -8,11 +8,11 @@ processes:
       - type: "toggle"
         name: "Watch Mode"
         values:
-          - value: true
+          - value: "true"
             output: "--watch"
-          - value: false
+          - value: "false"
             output: ""
-        default: true
+        default: "true"
 
       - type: "select"
         name: "Environment"

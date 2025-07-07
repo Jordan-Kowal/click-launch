@@ -183,19 +183,21 @@ const validateToggleArg = (
     errors,
   });
 
-  const hasTrue = arg.values.some((v: any) => v.value === true);
-  const hasFalse = arg.values.some((v: any) => v.value === false);
+  const hasTrue = arg.values.some((v: any) => v.value === "true");
+  const hasFalse = arg.values.some((v: any) => v.value === "false");
 
   if (!hasTrue || !hasFalse) {
-    errors.push({ message: "toggle values must be true and false", path });
+    errors.push({
+      message: "toggle values must be 'true' and 'false' (as strings)",
+      path,
+    });
   }
 
-  // FIXME
   validateArgValues(arg.values, `${path}.values`, errors);
   validateValueIn({
     fieldName: "default",
     value: arg.default,
-    values: [true, false],
+    values: ["true", "false"],
     path,
     errors,
   });
@@ -258,7 +260,13 @@ const validateInputArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  validateString({ fieldName: "default", value: arg.default, path, errors });
+  validateString({
+    fieldName: "default",
+    value: arg.default,
+    required: false,
+    path,
+    errors,
+  });
 };
 
 const validateArgValues = (
@@ -270,6 +278,7 @@ const validateArgValues = (
     validateString({
       fieldName: "output",
       value: value.output,
+      required: false,
       path: `${path}[${index}].output`,
       errors,
     });
@@ -285,15 +294,17 @@ const validateArgValues = (
 const validateString = ({
   fieldName,
   value,
+  required = true,
   path,
   errors,
 }: {
   fieldName: string;
   value: any;
+  required?: boolean;
   path: string;
   errors: ValidationError[];
 }): void => {
-  if (!value || typeof value !== "string") {
+  if ((required && !value) || typeof value !== "string") {
     errors.push({
       message: `${fieldName} must be a non-empty string`,
       path,
@@ -311,8 +322,8 @@ const validateArray = ({
 }: {
   fieldName: string;
   value: any;
-  minLength: number | undefined;
-  maxLength: number | undefined;
+  minLength?: number;
+  maxLength?: number;
   path: string;
   errors: ValidationError[];
 }): void => {
