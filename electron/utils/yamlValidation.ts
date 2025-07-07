@@ -69,8 +69,20 @@ const validateRootStructure = (
   config: any,
   errors: ValidationError[],
 ): void => {
-  validateString("project_name", config.project_name, "", errors);
-  validateArray("processes", config.processes, 1, undefined, "", errors);
+  validateString({
+    fieldName: "project_name",
+    value: config.project_name,
+    path: "",
+    errors,
+  });
+  validateArray({
+    fieldName: "processes",
+    value: config.processes,
+    minLength: 1,
+    maxLength: undefined,
+    path: "",
+    errors,
+  });
 };
 
 const validateProcess = (
@@ -78,8 +90,18 @@ const validateProcess = (
   basePath: string,
   errors: ValidationError[],
 ): void => {
-  validateString("name", process.name, basePath, errors);
-  validateString("base_command", process.base_command, basePath, errors);
+  validateString({
+    fieldName: "name",
+    value: process.name,
+    path: basePath,
+    errors,
+  });
+  validateString({
+    fieldName: "base_command",
+    value: process.base_command,
+    path: basePath,
+    errors,
+  });
   const allowsFreeText = process.allows_free_text;
   if (!allowsFreeText && allowsFreeText !== true) {
     errors.push({
@@ -89,7 +111,14 @@ const validateProcess = (
   }
   // args
   if (process.args) {
-    validateArray("args", process.args, 0, undefined, basePath, errors);
+    validateArray({
+      fieldName: "args",
+      value: process.args,
+      minLength: 0,
+      maxLength: undefined,
+      path: basePath,
+      errors,
+    });
     process.args.forEach((arg: any, argIndex: number) => {
       validateArg(arg, `${basePath}.args[${argIndex}]`, errors);
     });
@@ -127,8 +156,14 @@ const validateArgGeneric = (
   errors: ValidationError[],
 ): void => {
   const supportedTypes = ["toggle", "select", "multiselect", "input"];
-  validateString("name", arg.name, path, errors);
-  validateValueIn("type", arg.type, supportedTypes, path, errors);
+  validateString({ fieldName: "name", value: arg.name, path, errors });
+  validateValueIn({
+    fieldName: "type",
+    value: arg.type,
+    values: supportedTypes,
+    path,
+    errors,
+  });
   if (arg.default === undefined) {
     errors.push({ message: "Missing required field: default", path });
   }
@@ -139,7 +174,14 @@ const validateToggleArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  validateArray("values", arg.values, 2, 2, path, errors);
+  validateArray({
+    fieldName: "values",
+    value: arg.values,
+    minLength: 2,
+    maxLength: 2,
+    path,
+    errors,
+  });
 
   const hasTrue = arg.values.some((v: any) => v.value === true);
   const hasFalse = arg.values.some((v: any) => v.value === false);
@@ -150,7 +192,13 @@ const validateToggleArg = (
 
   // FIXME
   validateArgValues(arg.values, `${path}.values`, errors);
-  validateValueIn("default", arg.default, [true, false], path, errors);
+  validateValueIn({
+    fieldName: "default",
+    value: arg.default,
+    values: [true, false],
+    path,
+    errors,
+  });
 };
 
 const validateSelectArg = (
@@ -158,10 +206,23 @@ const validateSelectArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  validateArray("values", arg.values, 2, undefined, path, errors);
+  validateArray({
+    fieldName: "values",
+    value: arg.values,
+    minLength: 2,
+    maxLength: undefined,
+    path,
+    errors,
+  });
   validateArgValues(arg.values, `${path}.values`, errors);
   const values = arg.values.map((v: any) => v.value);
-  validateValueIn("default", arg.default, values, path, errors);
+  validateValueIn({
+    fieldName: "default",
+    value: arg.default,
+    values,
+    path,
+    errors,
+  });
 };
 
 const validateMultiselectArg = (
@@ -169,12 +230,26 @@ const validateMultiselectArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  validateArray("values", arg.values, 2, undefined, path, errors);
+  validateArray({
+    fieldName: "values",
+    value: arg.values,
+    minLength: 2,
+    maxLength: undefined,
+    path,
+    errors,
+  });
   validateArgValues(arg.values, `${path}.values`, errors);
   const values = arg.values.map((v: any) => v.value);
-  validateArray("default", arg.default, 0, undefined, path, errors);
+  validateArray({
+    fieldName: "default",
+    value: arg.default,
+    minLength: 0,
+    maxLength: undefined,
+    path,
+    errors,
+  });
   (arg.default || []).forEach((value: any) => {
-    validateValueIn("default", value, values, path, errors);
+    validateValueIn({ fieldName: "default", value, values, path, errors });
   });
 };
 
@@ -183,7 +258,7 @@ const validateInputArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  validateString("default", arg.default, path, errors);
+  validateString({ fieldName: "default", value: arg.default, path, errors });
 };
 
 const validateArgValues = (
@@ -192,17 +267,32 @@ const validateArgValues = (
   errors: ValidationError[],
 ): void => {
   (arg || []).forEach((value: ArgValue, index: number) => {
-    validateString("output", value.output, `${path}[${index}].output`, errors);
-    validateString("value", value.value, `${path}[${index}].value`, errors);
+    validateString({
+      fieldName: "output",
+      value: value.output,
+      path: `${path}[${index}].output`,
+      errors,
+    });
+    validateString({
+      fieldName: "value",
+      value: value.value,
+      path: `${path}[${index}].value`,
+      errors,
+    });
   });
 };
 
-const validateString = (
-  fieldName: string,
-  value: any,
-  path: string,
-  errors: ValidationError[],
-): void => {
+const validateString = ({
+  fieldName,
+  value,
+  path,
+  errors,
+}: {
+  fieldName: string;
+  value: any;
+  path: string;
+  errors: ValidationError[];
+}): void => {
   if (!value || typeof value !== "string") {
     errors.push({
       message: `${fieldName} must be a non-empty string`,
@@ -211,14 +301,21 @@ const validateString = (
   }
 };
 
-const validateArray = (
-  fieldName: string,
-  value: any,
-  minLength: number | undefined,
-  maxLength: number | undefined,
-  path: string,
-  errors: ValidationError[],
-): void => {
+const validateArray = ({
+  fieldName,
+  value,
+  minLength,
+  maxLength,
+  path,
+  errors,
+}: {
+  fieldName: string;
+  value: any;
+  minLength: number | undefined;
+  maxLength: number | undefined;
+  path: string;
+  errors: ValidationError[];
+}): void => {
   if (
     !value ||
     !Array.isArray(value) ||
@@ -236,13 +333,19 @@ const validateArray = (
   }
 };
 
-const validateValueIn = (
-  fieldName: string,
-  value: any,
-  values: any[],
-  path: string,
-  errors: ValidationError[],
-): void => {
+const validateValueIn = ({
+  fieldName,
+  value,
+  values,
+  path,
+  errors,
+}: {
+  fieldName: string;
+  value: any;
+  values: any[];
+  path: string;
+  errors: ValidationError[];
+}): void => {
   if (!value || !values.includes(value)) {
     errors.push({
       message: `${fieldName} must be one of the following values: ${values.join(", ")}`,
