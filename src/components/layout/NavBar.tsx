@@ -3,6 +3,7 @@ import type React from "react";
 import { memo } from "react";
 import { Link } from "wouter";
 import { routeConfigMap } from "@/router";
+
 export const NavBar: React.FC = memo(() => {
   return (
     <div

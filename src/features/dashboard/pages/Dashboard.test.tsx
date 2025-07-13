@@ -46,9 +46,7 @@ describe.concurrent("Dashboard", () => {
     const dashboard = queryByTestId<HTMLDivElement>(container, "dashboard");
 
     expect(dashboard).toBeNull();
-    expect(toastErrorMock).toHaveBeenCalledWith(
-      "No project file selected. Please select a file first.",
-    );
+    expect(toastErrorMock).toHaveBeenCalledWith("No project file selected.q");
     expect(navigateMock).toHaveBeenCalledWith("/");
   });
 });

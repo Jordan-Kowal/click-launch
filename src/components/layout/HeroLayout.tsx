@@ -1,6 +1,7 @@
 import type React from "react";
 import { memo } from "react";
 import { FadeIn } from "../ui";
+import { NAVBAR_HEIGHT } from "./constants";
 import { NavBar } from "./NavBar";
 
 export type MainProps = {
@@ -9,9 +10,7 @@ export type MainProps = {
   dataTestId?: string;
 };
 
-const NAVBAR_HEIGHT = 64;
-
-export const Main: React.FC<MainProps> = memo(
+export const HeroLayout: React.FC<MainProps> = memo(
   ({ children, className, dataTestId }) => {
     return (
       <main

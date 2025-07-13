@@ -1,7 +1,7 @@
 import { FolderOpen, History } from "lucide-react";
 import { memo } from "react";
 import { useLocation } from "wouter";
-import { Main } from "@/components/layout";
+import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
 import { routeConfigMap } from "@/router";
 
@@ -22,7 +22,7 @@ const ProjectSelection: React.FC = memo(() => {
   };
 
   return (
-    <Main dataTestId="project-selection">
+    <HeroLayout dataTestId="project-selection">
       <div className="text-center">
         <div className="max-w-50 mx-auto mb-6">
           <Logo />
@@ -71,7 +71,7 @@ const ProjectSelection: React.FC = memo(() => {
           </div>
         </div>
       </div>
-    </Main>
+    </HeroLayout>
   );
 });
 

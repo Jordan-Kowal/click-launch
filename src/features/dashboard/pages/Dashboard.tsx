@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useLocation, useSearch } from "wouter";
-import { Main } from "@/components/layout";
+import { HeroLayout } from "@/components/layout";
 import { LoadingRing } from "@/components/ui/LoadingRing";
 import { routeConfigMap } from "@/router";
 import type { ValidationResult } from "@/types/electron";
@@ -48,9 +48,9 @@ const Dashboard: React.FC = memo(() => {
 
   if (isLoading) {
     return (
-      <Main className="text-center">
+      <HeroLayout className="text-center">
         <LoadingRing />
-      </Main>
+      </HeroLayout>
     );
   }
 
@@ -59,7 +59,7 @@ const Dashboard: React.FC = memo(() => {
   }
 
   return (
-    <Main dataTestId="dashboard">
+    <HeroLayout dataTestId="dashboard">
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <button
@@ -79,7 +79,7 @@ const Dashboard: React.FC = memo(() => {
           </p>
         </div>
       </div>
-    </Main>
+    </HeroLayout>
   );
 });
 

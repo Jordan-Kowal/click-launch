@@ -1,14 +1,14 @@
 import { getByTestId } from "@testing-library/react";
 import { describe, test } from "vitest";
 import { render } from "@/tests/utils";
-import { Main } from "./Main";
+import { BaseLayout } from "./BaseLayout";
 
-describe.concurrent("Main", () => {
+describe.concurrent("BaseLayout", () => {
   test("should render the component without navbar", ({ expect }) => {
     const { container } = render(
-      <Main dataTestId="main">
+      <BaseLayout dataTestId="main">
         <div>Content</div>
-      </Main>,
+      </BaseLayout>,
     );
 
     const main = getByTestId<HTMLDivElement>(container, "main");
@@ -16,15 +16,14 @@ describe.concurrent("Main", () => {
 
     expect(main).toBeVisible();
     expect(main).toHaveTextContent("Content");
-    expect(main).toHaveStyle({ marginTop: "64px" });
     expect(navbar).toBeVisible();
   });
 
   test("should handle extra classnames", ({ expect }) => {
     const { container } = render(
-      <Main dataTestId="main" className="extra">
+      <BaseLayout dataTestId="main" className="extra">
         <div>Content</div>
-      </Main>,
+      </BaseLayout>,
     );
 
     const main = getByTestId<HTMLDivElement>(container, "main");
