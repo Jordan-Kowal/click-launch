@@ -1,0 +1,4 @@
+project_name: "Test Project"
+processes:
+  - invalid_name: "Test Process"
+    allows_free_text: "not_boolean"

@@ -70,34 +70,48 @@ export default defineConfig(({ mode }) => ({
     },
   },
   resolve: {
-    alias: { "@": resolve(__dirname, "./src") },
+    alias: {
+      "@": resolve(__dirname, "./src"),
+      "@electron": resolve(__dirname, "./electron"),
+    },
   },
   build: {
     outDir: "dist",
     emptyOutDir: true,
   },
   test: {
-    include: ["**/*.test.ts", "**/*.test.tsx"],
-    setupFiles: ["src/tests/setup.ts"],
-    environment: "jsdom",
+    projects: [
+      // Renderer tests (React/DOM)
+      {
+        test: {
+          name: "renderer",
+          environment: "jsdom",
+          include: ["src/**/*.test.{ts,tsx}"],
+          setupFiles: ["src/tests/setup.ts"],
+        },
+        resolve: {
+          alias: {
+            "@": resolve(__dirname, "./src"),
+            "@electron": resolve(__dirname, "./electron"),
+          },
+        },
+      },
+      // Electron tests (Node.js)eg
+      {
+        test: {
+          name: "electron",
+          environment: "node",
+          include: ["electron/**/*.test.ts"],
+        },
+        resolve: {
+          alias: {
+            "@": resolve(__dirname, "./src"),
+            "@electron": resolve(__dirname, "./electron"),
+          },
+        },
+      },
+    ],
     coverage: {
-      exclude: [
-        // Builds
-        "dist/**",
-        "dist-electron/**",
-        // Configs
-        "vite.config.ts",
-        "postcss.config.js",
-        "tailwind.config.js",
-        // Types
-        "src/types/**",
-        "src/api/types.ts",
-        // Special cases
-        "src/App.tsx",
-        "src/main.tsx",
-        "electron/**",
-        "src/tests/**",
-      ],
       all: true,
       thresholds: {
         perFile: false,
@@ -106,6 +120,22 @@ export default defineConfig(({ mode }) => ({
         lines: 90,
         statements: 90,
       },
+      exclude: [
+        // Configs
+        "postcss.config.js",
+        "tailwind.config.js",
+        "vite.config.ts",
+        "src/types",
+        // Test files
+        "src/tests/**/*",
+        "src/**/*.test.{ts,tsx}",
+        "electron/**/*.test.ts",
+        // Custom exclude files
+        "src/App.tsx",
+        "src/main.tsx",
+        "electron/preload.ts",
+        "electron/main.ts",
+      ],
     },
     css: true,
     isolate: true,

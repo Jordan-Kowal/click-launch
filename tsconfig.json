@@ -26,10 +26,11 @@
     "checkJs": false,
 
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@electron/*": ["./electron/*"]
     }
   },
-  "include": ["src/**/*", "types", "postcss.config.js", "tailwind.config.js"],
+  "include": ["src/**/*", "postcss.config.js", "tailwind.config.js"],
   "exclude": ["dist", "dist-electron", "node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

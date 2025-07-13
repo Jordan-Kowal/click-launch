@@ -16,7 +16,7 @@ const TestComponent: React.FC = () => {
   );
 };
 
-describe.concurrent("ThemeProvider", () => {
+describe("ThemeProvider", () => {
   beforeEach(() => {
     localStorage.removeItem(THEME_STORAGE_KEY);
   });
@@ -58,7 +58,7 @@ describe.concurrent("ThemeProvider", () => {
     expect(provider).toHaveAttribute("data-theme", "coffee");
   });
 
-  test("persists theme in localStorage", ({ expect }) => {
+  test.sequential("persists theme in localStorage", ({ expect }) => {
     const { container } = render(
       <ThemeProvider>
         <TestComponent />

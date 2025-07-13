@@ -1,0 +1,151 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, test } from "vitest";
+import { extractYamlConfig } from "./yamlValidation";
+
+type TestCase = {
+  name: string;
+  filename: string;
+  expectedErrors: { message: string; path?: string }[];
+  shouldBeValid: boolean;
+};
+
+const testCases: TestCase[] = [
+  {
+    name: "not a YAML file",
+    filename: "./electron/utils/test-files/not-yaml.txt",
+    expectedErrors: [{ message: "Invalid YAML file" }],
+    shouldBeValid: false,
+  },
+  {
+    name: "invalid YAML parsing error",
+    filename: "./electron/utils/test-files/invalid-yaml-parsing.yml",
+    expectedErrors: [{ message: "Invalid YAML file" }],
+    shouldBeValid: false,
+  },
+  {
+    name: "missing project_name and processes (root level)",
+    filename: "./electron/utils/test-files/missing-root-fields.yml",
+    expectedErrors: [
+      { message: "project_name must be a non-empty string", path: "" },
+      { message: "processes must be an array - min length: 1", path: "" },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "missing name and base_command and invalid allows_free_text",
+    filename: "./electron/utils/test-files/missing-process-fields.yml",
+    expectedErrors: [
+      { message: "name must be a non-empty string", path: "processes[0]" },
+      {
+        message: "base_command must be a non-empty string",
+        path: "processes[0]",
+      },
+      {
+        message: "allows_free_text must be a boolean",
+        path: "processes[0]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "invalid arg (missing name, missing type, missing default)",
+    filename: "./electron/utils/test-files/invalid-arg-generic.yml",
+    expectedErrors: [
+      {
+        message: "name must be a non-empty string",
+        path: "processes[0].args[0]",
+      },
+      {
+        message:
+          "type must be one of the following values: toggle, select, multiselect, input",
+        path: "processes[0].args[0]",
+      },
+      {
+        message: "Missing required field: default",
+        path: "processes[0].args[0]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "invalid toggle args (missing true, missing false, invalid default)",
+    filename: "./electron/utils/test-files/invalid-toggle-args.yml",
+    expectedErrors: [
+      {
+        message: "toggle values must be 'true' and 'false' (as strings)",
+        path: "processes[0].args[0]",
+      },
+      {
+        message: "toggle values must be 'true' and 'false' (as strings)",
+        path: "processes[0].args[1]",
+      },
+      {
+        message: "default must be one of the following values: true, false",
+        path: "processes[0].args[2]",
+      },
+      {
+        message: "values must be an array - min length: 2 - max length: 2",
+        path: "processes[0].args[3]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "invalid select args (1 value, invalid default)",
+    filename: "./electron/utils/test-files/invalid-select-args.yml",
+    expectedErrors: [
+      {
+        message: "values must be an array - min length: 2",
+        path: "processes[0].args[0]",
+      },
+      {
+        message:
+          "default must be one of the following values: option1, option2",
+        path: "processes[0].args[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "invalid multiselect args (1 value, invalid default)",
+    filename: "./electron/utils/test-files/invalid-multiselect-args.yml",
+    expectedErrors: [
+      {
+        message: "values must be an array - min length: 2",
+        path: "processes[0].args[0]",
+      },
+      {
+        message:
+          "default must be one of the following values: option1, option2",
+        path: "processes[0].args[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "valid YAML",
+    filename: "./electron/utils/test-files/valid-yaml.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
+];
+
+describe.concurrent("extractYamlConfig", async () => {
+  test.each(testCases)(
+    "$name",
+    async ({ filename, expectedErrors, shouldBeValid }) => {
+      const yamlContent = readFileSync(filename, "utf8");
+      const result = extractYamlConfig(yamlContent);
+
+      expect(result.isValid).toBe(shouldBeValid);
+
+      if (shouldBeValid) {
+        expect(result.config).not.toBe(null);
+        expect(result.errors).toHaveLength(0);
+      } else {
+        expect(result.config).toBe(null);
+        expect(result.errors).toEqual(expectedErrors);
+      }
+    },
+  );
+});

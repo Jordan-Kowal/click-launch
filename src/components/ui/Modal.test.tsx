@@ -77,31 +77,32 @@ describe.concurrent("Modal", () => {
     expect(closeButton).toBeNull();
   });
 
-  test("should call onConfirm and close modal when confirm button is clicked", async ({
-    expect,
-  }) => {
-    const { container } = render(
-      <TestModalWrapper onConfirm={onConfirmMock} />,
-    );
-    const openButton = getByTestId(container, "modal-trigger");
-    const modal = getByTestId(container, "modal");
-    const confirmButton = getByTestId(container, "modal-confirm-button");
+  test.sequential(
+    "should call onConfirm and close modal when confirm button is clicked",
+    async ({ expect }) => {
+      const { container } = render(
+        <TestModalWrapper onConfirm={onConfirmMock} />,
+      );
+      const openButton = getByTestId(container, "modal-trigger");
+      const modal = getByTestId(container, "modal");
+      const confirmButton = getByTestId(container, "modal-confirm-button");
 
-    expect(openButton).toBeVisible();
+      expect(openButton).toBeVisible();
 
-    fireEvent.click(openButton);
+      fireEvent.click(openButton);
 
-    expect(modal).toHaveAttribute("open");
-    expect(confirmButton).toBeVisible();
+      expect(modal).toHaveAttribute("open");
+      expect(confirmButton).toBeVisible();
 
-    fireEvent.click(confirmButton);
+      fireEvent.click(confirmButton);
 
-    await waitFor(() => {
-      expect(modal).not.toHaveAttribute("open");
-    });
+      await waitFor(() => {
+        expect(modal).not.toHaveAttribute("open");
+      });
 
-    expect(onConfirmMock).toHaveBeenCalledTimes(1);
-  });
+      expect(onConfirmMock).toHaveBeenCalledTimes(1);
+    },
+  );
 
   test("should not close modal when onConfirm throws an error", async ({
     expect,

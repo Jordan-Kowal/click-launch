@@ -54,7 +54,11 @@ export const extractYamlConfig = (yamlContent: string): ValidationResult => {
     });
   }
 
-  return { isValid: errors.length === 0, config, errors };
+  return {
+    isValid: errors.length === 0,
+    config: errors.length === 0 ? config : null,
+    errors,
+  };
 };
 
 const parseYamlFile = (filePath: string): any | null => {
@@ -103,7 +107,11 @@ const validateProcess = (
     errors,
   });
   const allowsFreeText = process.allows_free_text;
-  if (!allowsFreeText && allowsFreeText !== true) {
+  if (
+    allowsFreeText !== true &&
+    allowsFreeText !== false &&
+    allowsFreeText !== undefined
+  ) {
     errors.push({
       message: "allows_free_text must be a boolean",
       path: basePath,
@@ -141,11 +149,9 @@ const validateArg = (
     case "multiselect":
       validateMultiselectArg(arg, basePath, errors);
       break;
+    // biome-ignore lint/complexity/noUselessSwitchCase: Doc
     case "input":
-      validateInputArg(arg, basePath, errors);
-      break;
     default:
-      // Error already handled in validateArgGeneric
       break;
   }
 };
@@ -252,20 +258,6 @@ const validateMultiselectArg = (
   });
   (arg.default || []).forEach((value: any) => {
     validateValueIn({ fieldName: "default", value, values, path, errors });
-  });
-};
-
-const validateInputArg = (
-  arg: any,
-  path: string,
-  errors: ValidationError[],
-): void => {
-  validateString({
-    fieldName: "default",
-    value: arg.default,
-    required: false,
-    path,
-    errors,
   });
 };
 

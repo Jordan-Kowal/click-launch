@@ -1,0 +1,40 @@
+project_name: "Test Project"
+processes:
+  - name: "Test Process"
+    base_command: "echo"
+    allows_free_text: true
+    args:
+      - type: "toggle"
+        name: "missing_true"
+        default: "false"
+        values:
+          - value: "false"
+            output: "False"
+          - value: "other"
+            output: "Other"
+      - type: "toggle"
+        name: "missing_false"
+        default: "true"
+        values:
+          - value: "true"
+            output: "True"
+          - value: "other"
+            output: "Other"
+      - type: "toggle"
+        name: "invalid_default"
+        default: "invalid"
+        values:
+          - value: "true"
+            output: "True"
+          - value: "false"
+            output: "False"
+      - type: "toggle"
+        name: "three_values"
+        default: "true"
+        values:
+          - value: "true"
+            output: "True"
+          - value: "false"
+            output: "False"
+          - value: "other"
+            output: "Other"
