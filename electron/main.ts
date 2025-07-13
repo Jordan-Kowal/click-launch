@@ -1,6 +1,8 @@
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import { isDev } from "./utils/constants";
+import { extractYamlConfig } from "./utils/yamlValidation";
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -44,6 +46,24 @@ app.whenReady().then(() => {
       ],
     });
     return result.filePaths[0];
+  });
+
+  // IPC handler for YAML validation
+  ipcMain.handle("yaml:validate", async (_, filePath: string) => {
+    try {
+      const fileContent = readFileSync(filePath, "utf-8");
+      return extractYamlConfig(fileContent);
+    } catch (error) {
+      return {
+        isValid: false,
+        config: null,
+        errors: [
+          {
+            message: `Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`,
+          },
+        ],
+      };
+    }
   });
 
   app.on("activate", () => {

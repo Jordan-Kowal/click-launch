@@ -1,9 +1,11 @@
 import { ArrowLeft } from "lucide-react";
-import { memo, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useLocation, useSearch } from "wouter";
 import { Main } from "@/components/layout";
+import { LoadingRing } from "@/components/ui/LoadingRing";
 import { routeConfigMap } from "@/router";
+import type { ValidationResult } from "@/types/electron";
 
 type DashboardParams = {
   file?: string;
@@ -15,14 +17,44 @@ const Dashboard: React.FC = memo(() => {
   const selectedFile = params.get("file") as DashboardParams["file"];
   const [, navigate] = useLocation();
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [{ errors }, setYamlInfo] = useState<ValidationResult>({
+    isValid: false,
+    config: null,
+    errors: [],
+  });
+
+  const parseFile = useCallback(async (filePath: string) => {
+    setIsLoading(true);
+    const result = await window.electronAPI.validateYaml(filePath);
+    setYamlInfo(result);
+    setIsLoading(false);
+  }, []);
+
+  /* Redirects if no file, otherwise parses file */
   useEffect(() => {
     if (!selectedFile) {
-      toast.error("No project file selected. Please select a file first.");
+      toast.error("No project file selected.");
       navigate(routeConfigMap.homepage.path);
+    } else {
+      parseFile(selectedFile);
     }
-  }, [selectedFile, navigate]);
+  }, [selectedFile, parseFile, navigate]);
 
+  // Can return `null` as we redirect if no file
   if (!selectedFile) {
+    return null;
+  }
+
+  if (isLoading) {
+    return (
+      <Main className="text-center">
+        <LoadingRing />
+      </Main>
+    );
+  }
+
+  if (errors.length > 0) {
     return null;
   }
 

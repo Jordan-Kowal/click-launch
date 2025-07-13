@@ -64,6 +64,7 @@
 
 ## CI/CD
 
+- Move test setup file?
 - Quality + tests + release build
 
 ## Build
