@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Redirect, Route, Switch, useLocation, useSearch } from "wouter";
 import { navigationPaths } from "@/router";
-import { DashboardProvider } from "../contexts/DashboardContext";
+import { DashboardProvider } from "../contexts/";
 import Dashboard from "../pages/Dashboard";
 
 export const DashboardRouter = memo(() => {

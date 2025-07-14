@@ -2,10 +2,10 @@ import { memo } from "react";
 import { BaseLayout, HeroLayout } from "@/components/layout";
 import { ScreenTitle } from "@/components/ui";
 import { LoadingRing } from "@/components/ui/LoadingRing";
-import { useDashboard } from "../contexts/DashboardContext";
+import { useDashboardContext } from "../contexts/";
 
 const Dashboard: React.FC = memo(() => {
-  const { isLoading, errors } = useDashboard();
+  const { isLoading, errors } = useDashboardContext();
 
   if (isLoading) {
     return (

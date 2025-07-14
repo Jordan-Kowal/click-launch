@@ -20,7 +20,7 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
   undefined,
 );
 
-export const useDashboard = () => {
+export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
   if (!context) {
     throw new Error("useDashboard must be used within a DashboardProvider");
