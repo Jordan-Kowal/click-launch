@@ -1,52 +1,58 @@
-import { getByTestId, queryByTestId } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, test } from "vitest";
-import {
-  navigateMock,
-  toastErrorMock,
-  useSearchMock,
-} from "@/tests/mocks/globals";
-import { render } from "@/tests/utils";
+import { getByTestId, render } from "@testing-library/react";
+import { beforeEach, describe, test, vi } from "vitest";
+import * as dashboardContext from "../contexts/DashboardContext";
 import Dashboard from "./Dashboard";
+
+const mockParseFile = vi.fn();
 
 describe.concurrent("Dashboard", () => {
   beforeEach(() => {
-    useSearchMock.mockReturnValue("?file=/path/to/test.yml");
+    mockParseFile.mockClear();
   });
 
-  test("should render the page with file selected", ({ expect }) => {
+  test("renders loading ring when isLoading is true", ({ expect }) => {
+    vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
+      isLoading: true,
+      yamlConfig: null,
+      errors: [{ message: "Test error" }],
+      parseFile: mockParseFile,
+    });
+
     const { container } = render(<Dashboard />);
-    const dashboard = getByTestId<HTMLDivElement>(container, "dashboard");
+    const loadingDashboard = getByTestId(container, "loading-dashboard");
 
-    expect(dashboard).toBeVisible();
-    expect(dashboard).toHaveTextContent("Dashboard");
-    expect(dashboard).toHaveTextContent("Selected Project File");
-    expect(dashboard).toHaveTextContent("/path/to/test.yml");
+    expect(loadingDashboard).toBeInTheDocument();
   });
 
-  test("should navigate to home when back button is clicked", async ({
+  test("renders error list when errors exist", ({ expect }) => {
+    vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
+      isLoading: false,
+      yamlConfig: null,
+      errors: [{ message: "Test error" }],
+      parseFile: mockParseFile,
+    });
+
+    const { container } = render(<Dashboard />);
+    const errorDashboard = getByTestId(container, "error-dashboard");
+    const errorList = getByTestId(container, "error-list");
+
+    expect(errorDashboard).toBeInTheDocument();
+    expect(errorList).toBeInTheDocument();
+  });
+
+  test("renders normal dashboard when no loading and no errors", ({
     expect,
   }) => {
-    const user = userEvent.setup();
+    vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
+      isLoading: false,
+      yamlConfig: { project_name: "test", processes: [] },
+      errors: [],
+      parseFile: mockParseFile,
+    });
 
     const { container } = render(<Dashboard />);
-    const backButton = getByTestId(container, "back-button");
+    const dashboard = getByTestId(container, "dashboard");
 
-    await user.click(backButton);
-
-    expect(navigateMock).toHaveBeenCalledWith("/");
-  });
-
-  test("should redirect to home and show error toast when no file is provided", ({
-    expect,
-  }) => {
-    useSearchMock.mockReturnValue("");
-
-    const { container } = render(<Dashboard />);
-    const dashboard = queryByTestId<HTMLDivElement>(container, "dashboard");
-
-    expect(dashboard).toBeNull();
-    expect(toastErrorMock).toHaveBeenCalledWith("No project file selected.");
-    expect(navigateMock).toHaveBeenCalledWith("/");
+    expect(dashboard).toBeInTheDocument();
   });
 });

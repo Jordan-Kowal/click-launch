@@ -12,7 +12,7 @@ export const ErrorList = memo(() => {
   }
 
   return (
-    <div className=" mt-4">
+    <div className="mt-4" data-testid="error-list">
       <div
         role="alert"
         className="alert alert-error alert-soft alert-vertical sm:alert-horizontal"
@@ -26,6 +26,7 @@ export const ErrorList = memo(() => {
           <button
             type="button"
             className="btn btn-error btn-sm btn-outline"
+            data-testid="retry-button"
             onClick={parseFile}
           >
             <RotateCcw className="size-4" />
@@ -34,6 +35,7 @@ export const ErrorList = memo(() => {
           <button
             type="button"
             className="btn btn-error btn-sm btn-outline"
+            data-testid="select-new-file-button"
             onClick={handleOpenProject}
           >
             <FolderOpen className="size-4" />

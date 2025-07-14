@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { toast } from "react-toastify";
 import { useLocation } from "wouter";
 import { navigationPaths } from "@/router";
 
@@ -13,8 +14,8 @@ export const useSelectFile = () => {
           `${navigationPaths.dashboard}?file=${encodeURIComponent(filePath)}`,
         );
       }
-    } catch (error) {
-      console.error("Error opening file dialog:", error);
+    } catch (_error) {
+      toast.error("Error opening file dialog");
     }
   }, [navigate]);
 };

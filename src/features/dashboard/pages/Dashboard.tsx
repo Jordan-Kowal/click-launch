@@ -10,7 +10,7 @@ const Dashboard: React.FC = memo(() => {
 
   if (isLoading) {
     return (
-      <HeroLayout className="text-center">
+      <HeroLayout className="text-center" dataTestId="loading-dashboard">
         <LoadingRing />
       </HeroLayout>
     );
@@ -18,7 +18,7 @@ const Dashboard: React.FC = memo(() => {
 
   if (errors.length > 0) {
     return (
-      <BaseLayout>
+      <BaseLayout dataTestId="error-dashboard">
         <ScreenTitle title="Dashboard" />
         <ErrorList />
       </BaseLayout>
@@ -26,7 +26,7 @@ const Dashboard: React.FC = memo(() => {
   }
 
   return (
-    <BaseLayout>
+    <BaseLayout dataTestId="dashboard">
       <ScreenTitle title="Dashboard" />
     </BaseLayout>
   );
