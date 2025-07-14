@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
-import { Route, Switch, useLocation, useSearch } from "wouter";
+import { Redirect, Route, Switch, useLocation, useSearch } from "wouter";
 import { navigationPaths } from "@/router";
 import { DashboardProvider } from "../contexts/DashboardContext";
 import Dashboard from "../pages/Dashboard";
@@ -30,6 +30,7 @@ export const DashboardRouter = memo(() => {
     <DashboardProvider selectedFile={selectedFile}>
       <Switch>
         <Route path={navigationPaths.dashboard} component={Dashboard} />
+        <Redirect to={navigationPaths.dashboard} replace />
       </Switch>
     </DashboardProvider>
   );

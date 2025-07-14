@@ -1,5 +1,6 @@
 import {
   createContext,
+  memo,
   type ReactNode,
   useCallback,
   useContext,
@@ -32,45 +33,44 @@ type DashboardProviderProps = {
   selectedFile: string | null;
 };
 
-export const DashboardProvider = ({
-  children,
-  selectedFile,
-}: DashboardProviderProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
-  const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
+export const DashboardProvider = memo(
+  ({ children, selectedFile }: DashboardProviderProps) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
+    const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
 
-  const parseFile = useCallback(async (filePath: string) => {
-    setIsLoading(true);
-    const result = await window.electronAPI.validateYaml(filePath);
+    const parseFile = useCallback(async (filePath: string) => {
+      setIsLoading(true);
+      const result = await window.electronAPI.validateYaml(filePath);
 
-    if (result.isValid && result.config) {
-      setYamlConfig(result.config);
-      setErrors([]);
-    } else {
-      setYamlConfig(null);
-      setErrors(result.errors);
-    }
+      if (result.isValid && result.config) {
+        setYamlConfig(result.config);
+        setErrors([]);
+      } else {
+        setYamlConfig(null);
+        setErrors(result.errors);
+      }
 
-    setIsLoading(false);
-  }, []);
+      setIsLoading(false);
+    }, []);
 
-  useEffect(() => {
-    if (selectedFile) {
-      parseFile(selectedFile);
-    }
-  }, [selectedFile, parseFile]);
+    useEffect(() => {
+      if (selectedFile) {
+        parseFile(selectedFile);
+      }
+    }, [selectedFile, parseFile]);
 
-  const value: DashboardContextType = {
-    isLoading,
-    yamlConfig,
-    errors,
-    parseFile,
-  };
+    const value: DashboardContextType = {
+      isLoading,
+      yamlConfig,
+      errors,
+      parseFile,
+    };
 
-  return (
-    <DashboardContext.Provider value={value}>
-      {children}
-    </DashboardContext.Provider>
-  );
-};
+    return (
+      <DashboardContext.Provider value={value}>
+        {children}
+      </DashboardContext.Provider>
+    );
+  },
+);
