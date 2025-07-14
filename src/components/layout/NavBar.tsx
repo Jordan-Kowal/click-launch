@@ -1,10 +1,24 @@
-import { Settings } from "lucide-react";
+import { House, Settings } from "lucide-react";
 import type React from "react";
-import { memo } from "react";
-import { Link } from "wouter";
+import { memo, useCallback, useRef } from "react";
+import { Link, useLocation } from "wouter";
 import { navigationPaths } from "@/router";
+import { Modal } from "../ui";
 
 export const NavBar: React.FC = memo(() => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const [location, navigate] = useLocation();
+
+  const handleConfirm = useCallback(() => {
+    navigate(navigationPaths.homepage);
+  }, [navigate]);
+
+  const onHomeButtonClick = useCallback(() => {
+    if (location !== navigationPaths.homepage) {
+      modalRef.current?.showModal();
+    }
+  }, [location]);
+
   return (
     <div
       data-testid="navbar"
@@ -30,7 +44,21 @@ export const NavBar: React.FC = memo(() => {
             <Settings />
           </Link>
         </div>
+        <div className="tooltip tooltip-bottom" data-tip="Homepage">
+          <button
+            type="button"
+            className="btn btn-ghost btn-circle no-drag"
+            onClick={onHomeButtonClick}
+            data-testid={"navbar-project-selection-link"}
+          >
+            <House />
+          </button>
+        </div>
       </div>
+      <Modal ref={modalRef} onConfirm={handleConfirm} closable={true}>
+        <h1 className="text-xl font-bold">Return to project selection?</h1>
+        <p>Any ongoing processes will be shut down.</p>
+      </Modal>
     </div>
   );
 });

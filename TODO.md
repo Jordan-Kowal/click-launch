@@ -10,7 +10,6 @@
 - Open:
   - On select, redirect to homepage
   - Move to first position of recent
-- Go back to project selection (header + modal warning)
 
 ## Feature: SHow available processes
 

@@ -1,7 +1,7 @@
 import { forwardRef, memo, useCallback, useState } from "react";
 
 type ModalProps = {
-  onConfirm: () => Promise<void>;
+  onConfirm: () => Promise<void> | void;
   children: React.ReactNode;
   closable?: boolean;
 };
