@@ -1,30 +1,33 @@
 import {
+  type DashboardNavigationKey,
   type DashboardRouteKey,
+  dashboardNavigationPaths,
   dashboardRoutes,
 } from "@/features/dashboard/routes";
-import { type HomeRouteKey, homeRoutes } from "@/features/home/routes";
+import {
+  type HomeNavigationKey,
+  type HomeRouteKey,
+  homeNavigationPaths,
+  homeRoutes,
+} from "@/features/home/routes";
 
 export type RouteKey = HomeRouteKey | DashboardRouteKey;
+export type NavigationKey = HomeNavigationKey | DashboardNavigationKey;
 
-export type RouteConfig = {
+export type RouteConfigItem = {
   path: string;
   component: React.ComponentType<any>;
   key: RouteKey;
 };
 
-export type RouteConfigMap = Record<RouteKey, RouteConfig>;
+export type RouteConfig = Record<RouteKey, RouteConfigItem>;
 
-export const routeConfigMap: RouteConfigMap = {
+export const routeConfig: RouteConfig = {
   ...homeRoutes,
   ...dashboardRoutes,
 };
 
-export const pathToRoute: Record<string, RouteConfig> = Object.values(
-  routeConfigMap,
-).reduce(
-  (acc, route) => {
-    acc[route.path] = route;
-    return acc;
-  },
-  {} as Record<string, RouteConfig>,
-);
+export const navigationPaths: Record<NavigationKey, string> = {
+  ...homeNavigationPaths,
+  ...dashboardNavigationPaths,
+};

@@ -2,7 +2,7 @@ import { Settings } from "lucide-react";
 import type React from "react";
 import { memo } from "react";
 import { Link } from "wouter";
-import { routeConfigMap } from "@/router";
+import { navigationPaths } from "@/router";
 
 export const NavBar: React.FC = memo(() => {
   return (
@@ -12,7 +12,7 @@ export const NavBar: React.FC = memo(() => {
     >
       <div className="navbar-start">
         <Link
-          href={routeConfigMap.homepage.path}
+          href={navigationPaths.homepage}
           data-testid={"navbar-home-link"}
           className="no-drag"
         >
@@ -24,7 +24,7 @@ export const NavBar: React.FC = memo(() => {
           <Link
             type="button"
             className="btn btn-ghost btn-circle no-drag"
-            href={routeConfigMap.homepage.path}
+            href={navigationPaths.homepage}
             data-testid={"navbar-settings-link"}
           >
             <Settings />

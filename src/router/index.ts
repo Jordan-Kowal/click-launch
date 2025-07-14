@@ -1,8 +1,8 @@
 export { Routes } from "./Routes";
 export {
-  pathToRoute,
+  navigationPaths,
   type RouteConfig,
-  type RouteConfigMap,
+  type RouteConfigItem,
   type RouteKey,
-  routeConfigMap,
+  routeConfig,
 } from "./routeConfig";

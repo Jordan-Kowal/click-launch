@@ -14,7 +14,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = memo(
   ({ children, className, dataTestId }) => {
     return (
       <main
-        className={`flex flex-col w-full h-screen ${className || ""}`}
+        className={`flex flex-col w-full h-screen p-6 ${className || ""}`}
         data-testid={dataTestId}
       >
         <NavBar />

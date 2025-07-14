@@ -16,6 +16,7 @@
     - Reload button / back button
     - Add tests
   - On valid, show dashboard
+- Go back to project selection (header + modal warning)
 
 ## Feature: SHow available processes
 
@@ -44,6 +45,7 @@
   - Show logs
   - Search logs
 - Ensure process is stopped when closing app
+  - Also when going back to project selection
 
 ## Feature: Settings
 
@@ -51,6 +53,7 @@
 
 ## Improvements
 
+- Rename homepage to project selection
 - Test electron?
 - Better split electron code
 

@@ -3,7 +3,7 @@ import { memo } from "react";
 import { useLocation } from "wouter";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
-import { routeConfigMap } from "@/router";
+import { navigationPaths } from "@/router";
 
 const ProjectSelection: React.FC = memo(() => {
   const [, navigate] = useLocation();
@@ -13,7 +13,7 @@ const ProjectSelection: React.FC = memo(() => {
       const filePath = await window.electronAPI.openFileDialog();
       if (filePath) {
         navigate(
-          `${routeConfigMap.dashboard.path}?file=${encodeURIComponent(filePath)}`,
+          `${navigationPaths.dashboard}?file=${encodeURIComponent(filePath)}`,
         );
       }
     } catch (error) {
