@@ -1,25 +1,11 @@
 import { FolderOpen, History } from "lucide-react";
 import { memo } from "react";
-import { useLocation } from "wouter";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
-import { navigationPaths } from "@/router";
+import { useSelectFile } from "@/hooks";
 
 const ProjectSelection: React.FC = memo(() => {
-  const [, navigate] = useLocation();
-
-  const handleOpenProject = async () => {
-    try {
-      const filePath = await window.electronAPI.openFileDialog();
-      if (filePath) {
-        navigate(
-          `${navigationPaths.dashboard}?file=${encodeURIComponent(filePath)}`,
-        );
-      }
-    } catch (error) {
-      console.error("Error opening file dialog:", error);
-    }
-  };
+  const handleOpenProject = useSelectFile();
 
   return (
     <HeroLayout dataTestId="project-selection">

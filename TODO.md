@@ -10,12 +10,6 @@
 - Open:
   - On select, redirect to homepage
   - Move to first position of recent
-- On dashboard:
-  - Ensure yaml is valid. If error:
-    - Show error messages
-    - Reload button / back button
-    - Add tests
-  - On valid, show dashboard
 - Go back to project selection (header + modal warning)
 
 ## Feature: SHow available processes

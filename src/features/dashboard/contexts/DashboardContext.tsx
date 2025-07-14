@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import type { ValidationResult, YamlConfig } from "@/types/electron";
@@ -13,7 +14,7 @@ type DashboardContextType = {
   isLoading: boolean;
   yamlConfig: YamlConfig | null;
   errors: ValidationResult["errors"];
-  parseFile: (filePath: string) => Promise<void>;
+  parseFile: () => Promise<void>;
 };
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -39,9 +40,9 @@ export const DashboardProvider = memo(
     const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
     const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
 
-    const parseFile = useCallback(async (filePath: string) => {
+    const parseFile = useCallback(async () => {
       setIsLoading(true);
-      const result = await window.electronAPI.validateYaml(filePath);
+      const result = await window.electronAPI.validateYaml(selectedFile!);
 
       if (result.isValid && result.config) {
         setYamlConfig(result.config);
@@ -52,20 +53,23 @@ export const DashboardProvider = memo(
       }
 
       setIsLoading(false);
-    }, []);
+    }, [selectedFile]);
 
     useEffect(() => {
       if (selectedFile) {
-        parseFile(selectedFile);
+        parseFile();
       }
     }, [selectedFile, parseFile]);
 
-    const value: DashboardContextType = {
-      isLoading,
-      yamlConfig,
-      errors,
-      parseFile,
-    };
+    const value: DashboardContextType = useMemo(
+      () => ({
+        isLoading,
+        yamlConfig,
+        errors,
+        parseFile,
+      }),
+      [isLoading, yamlConfig, parseFile, errors],
+    );
 
     return (
       <DashboardContext.Provider value={value}>

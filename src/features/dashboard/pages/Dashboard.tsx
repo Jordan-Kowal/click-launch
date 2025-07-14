@@ -2,6 +2,7 @@ import { memo } from "react";
 import { BaseLayout, HeroLayout } from "@/components/layout";
 import { ScreenTitle } from "@/components/ui";
 import { LoadingRing } from "@/components/ui/LoadingRing";
+import { ErrorList } from "../components";
 import { useDashboardContext } from "../contexts/";
 
 const Dashboard: React.FC = memo(() => {
@@ -19,6 +20,7 @@ const Dashboard: React.FC = memo(() => {
     return (
       <BaseLayout>
         <ScreenTitle title="Dashboard" />
+        <ErrorList />
       </BaseLayout>
     );
   }
