@@ -1,10 +1,5 @@
 # TODO
 
-## Feature: Find a .yml file in a folder to load project
-
-- On start, remove invalid previous projects/paths
-  - Show toaster
-
 ## Feature: SHow available processes
 
 - Handle row to display process
@@ -31,6 +26,7 @@
 - Handle logs:
   - Show logs
   - Search logs
+  - Clear logs
 - Ensure process is stopped when closing app
   - Also when going back to project selection
 
@@ -61,6 +57,9 @@
 
 - For mac only
 - Build icons
+- Check if:
+  - Toasts are triggered twice?
+  - Recent projects stay after restarting app?
 
 ## Later
 

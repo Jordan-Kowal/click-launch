@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
-import { extractYamlConfig } from "./yamlValidation";
+import { extractYamlConfig } from "./extractYamlConfig";
 
 type TestCase = {
   name: string;

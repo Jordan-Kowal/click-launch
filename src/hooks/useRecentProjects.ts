@@ -7,6 +7,7 @@ const MAX = 10;
 export type UseRecentProjects = {
   registerProject: (filepath: string) => void;
   removeProject: (filepath: string) => void;
+  removeProjects: (filepaths: string[]) => void;
   projects: string[];
 };
 
@@ -43,9 +44,25 @@ export const useRecentProjects = () => {
     [projects, setStorageValue],
   );
 
+  const removeProjects = useCallback(
+    (filepaths: string[]) => {
+      if (!Array.isArray(filepaths) || filepaths.length === 0) return;
+      const validFilepaths = filepaths.filter(
+        (fp) => fp && typeof fp === "string",
+      );
+      if (validFilepaths.length === 0) return;
+      const updatedProjects = projects.filter(
+        (p) => !validFilepaths.includes(p),
+      );
+      setStorageValue(JSON.stringify(updatedProjects));
+    },
+    [projects, setStorageValue],
+  );
+
   return {
     projects,
     registerProject,
     removeProject,
+    removeProjects,
   };
 };

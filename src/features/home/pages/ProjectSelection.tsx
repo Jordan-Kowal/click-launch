@@ -1,5 +1,6 @@
 import { FolderOpen, History } from "lucide-react";
-import { memo, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
+import { toast } from "react-toastify";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
 import { useRecentProjects, useSelectFile } from "@/hooks";
@@ -9,12 +10,29 @@ const SHOWN_PROJECTS_MAX = 5;
 
 const ProjectSelection: React.FC = memo(() => {
   const handleOpenProject = useSelectFile();
-  const { projects } = useRecentProjects();
+  const { projects, removeProjects } = useRecentProjects();
 
   const shownProjects = useMemo(
     () => projects.slice(0, SHOWN_PROJECTS_MAX),
     [projects],
   );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Triggered on mount only
+  const cleanInvalidPaths = useCallback(async () => {
+    if (projects.length === 0) return;
+    try {
+      const [, invalidPaths] = await window.electronAPI.validatePaths(projects);
+      if (invalidPaths.length === 0) return;
+      removeProjects(invalidPaths);
+      toast.error(
+        `Removed ${invalidPaths.length} invalid project(s) from recent list`,
+      );
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    cleanInvalidPaths();
+  }, [cleanInvalidPaths]);
 
   return (
     <HeroLayout dataTestId="project-selection">

@@ -6,11 +6,13 @@ export const useSearchMock = vi.fn(() => "");
 
 export const openFileDialogMock = vi.fn();
 export const validateYamlMock = vi.fn();
+export const validatePathsMock = vi.fn();
 export const electronAPIMock = {
   platform: "darwin",
   version: "1.0.0",
   openFileDialog: openFileDialogMock,
   validateYaml: validateYamlMock,
+  validatePaths: validatePathsMock,
 };
 
 export const toastErrorMock = vi.fn();

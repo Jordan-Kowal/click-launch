@@ -2,7 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import { isDev } from "./utils/constants";
-import { extractYamlConfig } from "./utils/yamlValidation";
+import {
+  extractYamlConfig,
+  type ValidationResult,
+} from "./utils/extractYamlConfig";
+import { validatePaths } from "./utils/validatedPaths";
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -37,7 +41,7 @@ app.whenReady().then(() => {
   createWindow();
 
   // IPC handler for file dialog
-  ipcMain.handle("dialog:openFile", async () => {
+  ipcMain.handle("dialog:openFile", async (): Promise<string | undefined> => {
     const result = await dialog.showOpenDialog({
       properties: ["openFile"],
       filters: [
@@ -49,22 +53,33 @@ app.whenReady().then(() => {
   });
 
   // IPC handler for YAML validation
-  ipcMain.handle("yaml:validate", async (_, filePath: string) => {
-    try {
-      const fileContent = readFileSync(filePath, "utf-8");
-      return extractYamlConfig(fileContent);
-    } catch (error) {
-      return {
-        isValid: false,
-        config: null,
-        errors: [
-          {
-            message: `Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`,
-          },
-        ],
-      };
-    }
-  });
+  ipcMain.handle(
+    "yaml:validate",
+    async (_, filePath: string): Promise<ValidationResult> => {
+      try {
+        const fileContent = readFileSync(filePath, "utf-8");
+        return extractYamlConfig(fileContent);
+      } catch (error) {
+        return {
+          isValid: false,
+          config: null,
+          errors: [
+            {
+              message: `Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`,
+            },
+          ],
+        };
+      }
+    },
+  );
+
+  // IPC handler for path validation
+  ipcMain.handle(
+    "paths:validate",
+    async (_, filePaths: string[]): Promise<[string[], string[]]> => {
+      return validatePaths(filePaths);
+    },
+  );
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

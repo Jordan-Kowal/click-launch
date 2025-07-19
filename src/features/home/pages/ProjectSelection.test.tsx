@@ -1,7 +1,12 @@
-import { getByTestId } from "@testing-library/react";
+import { getByTestId, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, test } from "vitest";
-import { navigateMock, openFileDialogMock } from "@/tests/mocks/globals";
+import {
+  navigateMock,
+  openFileDialogMock,
+  toastErrorMock,
+  validatePathsMock,
+} from "@/tests/mocks/globals";
 import { render } from "@/tests/utils";
 import ProjectSelection from "./ProjectSelection";
 
@@ -9,6 +14,9 @@ describe.sequential("ProjectSelection", () => {
   beforeEach(() => {
     navigateMock.mockClear();
     openFileDialogMock.mockClear();
+    validatePathsMock.mockClear();
+    toastErrorMock.mockClear();
+    localStorage.clear();
   });
 
   test("should render the page", ({ expect }) => {
@@ -59,6 +67,7 @@ describe.sequential("ProjectSelection", () => {
 
   test("should display recent projects", async ({ expect }) => {
     const testProjects = ["/path/to/project1.yaml", "/path/to/project2.yaml"];
+    validatePathsMock.mockResolvedValue([]);
 
     localStorage.setItem("recent-projects", JSON.stringify(testProjects));
 
@@ -68,5 +77,36 @@ describe.sequential("ProjectSelection", () => {
 
     expect(projectLink1).toHaveTextContent(testProjects[0]);
     expect(projectLink2).toHaveTextContent(testProjects[1]);
+  });
+
+  test("should clean invalid paths on mount", async ({ expect }) => {
+    const testProjects = [
+      "/valid/path.yaml",
+      "/invalid/path1.yaml",
+      "/invalid/path2.yaml",
+    ];
+
+    validatePathsMock.mockResolvedValue([
+      ["/valid/path.yaml"],
+      ["/invalid/path1.yaml", "/invalid/path2.yaml"],
+    ]);
+    localStorage.setItem("recent-projects", JSON.stringify(testProjects));
+
+    render(<ProjectSelection />);
+
+    await waitFor(() => {
+      expect(validatePathsMock).toHaveBeenCalledWith(testProjects);
+    });
+
+    await waitFor(() => {
+      expect(toastErrorMock).toHaveBeenCalledWith(
+        "Removed 2 invalid project(s) from recent list",
+      );
+    });
+
+    const updatedProjects = JSON.parse(
+      localStorage.getItem("recent-projects") || "[]",
+    );
+    expect(updatedProjects).toEqual(["/valid/path.yaml"]);
   });
 });

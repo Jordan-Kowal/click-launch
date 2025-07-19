@@ -36,6 +36,7 @@ export interface ElectronAPI {
   version: string;
   openFileDialog: () => Promise<string | undefined>;
   validateYaml: (filePath: string) => Promise<ValidationResult>;
+  validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;
 }
 
 declare global {

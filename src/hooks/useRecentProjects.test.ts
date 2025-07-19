@@ -124,4 +124,31 @@ describe.concurrent("useRecentProjects", () => {
     const { projects } = updatedResult.current;
     expect(projects).toEqual(["/path/to/project1.yaml"]);
   });
+
+  test("should remove multiple projects", ({ expect }) => {
+    const existingProjects = [
+      "/path/to/project1.yaml",
+      "/path/to/project2.yaml",
+      "/path/to/project3.yaml",
+    ];
+    localStorage.setItem(TEMPORARY_KEY, JSON.stringify(existingProjects));
+
+    const { result } = renderHook(() => useRecentProjects());
+    const { removeProjects } = result.current;
+
+    // Mix of valid paths (existing), invalid paths (non-existent), and unsupported types
+    removeProjects([
+      "/path/to/project1.yaml", // valid - should be removed
+      "/path/to/non-existent.yaml", // invalid - doesn't exist, should be ignored
+      "", // unsupported - empty string
+      null, // unsupported - null
+      undefined, // unsupported - undefined
+      42, // unsupported - number
+      "/path/to/project3.yaml", // valid - should be removed
+    ] as any);
+
+    const { result: updatedResult } = renderHook(() => useRecentProjects());
+    const { projects } = updatedResult.current;
+    expect(projects).toEqual(["/path/to/project2.yaml"]);
+  });
 });
