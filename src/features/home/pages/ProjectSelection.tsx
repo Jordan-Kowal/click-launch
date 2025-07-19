@@ -1,31 +1,19 @@
-import { FolderOpen, History, X } from "lucide-react";
-import { memo, useCallback, useMemo } from "react";
-import { useLocation } from "wouter";
+import { FolderOpen, History } from "lucide-react";
+import { memo, useMemo } from "react";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
 import { useRecentProjects, useSelectFile } from "@/hooks";
-import { navigationPaths } from "@/router";
+import { ProjectItem } from "../components";
 
 const SHOWN_PROJECTS_MAX = 5;
 
 const ProjectSelection: React.FC = memo(() => {
   const handleOpenProject = useSelectFile();
-  const { projects, removeProject } = useRecentProjects();
+  const { projects } = useRecentProjects();
 
   const shownProjects = useMemo(
     () => projects.slice(0, SHOWN_PROJECTS_MAX),
     [projects],
-  );
-
-  const [, navigate] = useLocation();
-
-  const handleRecentProject = useCallback(
-    (filePath: string) => {
-      navigate(
-        `${navigationPaths.dashboard}?file=${encodeURIComponent(filePath)}`,
-      );
-    },
-    [navigate],
   );
 
   return (
@@ -59,25 +47,11 @@ const ProjectSelection: React.FC = memo(() => {
               ) : (
                 <div className="space-y-0 w-full flex flex-col gap-4">
                   {shownProjects.map((project, index) => (
-                    <div key={project} className="flex items-center w-full">
-                      <button
-                        type="button"
-                        className="btn btn-link flex-1 justify-start text-sm "
-                        onClick={() => handleRecentProject(project)}
-                        data-testid={`project-link-${index}`}
-                      >
-                        {project}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-ghost btn-sm ml-2"
-                        onClick={() => removeProject(project)}
-                        title="Remove from recent projects"
-                        data-testid={`remove-project-${index}`}
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <ProjectItem
+                      key={project}
+                      project={project}
+                      index={index}
+                    />
                   ))}
                 </div>
               )}
