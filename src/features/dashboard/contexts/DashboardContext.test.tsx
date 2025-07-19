@@ -35,7 +35,7 @@ const TestComponent: React.FC = () => {
   );
 };
 
-describe.concurrent("DashboardContext", () => {
+describe.sequential("DashboardContext", () => {
   beforeEach(() => {
     validateYamlMock.mockClear();
   });
@@ -149,7 +149,7 @@ describe.concurrent("DashboardContext", () => {
   });
 });
 
-describe.concurrent("useDashboardContext", () => {
+describe.sequential("useDashboardContext", () => {
   beforeEach(() => {
     validateYamlMock.mockClear();
     validateYamlMock.mockResolvedValue({

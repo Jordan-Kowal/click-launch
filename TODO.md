@@ -4,12 +4,6 @@
 
 - On start, remove invalid previous projects/paths
   - Show toaster
-- Allow removing recent projects
-- On new:
-  - Add to recent
-- Open:
-  - On select, redirect to homepage
-  - Move to first position of recent
 
 ## Feature: SHow available processes
 

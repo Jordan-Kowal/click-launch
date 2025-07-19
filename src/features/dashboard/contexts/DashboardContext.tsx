@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useRecentProjects } from "@/hooks";
 import type { ValidationResult, YamlConfig } from "@/types/electron";
 
 type DashboardContextType = {
@@ -39,21 +40,23 @@ export const DashboardProvider = memo(
     const [isLoading, setIsLoading] = useState(false);
     const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
     const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
+    const { registerProject } = useRecentProjects();
 
     const parseFile = useCallback(async () => {
       setIsLoading(true);
       const result = await window.electronAPI.validateYaml(selectedFile!);
 
-      if (result.isValid && result.config) {
+      if (result?.isValid && result?.config) {
         setYamlConfig(result.config);
         setErrors([]);
+        registerProject(selectedFile!);
       } else {
         setYamlConfig(null);
-        setErrors(result.errors);
+        setErrors(result?.errors || []);
       }
 
       setIsLoading(false);
-    }, [selectedFile]);
+    }, [selectedFile, registerProject]);
 
     useEffect(() => {
       if (selectedFile) {
