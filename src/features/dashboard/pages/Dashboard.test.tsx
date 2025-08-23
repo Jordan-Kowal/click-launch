@@ -45,7 +45,7 @@ describe.sequential("Dashboard", () => {
   }) => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
-      yamlConfig: { project_name: "test", processes: [] },
+      yamlConfig: { project_name: "MyProject", processes: [] },
       errors: [],
       parseFile: mockParseFile,
     });
@@ -54,5 +54,7 @@ describe.sequential("Dashboard", () => {
     const dashboard = getByTestId(container, "dashboard");
 
     expect(dashboard).toBeInTheDocument();
+    expect(dashboard).toHaveTextContent("MyProject");
+    expect(dashboard).toHaveTextContent("Processes");
   });
 });
