@@ -37,7 +37,7 @@ type DashboardProviderProps = {
 
 export const DashboardProvider = memo(
   ({ children, selectedFile }: DashboardProviderProps) => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
     const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
     const { registerProject } = useRecentProjects();

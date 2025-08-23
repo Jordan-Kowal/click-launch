@@ -2,7 +2,6 @@
 
 ## Feature: SHow available processes
 
-- Handle row to display process
 - Handle options:
   - Boolean
   - Text

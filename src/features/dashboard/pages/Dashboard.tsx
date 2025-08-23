@@ -2,11 +2,11 @@ import { memo } from "react";
 import { BaseLayout, HeroLayout } from "@/components/layout";
 import { ScreenTitle } from "@/components/ui";
 import { LoadingRing } from "@/components/ui/LoadingRing";
-import { ErrorList } from "../components";
+import { ErrorList, ProcessTable } from "../components";
 import { useDashboardContext } from "../contexts/";
 
 const Dashboard: React.FC = memo(() => {
-  const { isLoading, errors } = useDashboardContext();
+  const { isLoading, errors, yamlConfig } = useDashboardContext();
 
   if (isLoading) {
     return (
@@ -27,7 +27,8 @@ const Dashboard: React.FC = memo(() => {
 
   return (
     <BaseLayout dataTestId="dashboard">
-      <ScreenTitle title="Dashboard" />
+      <ScreenTitle title={`Dashboard for ${yamlConfig!.project_name}`} />
+      <ProcessTable />
     </BaseLayout>
   );
 });

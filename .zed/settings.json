@@ -1,0 +1,91 @@
+{
+  "auto_install_extensions": {
+    "biome": true,
+    "codebook": true,
+    "git-firefly": true,
+    "html": true
+  },
+
+  // LSP active on all files
+  "language_servers": ["codebook"],
+
+  // LSP configurations
+  "lsp": {
+    "biome": {
+      "settings": {
+        "require_config_file": true
+      }
+    },
+
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "suggest": {
+            "autoImports": true,
+            "paths": true
+          },
+          "tsserver": {
+            "maxTsServerMemory": 8192
+          },
+          "updateImportsOnFileMove": {
+            "enabled": "always"
+          }
+        }
+      }
+    }
+  },
+
+  // Language configurations
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["vtsls", "!typescript-language-server", "biome"],
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true
+      }
+    },
+
+    "TSX": {
+      "language_servers": ["vtsls", "!typescript-language-server", "biome"],
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true
+      }
+    },
+
+    "JavaScript": {
+      "language_servers": ["vtsls", "!typescript-language-server", "biome"],
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true
+      }
+    },
+
+    "JSON": {
+      "language_servers": ["json-language-server", "biome"],
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      }
+    }
+  }
+}
