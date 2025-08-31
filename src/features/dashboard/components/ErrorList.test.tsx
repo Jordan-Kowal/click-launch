@@ -18,6 +18,7 @@ describe.concurrent("ErrorList", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: [],
       parseFile: mockParseFile,
     });
@@ -36,6 +37,7 @@ describe.concurrent("ErrorList", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: mockErrors,
       parseFile: mockParseFile,
     });
@@ -57,6 +59,7 @@ describe.concurrent("ErrorList", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: [{ message: "Test error" }],
       parseFile: mockParseFile,
     });
@@ -73,6 +76,7 @@ describe.concurrent("ErrorList", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: [{ message: "Test error" }],
       parseFile: mockParseFile,
     });
@@ -93,6 +97,7 @@ describe.concurrent("ErrorList", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: mockErrors,
       parseFile: mockParseFile,
     });

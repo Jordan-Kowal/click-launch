@@ -6,6 +6,7 @@
   - Start (ensure double click doesnt break it)
   - Stop
   - View logs
+- Send message on crash?
 - Handle logs:
   - Show logs
   - Search logs

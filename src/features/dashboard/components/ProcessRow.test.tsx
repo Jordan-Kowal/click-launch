@@ -22,6 +22,7 @@ const TestWrapper = ({
           args,
         }}
         index={0}
+        rootDirectory="test-directory"
       />
     </tbody>
   </table>

@@ -9,12 +9,13 @@ import { ProcessArg } from "./ProcessArg";
 type ProcessRowWrapperProps = {
   process: ProcessConfig;
   index: number;
+  rootDirectory: string;
 };
 
 export const ProcessRowWrapper: React.FC<ProcessRowWrapperProps> = memo(
-  ({ process, index }) => {
+  ({ process, index, rootDirectory }) => {
     return (
-      <ProcessProvider process={process}>
+      <ProcessProvider process={process} rootDirectory={rootDirectory}>
         <ProcessRow index={index} />
       </ProcessProvider>
     );

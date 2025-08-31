@@ -3,7 +3,7 @@ import { useDashboardContext } from "../contexts";
 import { ProcessRowWrapper } from "./ProcessRow";
 
 export const ProcessTable: React.FC = memo(() => {
-  const { yamlConfig } = useDashboardContext();
+  const { yamlConfig, rootDirectory } = useDashboardContext();
 
   const processes = yamlConfig?.processes || [];
 
@@ -23,6 +23,7 @@ export const ProcessTable: React.FC = memo(() => {
               key={process.name}
               process={process}
               index={index}
+              rootDirectory={rootDirectory!}
             />
           ))}
         </tbody>

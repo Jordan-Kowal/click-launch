@@ -12,7 +12,7 @@ const mockProcess: ProcessConfig = {
 };
 
 const TestWrapper = ({ argConfig }: { argConfig: ArgConfig }) => (
-  <ProcessProvider process={mockProcess}>
+  <ProcessProvider process={mockProcess} rootDirectory="test-directory">
     <ProcessArg argConfig={argConfig} />
   </ProcessProvider>
 );

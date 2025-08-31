@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { describe, expect, test, vi } from "vitest";
-import { validatePaths } from "./validatedPaths";
+import { validatePaths } from "./validatePaths";
 
 // Mock fs module
 vi.mock("node:fs", () => ({

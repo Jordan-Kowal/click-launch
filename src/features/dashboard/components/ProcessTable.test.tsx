@@ -32,6 +32,7 @@ describe.concurrent("ProcessTable", () => {
       },
       errors: [],
       parseFile: vi.fn(),
+      rootDirectory: "test-directory",
     });
 
     const { container } = render(<ProcessTable />);

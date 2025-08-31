@@ -14,6 +14,7 @@ describe("Dashboard", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: true,
       yamlConfig: null,
+      rootDirectory: null,
       errors: [{ message: "Test error" }],
       parseFile: mockParseFile,
     });
@@ -28,6 +29,7 @@ describe("Dashboard", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: null,
+      rootDirectory: null,
       errors: [{ message: "Test error" }],
       parseFile: mockParseFile,
     });
@@ -46,6 +48,7 @@ describe("Dashboard", () => {
     vi.spyOn(dashboardContext, "useDashboardContext").mockReturnValue({
       isLoading: false,
       yamlConfig: { project_name: "MyProject", processes: [] },
+      rootDirectory: null,
       errors: [],
       parseFile: mockParseFile,
     });

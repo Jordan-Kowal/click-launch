@@ -31,7 +31,7 @@ describe("ProcessContext", () => {
 
   test("Provider renders children correctly", ({ expect }) => {
     const { container } = render(
-      <ProcessProvider process={mockProcess}>
+      <ProcessProvider process={mockProcess} rootDirectory="test-directory">
         <div data-testid="child">Test Child</div>
       </ProcessProvider>,
     );
@@ -43,7 +43,9 @@ describe("ProcessContext", () => {
   test("Hook returns correct values", ({ expect }) => {
     const { result } = renderHook(() => useProcessContext(), {
       wrapper: ({ children }) => (
-        <ProcessProvider process={mockProcess}>{children}</ProcessProvider>
+        <ProcessProvider process={mockProcess} rootDirectory="test-directory">
+          {children}
+        </ProcessProvider>
       ),
     });
 
@@ -56,7 +58,9 @@ describe("ProcessContext", () => {
   test("Hook updates command correctly", ({ expect }) => {
     const { result, rerender } = renderHook(() => useProcessContext(), {
       wrapper: ({ children }) => (
-        <ProcessProvider process={mockProcess}>{children}</ProcessProvider>
+        <ProcessProvider process={mockProcess} rootDirectory="test-directory">
+          {children}
+        </ProcessProvider>
       ),
     });
 

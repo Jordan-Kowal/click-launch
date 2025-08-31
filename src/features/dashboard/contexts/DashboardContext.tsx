@@ -14,6 +14,7 @@ import { useRecentProjects } from "@/hooks";
 type DashboardContextType = {
   isLoading: boolean;
   yamlConfig: YamlConfig | null;
+  rootDirectory: string | null;
   errors: ValidationResult["errors"];
   parseFile: () => Promise<void>;
 };
@@ -39,6 +40,7 @@ export const DashboardProvider = memo(
   ({ children, selectedFile }: DashboardProviderProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
+    const [rootDirectory, setRootDirectory] = useState<string | null>(null);
     const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
     const { registerProject } = useRecentProjects();
 
@@ -48,10 +50,12 @@ export const DashboardProvider = memo(
 
       if (result?.isValid && result?.config) {
         setYamlConfig(result.config);
+        setRootDirectory(result.rootDirectory || null);
         setErrors([]);
         registerProject(selectedFile!);
       } else {
         setYamlConfig(null);
+        setRootDirectory(null);
         setErrors(result?.errors || []);
       }
 
@@ -68,10 +72,11 @@ export const DashboardProvider = memo(
       () => ({
         isLoading,
         yamlConfig,
+        rootDirectory,
         errors,
         parseFile,
       }),
-      [isLoading, yamlConfig, parseFile, errors],
+      [isLoading, yamlConfig, rootDirectory, parseFile, errors],
     );
 
     return (

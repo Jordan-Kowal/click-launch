@@ -4,11 +4,16 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
-import type { ArgConfig, ProcessConfig } from "@/electron/types";
+import { toast } from "react-toastify";
+import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
+
+const POLL_STATUS_INTERVAL_MS = 1_000;
 
 type ProcessContextType = {
   // Raw
@@ -36,12 +41,16 @@ export const useProcessContext = () => {
 type ProcessProviderProps = {
   children: ReactNode;
   process: ProcessConfig;
+  rootDirectory: string;
 };
 
 export const ProcessProvider = memo(
-  ({ children, process }: ProcessProviderProps) => {
+  ({ children, process, rootDirectory }: ProcessProviderProps) => {
     const [argValues, setArgValues] = useState<Record<string, string>>({});
     const [status, setStatus] = useState(ProcessStatus.STOPPED);
+    const [processId, setProcessId] = useState<ProcessId | null>(null);
+
+    const pollStatusIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const command = useMemo(() => {
       const outputArgs = Object.values(argValues);
@@ -56,19 +65,51 @@ export const ProcessProvider = memo(
       setArgValues((prev) => ({ ...prev, [argName]: value }));
     }, []);
 
-    const startProcess = useCallback(() => {
+    const startProcess = useCallback(async () => {
       setStatus(ProcessStatus.STARTING);
-      setTimeout(() => {
+      const result = await window.electronAPI.startProcess(
+        rootDirectory,
+        command,
+      );
+      if (result.success && result.processId) {
+        setProcessId(result.processId);
         setStatus(ProcessStatus.RUNNING);
-      }, 1000);
-    }, []);
+      } else {
+        setStatus(ProcessStatus.CRASHED);
+        toast.error(result.error || "Failed to start process");
+      }
+    }, [command, rootDirectory]);
 
-    const stopProcess = useCallback(() => {
+    const stopProcess = useCallback(async () => {
+      if (!processId) return;
       setStatus(ProcessStatus.STOPPING);
-      setTimeout(() => {
+      const result = await window.electronAPI.stopProcess(processId);
+      if (result.success) {
         setStatus(ProcessStatus.STOPPED);
-      }, 1000);
-    }, []);
+      } else {
+        setStatus(ProcessStatus.RUNNING);
+        toast.error(result.error || "Failed to stop process");
+      }
+    }, [processId]);
+
+    /** Fetch status every 1000ms */
+    useEffect(() => {
+      if (processId) {
+        pollStatusIntervalRef.current = setInterval(() => {
+          window.electronAPI.getProcessStatus(processId).then((result) => {
+            const status = result.isRunning
+              ? ProcessStatus.RUNNING
+              : ProcessStatus.STOPPED;
+            setStatus(status);
+          });
+        }, POLL_STATUS_INTERVAL_MS);
+      }
+      return () => {
+        if (pollStatusIntervalRef.current) {
+          clearInterval(pollStatusIntervalRef.current);
+        }
+      };
+    }, [processId]);
 
     const context: ProcessContextType = useMemo(
       () => ({

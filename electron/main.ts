@@ -1,12 +1,18 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import { isDev } from "./utils/constants";
 import {
   extractYamlConfig,
   type ValidationResult,
 } from "./utils/extractYamlConfig";
-import { validatePaths } from "./utils/validatedPaths";
+import {
+  isProcessRunning,
+  startProcess,
+  stopAllProcesses,
+  stopProcess,
+} from "./utils/processManager";
+import { validatePaths } from "./utils/validatePaths";
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -55,14 +61,23 @@ app.whenReady().then(() => {
   // IPC handler for YAML validation
   ipcMain.handle(
     "yaml:validate",
-    async (_, filePath: string): Promise<ValidationResult> => {
+    async (
+      _,
+      filePath: string,
+    ): Promise<ValidationResult & { rootDirectory: string }> => {
+      const rootDirectory = dirname(filePath);
       try {
         const fileContent = readFileSync(filePath, "utf-8");
-        return extractYamlConfig(fileContent);
+        const result = extractYamlConfig(fileContent);
+        return {
+          ...result,
+          rootDirectory,
+        };
       } catch (error) {
         return {
           isValid: false,
           config: null,
+          rootDirectory,
           errors: [
             {
               message: `Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -81,6 +96,22 @@ app.whenReady().then(() => {
     },
   );
 
+  // IPC handler for starting a process
+  ipcMain.handle("process:start", async (_, cwd: string, command: string) => {
+    console.log("Starting process:", cwd, command);
+    return startProcess(cwd, command);
+  });
+
+  // IPC handler for stopping a process
+  ipcMain.handle("process:stop", async (_, processId: string) => {
+    return stopProcess(processId);
+  });
+
+  // IPC handler for getting process status
+  ipcMain.handle("process:status", async (_, processId: string) => {
+    return isProcessRunning(processId);
+  });
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -89,6 +120,9 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  // Clean up all running processes before quitting
+  stopAllProcesses();
+
   if (process.platform !== "darwin") {
     app.quit();
   }

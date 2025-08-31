@@ -10,4 +10,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("yaml:validate", filePath),
   validatePaths: (filePaths: string[]): Promise<[string[], string[]]> =>
     ipcRenderer.invoke("paths:validate", filePaths),
+  // Process management
+  startProcess: (command: string, cwd?: string) =>
+    ipcRenderer.invoke("process:start", command, cwd),
+  stopProcess: (processId: string) =>
+    ipcRenderer.invoke("process:stop", processId),
+  getProcessStatus: (processId: string) =>
+    ipcRenderer.invoke("process:status", processId),
 });
