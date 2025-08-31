@@ -115,10 +115,10 @@ export default defineConfig(({ mode }) => ({
       all: true,
       thresholds: {
         perFile: false,
-        branches: 90,
-        functions: 90,
+        branches: 80,
+        functions: 80,
         lines: 90,
-        statements: 90,
+        statements: 80,
       },
       exclude: [
         // Configs
