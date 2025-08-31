@@ -1,20 +1,11 @@
 # TODO
 
-## Feature: SHow available processes
-
-- Make them readonly when running
-
 ## Feature: Handle actions
 
 - Handle actions:
-  - Start
+  - Start (ensure double click doesnt break it)
   - Stop
-  - Restart
   - View logs
-- Handle status:
-  - Running
-  - Stopped
-  - Crashed
 - Handle logs:
   - Show logs
   - Search logs
@@ -22,14 +13,9 @@
 - Ensure process is stopped when closing app
   - Also when going back to project selection
 
-## Feature: Settings
-
-- Settings (theme)
-
 ## Improvements
 
 - Rename homepage to project selection
-- Test electron?
 - Better split electron code
 
 ## Doc

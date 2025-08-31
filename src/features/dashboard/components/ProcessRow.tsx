@@ -1,7 +1,9 @@
-import { ChevronDown, ChevronUp, Play, ScrollText } from "lucide-react";
+import { ChevronDown, ChevronUp, ScrollText } from "lucide-react";
 import { memo, useCallback, useMemo, useState } from "react";
 import type { ProcessConfig } from "@/electron/types";
 import { ProcessProvider, useProcessContext } from "../contexts/";
+import { ProcessStatus } from "../enums";
+import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 
 type ProcessRowWrapperProps = {
@@ -24,13 +26,28 @@ type ProcessRowProps = {
 };
 
 const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
-  const { name, command, args } = useProcessContext();
+  const { name, command, args, status } = useProcessContext();
   const [showOptions, setShowOptions] = useState(false);
 
   const toggleOptions = useCallback(
     () => setShowOptions(!showOptions),
     [showOptions],
   );
+
+  const statusVariant = useMemo(() => {
+    switch (status) {
+      case ProcessStatus.STARTING:
+      case ProcessStatus.RUNNING:
+      case ProcessStatus.STOPPING:
+        return "badge-primary";
+      case ProcessStatus.STOPPED:
+        return "badge-ghost";
+      case ProcessStatus.CRASHED:
+        return "badge-error";
+      default:
+        return "badge-neutral";
+    }
+  }, [status]);
 
   const button = useMemo(
     () => (
@@ -49,7 +66,7 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
   const hasOptions = args && args.length > 0;
 
   return (
-    <tr className="hover:bg-gray-100" data-testid={`process-row-${index}`}>
+    <tr data-testid={`process-row-${index}`}>
       <td className="align-top w-auto min-w-0">
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex flex-col gap-0 min-w-0">
@@ -78,18 +95,12 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
       </td>
       <td className="align-top w-32 flex-shrink-0">
         <div className="flex align-start">
-          <div className="badge badge-primary">Running</div>
+          <div className={`badge ${statusVariant}`}>{status}</div>
         </div>
       </td>
       <td className="align-top w-32 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="btn btn-primary btn-circle btn-sm"
-            data-testid="play-button"
-          >
-            <Play size={16} />
-          </button>
+          <PlayStopButton />
           <button
             type="button"
             className="btn btn-neutral btn-circle btn-outline btn-sm"

@@ -8,6 +8,7 @@ import {
 import { ArgType } from "@/electron/enums";
 import type { ArgConfig } from "@/electron/types";
 import { useProcessContext } from "../contexts/ProcessContext";
+import { ProcessStatus } from "../enums";
 
 type ProcessArgProps = {
   argConfig: ArgConfig;
@@ -21,9 +22,12 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
     values,
     output_prefix,
   } = argConfig;
-  const { updateCommand } = useProcessContext();
 
   const [value, setValue] = useState(defaultValue);
+  const { updateCommand, status } = useProcessContext();
+
+  const canEdit =
+    status === ProcessStatus.STOPPED || status === ProcessStatus.CRASHED;
 
   const onSelectChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setValue(e.target.value);
@@ -67,6 +71,7 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
           className="toggle toggle-primary toggle-xs justify-self-start"
           onChange={onToggleChange}
           data-testid={`${name}-toggle`}
+          disabled={!canEdit}
         />
       </div>
     );
@@ -80,6 +85,7 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
           className="select select-sm select-primary w-full"
           data-testid={`${name}-select`}
           onChange={onSelectChange}
+          disabled={!canEdit}
         >
           {values?.map((value) => (
             <option key={value.value} value={value.value}>
@@ -101,6 +107,7 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
           data-testid={`${name}-input`}
           value={value}
           onInput={onInputChange}
+          disabled={!canEdit}
         />
       </div>
     );

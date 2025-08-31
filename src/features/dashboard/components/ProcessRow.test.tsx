@@ -37,7 +37,7 @@ describe("ProcessRow", () => {
     expect(screen.getByTestId("process-command")).toHaveTextContent(
       "npm start",
     );
-    expect(screen.getByText("Running")).toBeInTheDocument();
+    expect(screen.getByText("Stopped")).toBeInTheDocument();
     expect(screen.getByTestId("play-button")).toBeInTheDocument();
     expect(screen.getByTestId("logs-button")).toBeInTheDocument();
   });

@@ -25,14 +25,9 @@ describe.concurrent("NavBar", () => {
       container,
       "navbar-home-link",
     );
-    const settingsLink = getByTestId<HTMLLinkElement>(
-      container,
-      "navbar-settings-link",
-    );
 
     expect(navbar).toBeVisible();
     expect(homeLink.href).toMatch(/\/$/);
-    expect(settingsLink.href).toMatch(/\/$/);
   });
 
   test("home button does nothing when on homepage", ({ expect }) => {

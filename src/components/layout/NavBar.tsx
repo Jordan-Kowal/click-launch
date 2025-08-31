@@ -1,4 +1,4 @@
-import { House, Settings } from "lucide-react";
+import { House } from "lucide-react";
 import type React from "react";
 import { memo, useCallback, useRef } from "react";
 import { Link, useLocation } from "wouter";
@@ -34,16 +34,6 @@ export const NavBar: React.FC = memo(() => {
         </Link>
       </div>
       <div className="navbar-end">
-        <div className="tooltip tooltip-bottom" data-tip="Settings">
-          <Link
-            type="button"
-            className="btn btn-ghost btn-circle no-drag"
-            href={navigationPaths.homepage}
-            data-testid={"navbar-settings-link"}
-          >
-            <Settings />
-          </Link>
-        </div>
         <div className="tooltip tooltip-bottom" data-tip="Homepage">
           <button
             type="button"

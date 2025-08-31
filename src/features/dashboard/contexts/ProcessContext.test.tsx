@@ -2,6 +2,7 @@ import { getByTestId, render, renderHook } from "@testing-library/react";
 import { describe, test } from "vitest";
 import { ArgType } from "@/electron/enums";
 import type { ProcessConfig } from "@/electron/types";
+import { ProcessStatus } from "../enums";
 import { ProcessProvider, useProcessContext } from "./ProcessContext";
 
 const mockProcess: ProcessConfig = {
@@ -49,6 +50,7 @@ describe("ProcessContext", () => {
     expect(result.current.name).toBe("test-process");
     expect(result.current.command).toBe("echo hello");
     expect(result.current.args).toHaveLength(mockProcess.args!.length);
+    expect(result.current.status).toBe(ProcessStatus.STOPPED);
   });
 
   test("Hook updates command correctly", ({ expect }) => {
