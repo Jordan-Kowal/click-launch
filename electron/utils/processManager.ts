@@ -24,19 +24,24 @@ export const startProcess = async (
 ): Promise<ProcessStartResult> => {
   try {
     const processId = randomUUID();
-    const [cmd, ...args] = command.split(" ");
 
-    const childProcess = spawn(cmd, args, {
+    const childProcess = spawn(command, {
       cwd: cwd || process.cwd(),
-      stdio: "ignore", // We'll handle logging separately if needed
+      stdio: "ignore",
+      // stdio: ["ignore", "pipe", "pipe"],
       detached: false,
+      shell: true, // This allows the command to be executed as-is by the shell
     });
 
     runningProcesses.set(processId, childProcess);
 
     // Handle process exit
-    childProcess.on("exit", () => runningProcesses.delete(processId));
-    childProcess.on("error", () => runningProcesses.delete(processId));
+    childProcess.on("exit", (_code, _signal) => {
+      runningProcesses.delete(processId);
+    });
+    childProcess.on("error", (_error) => {
+      runningProcesses.delete(processId);
+    });
 
     return { success: true, processId };
   } catch (error) {
@@ -77,7 +82,9 @@ export const stopProcess = async (
 };
 
 export const stopAllProcesses = (): void => {
-  Object.keys(runningProcesses).forEach(stopProcess);
+  runningProcesses.forEach((_childProcess, processId) => {
+    stopProcess(processId);
+  });
 };
 
 export const isProcessRunning = async (processId: string): Promise<boolean> => {
@@ -86,6 +93,7 @@ export const isProcessRunning = async (processId: string): Promise<boolean> => {
     if (!childProcess) return false;
     return !childProcess.killed && childProcess.exitCode === null;
   } catch (_e) {
+    console.error("Error checking process status:", _e);
     return false;
   }
 };

@@ -59,9 +59,9 @@ export interface ElectronAPI {
   validateYaml: (filePath: string) => Promise<ValidationResult>;
   validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;
   // Process management
-  startProcess: (command: string, cwd?: string) => Promise<ProcessStartResult>;
+  startProcess: (cwd: string, command: string) => Promise<ProcessStartResult>;
   stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
-  getProcessStatus: (processId: ProcessId) => Promise<ProcessStatusResult>;
+  getProcessStatus: (processId: ProcessId) => Promise<boolean>;
 }
 
 declare global {

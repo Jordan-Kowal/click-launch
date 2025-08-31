@@ -98,7 +98,6 @@ app.whenReady().then(() => {
 
   // IPC handler for starting a process
   ipcMain.handle("process:start", async (_, cwd: string, command: string) => {
-    console.log("Starting process:", cwd, command);
     return startProcess(cwd, command);
   });
 

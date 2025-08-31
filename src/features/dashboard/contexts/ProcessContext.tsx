@@ -94,13 +94,16 @@ export const ProcessProvider = memo(
 
     /** Fetch status every 1000ms */
     useEffect(() => {
+      console.log("UseEffect status for processId:", processId);
       if (processId) {
         pollStatusIntervalRef.current = setInterval(() => {
-          window.electronAPI.getProcessStatus(processId).then((result) => {
-            const status = result.isRunning
-              ? ProcessStatus.RUNNING
-              : ProcessStatus.STOPPED;
-            setStatus(status);
+          window.electronAPI.getProcessStatus(processId).then((isRunning) => {
+            if (isRunning) {
+              setStatus(ProcessStatus.RUNNING);
+            } else {
+              setStatus(ProcessStatus.STOPPED);
+              setProcessId(null);
+            }
           });
         }, POLL_STATUS_INTERVAL_MS);
       }
