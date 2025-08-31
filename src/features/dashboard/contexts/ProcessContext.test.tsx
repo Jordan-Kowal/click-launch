@@ -39,7 +39,7 @@ describe("ProcessContext", () => {
     expect(child).toBeInTheDocument();
   });
 
-  test("Hook returns correct values with free text arg added", ({ expect }) => {
+  test("Hook returns correct values", ({ expect }) => {
     const { result } = renderHook(() => useProcessContext(), {
       wrapper: ({ children }) => (
         <ProcessProvider process={mockProcess}>{children}</ProcessProvider>
@@ -48,14 +48,19 @@ describe("ProcessContext", () => {
 
     expect(result.current.name).toBe("test-process");
     expect(result.current.command).toBe("echo hello");
-    expect(result.current.args).toHaveLength(mockProcess.args!.length + 1);
-    expect(result.current.args[0]).toEqual(mockProcess.args![0]);
-    expect(result.current.args[1]).toEqual({
-      type: ArgType.INPUT,
-      name: "Additional args",
-      default: "",
-      output_prefix: "",
-      values: [],
+    expect(result.current.args).toHaveLength(mockProcess.args!.length);
+  });
+
+  test("Hook updates command correctly", ({ expect }) => {
+    const { result, rerender } = renderHook(() => useProcessContext(), {
+      wrapper: ({ children }) => (
+        <ProcessProvider process={mockProcess}>{children}</ProcessProvider>
+      ),
     });
+
+    expect(result.current.command).toBe("echo hello");
+    result.current.updateCommand("Environment", "--env=prod");
+    rerender();
+    expect(result.current.command).toBe("echo hello --env=prod");
   });
 });

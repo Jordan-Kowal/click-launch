@@ -42,7 +42,7 @@ describe("ProcessRow", () => {
     expect(screen.getByTestId("logs-button")).toBeInTheDocument();
   });
 
-  test("Can toggle and show options", ({ expect }) => {
+  test("Can toggle and show options", async ({ expect }) => {
     const mockArgs: ArgConfig[] = [
       {
         type: ArgType.INPUT,
@@ -58,17 +58,27 @@ describe("ProcessRow", () => {
     );
 
     const toggleButton = screen.getByText("Show options");
+    const options = screen.getByTestId("process-options-0");
+
     expect(toggleButton).toBeInTheDocument();
+    expect(options).toHaveClass("hidden");
 
     fireEvent.click(toggleButton);
 
     expect(screen.getByText("Hide options")).toBeInTheDocument();
-    expect(screen.getByText("Port:")).toBeInTheDocument();
-    expect(screen.getByTestId("Port-input")).toBeInTheDocument();
+    expect(options).not.toHaveClass("hidden");
 
-    fireEvent.click(screen.getByText("Hide options"));
+    fireEvent.click(toggleButton);
 
     expect(screen.getByText("Show options")).toBeInTheDocument();
-    expect(screen.queryByText("Port:")).not.toBeInTheDocument();
+    expect(options).toHaveClass("hidden");
+  });
+
+  test("Does not render the Show Options button if there are no args", ({
+    expect,
+  }) => {
+    render(<TestWrapper name="test-service" command="npm start" args={[]} />);
+
+    expect(screen.queryByText("Show options")).not.toBeInTheDocument();
   });
 });

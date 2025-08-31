@@ -46,6 +46,8 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
     [toggleOptions, showOptions],
   );
 
+  const hasOptions = args && args.length > 0;
+
   return (
     <tr className="hover:bg-gray-100" data-testid={`process-row-${index}`}>
       <td className="align-top w-auto min-w-0">
@@ -60,11 +62,14 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
             >
               {command}
             </div>
-            {button}
+            {hasOptions && button}
           </div>
-          {showOptions && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8 mt-2">
-              {args.map((arg) => (
+          {hasOptions && (
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8 mt-2 ${!showOptions ? "hidden" : ""}`}
+              data-testid={`process-options-${index}`}
+            >
+              {args!.map((arg) => (
                 <ProcessArg key={arg.name} argConfig={arg} />
               ))}
             </div>

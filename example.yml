@@ -46,3 +46,8 @@ processes:
         name: "Port"
         default: "3000"
         output_prefix: "--port"
+
+      - type: "input"
+        name: "Additional args"
+        default: ""
+        output_prefix: ""

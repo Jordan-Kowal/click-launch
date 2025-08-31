@@ -2,7 +2,6 @@
 
 ## Feature: SHow available processes
 
-- Show final output based on selected options
 - Make them readonly when running
 
 ## Feature: Handle actions

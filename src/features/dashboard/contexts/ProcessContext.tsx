@@ -2,24 +2,18 @@ import {
   createContext,
   memo,
   type ReactNode,
+  useCallback,
   useContext,
   useMemo,
+  useState,
 } from "react";
-import { ArgType } from "@/electron/enums";
 import type { ArgConfig, ProcessConfig } from "@/electron/types";
-
-const FREE_TEXT_ARG: ArgConfig = {
-  type: ArgType.INPUT,
-  name: "Additional args",
-  default: "",
-  output_prefix: "",
-  values: [],
-};
 
 type ProcessContextType = {
   name: string;
   command: string;
-  args: ArgConfig[];
+  args: ArgConfig[] | undefined;
+  updateCommand: (argName: string, value: string) => void;
 };
 
 const ProcessContext = createContext<ProcessContextType | undefined>(undefined);
@@ -39,18 +33,29 @@ type ProcessProviderProps = {
 
 export const ProcessProvider = memo(
   ({ children, process }: ProcessProviderProps) => {
-    const command = useMemo(() => {
-      return process.base_command;
-    }, [process.base_command]);
+    const [argValues, setArgValues] = useState<Record<string, string>>({});
 
-    const args = useMemo(
-      () => [...(process.args ?? []), FREE_TEXT_ARG],
-      [process.args],
-    );
+    const command = useMemo(() => {
+      const outputArgs = Object.values(argValues);
+      let output = process.base_command;
+      if (outputArgs.length > 0) {
+        output = `${output} ${outputArgs.join(" ")}`;
+      }
+      return output;
+    }, [process.base_command, argValues]);
+
+    const updateCommand = useCallback((argName: string, value: string) => {
+      setArgValues((prev) => ({ ...prev, [argName]: value }));
+    }, []);
 
     const context: ProcessContextType = useMemo(
-      () => ({ name: process.name, command, args: args }),
-      [process.name, command, args],
+      () => ({
+        name: process.name,
+        command,
+        args: process.args,
+        updateCommand,
+      }),
+      [process.name, command, process.args, updateCommand],
     );
 
     return (

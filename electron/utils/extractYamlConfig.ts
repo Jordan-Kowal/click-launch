@@ -260,6 +260,7 @@ const validateInputArg = (
   // Ensures the output is a string
   validateString({
     fieldName: "output_prefix",
+    required: false,
     value: arg.output_prefix,
     path,
     errors,
