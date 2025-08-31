@@ -20,6 +20,7 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
           checked={value}
           className="toggle toggle-primary toggle-xs justify-self-start"
           onChange={(e) => setValue(e.target.checked)}
+          data-testid={`${name}-toggle`}
         />
       </div>
     );
@@ -29,7 +30,10 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
     return (
       <div className="grid grid-cols-[2fr_3fr] gap-2 items-center px-2">
         <span className="text-xs font-medium">{name}:</span>
-        <select className="select select-sm select-primary w-full">
+        <select
+          className="select select-sm select-primary w-full"
+          data-testid={`${name}-select`}
+        >
           {values?.map((value) => (
             <option key={value.value} value={value.output}>
               {value.value}
@@ -44,7 +48,12 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
     return (
       <div className="grid grid-cols-[2fr_3fr] gap-2 items-center px-2">
         <span className="text-xs font-medium">{name}:</span>
-        <input type="text" className="input input-sm input-primary w-full" />
+        <input
+          type="text"
+          className="input input-sm input-primary w-full"
+          data-testid={`${name}-input`}
+          value={value}
+        />
       </div>
     );
   }

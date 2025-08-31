@@ -32,26 +32,25 @@ describe("ProjectItem", () => {
     );
   });
 
-  test.sequential(
-    "should remove project when remove button is clicked",
-    async ({ expect }) => {
-      const user = userEvent.setup();
-      const testProjects = ["/path/to/project1.yaml", "/path/to/project2.yaml"];
+  test("should remove project when remove button is clicked", async ({
+    expect,
+  }) => {
+    const user = userEvent.setup();
+    const testProjects = ["/path/to/project1.yaml", "/path/to/project2.yaml"];
 
-      localStorage.setItem("recent-projects", JSON.stringify(testProjects));
+    localStorage.setItem("recent-projects", JSON.stringify(testProjects));
 
-      const { container } = render(
-        <ProjectItem project={testProjects[1]} index={1} />,
-      );
-      const removeButton = getByTestId(container, "remove-project-1");
+    const { container } = render(
+      <ProjectItem project={testProjects[1]} index={1} />,
+    );
+    const removeButton = getByTestId(container, "remove-project-1");
 
-      await user.click(removeButton);
+    await user.click(removeButton);
 
-      // Project should be removed from localStorage
-      const updatedProjects = JSON.parse(
-        localStorage.getItem("recent-projects") ?? "[]",
-      );
-      expect(updatedProjects).toEqual(["/path/to/project1.yaml"]);
-    },
-  );
+    // Project should be removed from localStorage
+    const updatedProjects = JSON.parse(
+      localStorage.getItem("recent-projects") ?? "[]",
+    );
+    expect(updatedProjects).toEqual(["/path/to/project1.yaml"]);
+  });
 });

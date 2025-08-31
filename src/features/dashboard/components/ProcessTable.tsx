@@ -18,8 +18,12 @@ export const ProcessTable: React.FC = memo(() => {
           </tr>
         </thead>
         <tbody>
-          {processes.map((process) => (
-            <ProcessRowWrapper key={process.name} process={process} />
+          {processes.map((process, index) => (
+            <ProcessRowWrapper
+              key={process.name}
+              process={process}
+              index={index}
+            />
           ))}
         </tbody>
       </table>

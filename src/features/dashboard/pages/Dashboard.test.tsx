@@ -5,7 +5,7 @@ import Dashboard from "./Dashboard";
 
 const mockParseFile = vi.fn();
 
-describe.sequential("Dashboard", () => {
+describe("Dashboard", () => {
   beforeEach(() => {
     mockParseFile.mockClear();
   });

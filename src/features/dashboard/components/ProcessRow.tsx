@@ -6,19 +6,24 @@ import { ProcessArg } from "./ProcessArg";
 
 type ProcessRowWrapperProps = {
   process: ProcessConfig;
+  index: number;
 };
 
 export const ProcessRowWrapper: React.FC<ProcessRowWrapperProps> = memo(
-  ({ process }) => {
+  ({ process, index }) => {
     return (
       <ProcessProvider process={process}>
-        <ProcessRow />
+        <ProcessRow index={index} />
       </ProcessProvider>
     );
   },
 );
 
-const ProcessRow: React.FC = memo(() => {
+type ProcessRowProps = {
+  index: number;
+};
+
+const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
   const { name, command, args } = useProcessContext();
   const [showOptions, setShowOptions] = useState(false);
 
@@ -26,6 +31,7 @@ const ProcessRow: React.FC = memo(() => {
     () => setShowOptions(!showOptions),
     [showOptions],
   );
+
   const button = useMemo(
     () => (
       <button
@@ -41,7 +47,7 @@ const ProcessRow: React.FC = memo(() => {
   );
 
   return (
-    <tr className="hover:bg-gray-100" data-testid="process-row">
+    <tr className="hover:bg-gray-100" data-testid={`process-row-${index}`}>
       <td className="align-top w-auto min-w-0">
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex flex-col gap-0 min-w-0">
@@ -54,7 +60,7 @@ const ProcessRow: React.FC = memo(() => {
             >
               {command}
             </div>
-            {args?.length > 0 && button}
+            {button}
           </div>
           {showOptions && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8 mt-2">

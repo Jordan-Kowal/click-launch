@@ -10,7 +10,7 @@ import {
 import { render } from "@/tests/utils";
 import ProjectSelection from "./ProjectSelection";
 
-describe.sequential("ProjectSelection", () => {
+describe("ProjectSelection", () => {
   beforeEach(() => {
     navigateMock.mockClear();
     openFileDialogMock.mockClear();

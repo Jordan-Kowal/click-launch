@@ -7,7 +7,7 @@ import {
 import { renderHook } from "@/tests/utils";
 import { useSelectFile } from "./useSelectFile";
 
-describe.sequential("useSelectFile", () => {
+describe("useSelectFile", () => {
   test("should navigate to dashboard when file is selected", async ({
     expect,
   }) => {

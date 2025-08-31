@@ -25,7 +25,7 @@ const mockValidConfig: YamlConfig = {
   ],
 };
 
-describe.sequential("DashboardRouter", () => {
+describe("DashboardRouter", () => {
   beforeEach(() => {
     useLocationMock.mockReturnValue(["/dashboard", navigateMock]);
     toastMock.error.mockClear();

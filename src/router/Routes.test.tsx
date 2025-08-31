@@ -12,7 +12,7 @@ vi.mock("@/api/queries", async () => {
   };
 });
 
-describe.concurrent("Routes", () => {
+describe("Routes", () => {
   test("should render the component", ({ expect }) => {
     const { container } = render(<Routes />);
     expect(container).toBeDefined();

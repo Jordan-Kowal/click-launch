@@ -58,7 +58,7 @@ describe("ThemeProvider", () => {
     expect(provider).toHaveAttribute("data-theme", "coffee");
   });
 
-  test.sequential("persists theme in localStorage", ({ expect }) => {
+  test("persists theme in localStorage", ({ expect }) => {
     const { container } = render(
       <ThemeProvider>
         <TestComponent />

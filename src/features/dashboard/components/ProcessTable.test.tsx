@@ -1,4 +1,4 @@
-import { getAllByTestId, getByTestId } from "@testing-library/react";
+import { getByTestId } from "@testing-library/react";
 import { beforeEach, describe, test, vi } from "vitest";
 import type { ProcessConfig } from "@/electron/types";
 import { render } from "@/tests/utils";
@@ -38,7 +38,9 @@ describe.concurrent("ProcessTable", () => {
     const processTable = getByTestId(container, "process-table");
     expect(processTable).toBeVisible();
     expect(processTable).toHaveTextContent("Processes");
-    const processRows = getAllByTestId(container, "process-row");
-    expect(processRows).toHaveLength(2);
+    const processRow1 = getByTestId(container, "process-row-0");
+    const processRow2 = getByTestId(container, "process-row-1");
+    expect(processRow1).toBeInTheDocument();
+    expect(processRow2).toBeInTheDocument();
   });
 });
