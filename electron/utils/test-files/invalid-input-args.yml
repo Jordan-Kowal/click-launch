@@ -1,0 +1,12 @@
+project_name: "Test Project"
+processes:
+  - name: "Test Process"
+    base_command: "echo"
+    args:
+      - type: "input"
+        name: "invalid_output_prefix"
+        default: "3000"
+        output_prefix: 3000
+      - type: "input"
+        name: "missing_output_prefix"
+        default: "3000"

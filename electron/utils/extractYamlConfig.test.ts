@@ -32,16 +32,12 @@ const testCases: TestCase[] = [
     shouldBeValid: false,
   },
   {
-    name: "missing name and base_command and invalid allows_free_text",
+    name: "missing name and base_command",
     filename: "./electron/utils/test-files/missing-process-fields.yml",
     expectedErrors: [
       { message: "name must be a non-empty string", path: "processes[0]" },
       {
         message: "base_command must be a non-empty string",
-        path: "processes[0]",
-      },
-      {
-        message: "allows_free_text must be a boolean",
         path: "processes[0]",
       },
     ],
@@ -57,7 +53,7 @@ const testCases: TestCase[] = [
       },
       {
         message:
-          "type must be one of the following values: toggle, select, multiselect, input",
+          "type must be one of the following values: toggle, select, input",
         path: "processes[0].args[0]",
       },
       {
@@ -68,15 +64,30 @@ const testCases: TestCase[] = [
     shouldBeValid: false,
   },
   {
+    name: "invalid input args (invalid output)",
+    filename: "./electron/utils/test-files/invalid-input-args.yml",
+    expectedErrors: [
+      {
+        message: "output_prefix must be a non-empty string",
+        path: "processes[0].args[0]",
+      },
+      {
+        message: "output_prefix must be a non-empty string",
+        path: "processes[0].args[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
     name: "invalid toggle args (missing true, missing false, invalid default)",
     filename: "./electron/utils/test-files/invalid-toggle-args.yml",
     expectedErrors: [
       {
-        message: "toggle values must be 'true' and 'false' (as strings)",
+        message: "toggle must have exactly two values: true and false",
         path: "processes[0].args[0]",
       },
       {
-        message: "toggle values must be 'true' and 'false' (as strings)",
+        message: "toggle must have exactly two values: true and false",
         path: "processes[0].args[1]",
       },
       {
@@ -93,22 +104,6 @@ const testCases: TestCase[] = [
   {
     name: "invalid select args (1 value, invalid default)",
     filename: "./electron/utils/test-files/invalid-select-args.yml",
-    expectedErrors: [
-      {
-        message: "values must be an array - min length: 2",
-        path: "processes[0].args[0]",
-      },
-      {
-        message:
-          "default must be one of the following values: option1, option2",
-        path: "processes[0].args[1]",
-      },
-    ],
-    shouldBeValid: false,
-  },
-  {
-    name: "invalid multiselect args (1 value, invalid default)",
-    filename: "./electron/utils/test-files/invalid-multiselect-args.yml",
     expectedErrors: [
       {
         message: "values must be an array - min length: 2",

@@ -1,3 +1,5 @@
+import type { ArgType } from "./enums";
+
 export type ValidationResult = {
   isValid: boolean;
   config: YamlConfig | null;
@@ -14,11 +16,11 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
-    allows_free_text: boolean;
     args?: {
-      type: "toggle" | "select" | "multiselect" | "input";
+      type: ArgType;
       name: string;
       default: any;
+      output_prefix?: string; // Only for input args
       values?: {
         value: any;
         output: string;

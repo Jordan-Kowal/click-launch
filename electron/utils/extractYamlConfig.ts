@@ -1,5 +1,13 @@
 import yaml from "js-yaml";
 
+export enum ArgType {
+  TOGGLE = "toggle",
+  SELECT = "select",
+  INPUT = "input",
+}
+
+const SUPPORTED_ARG_TYPES = [ArgType.TOGGLE, ArgType.SELECT, ArgType.INPUT];
+
 export type ValidationResult = {
   isValid: boolean;
   config: YamlConfig | null;
@@ -16,11 +24,11 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
-    allows_free_text: boolean;
     args?: {
-      type: "toggle" | "select" | "multiselect" | "input";
+      type: ArgType;
       name: string;
       default: any;
+      output_prefix?: string; // Only for input args
       values?: {
         value: any;
         output: string;
@@ -106,18 +114,6 @@ const validateProcess = (
     path: basePath,
     errors,
   });
-  const allowsFreeText = process.allows_free_text;
-  if (
-    allowsFreeText !== true &&
-    allowsFreeText !== false &&
-    allowsFreeText !== undefined
-  ) {
-    errors.push({
-      message: "allows_free_text must be a boolean",
-      path: basePath,
-    });
-  }
-  // args
   if (process.args) {
     validateArray({
       fieldName: "args",
@@ -140,17 +136,15 @@ const validateArg = (
 ): void => {
   validateArgGeneric(arg, basePath, errors);
   switch (arg.type) {
-    case "toggle":
+    case ArgType.TOGGLE:
       validateToggleArg(arg, basePath, errors);
       break;
-    case "select":
+    case ArgType.SELECT:
       validateSelectArg(arg, basePath, errors);
       break;
-    case "multiselect":
-      validateMultiselectArg(arg, basePath, errors);
+    case ArgType.INPUT:
+      validateInputArg(arg, basePath, errors);
       break;
-    // biome-ignore lint/complexity/noUselessSwitchCase: Doc
-    case "input":
     default:
       break;
   }
@@ -161,12 +155,11 @@ const validateArgGeneric = (
   path: string,
   errors: ValidationError[],
 ): void => {
-  const supportedTypes = ["toggle", "select", "multiselect", "input"];
   validateString({ fieldName: "name", value: arg.name, path, errors });
   validateValueIn({
     fieldName: "type",
     value: arg.type,
-    values: supportedTypes,
+    values: SUPPORTED_ARG_TYPES,
     path,
     errors,
   });
@@ -180,6 +173,7 @@ const validateToggleArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
+  // Ensure it has exactly two values
   validateArray({
     fieldName: "values",
     value: arg.values,
@@ -188,22 +182,30 @@ const validateToggleArg = (
     path,
     errors,
   });
-
-  const hasTrue = arg.values.some((v: any) => v.value === "true");
-  const hasFalse = arg.values.some((v: any) => v.value === "false");
-
+  // Ensure those values are true and false
+  const hasTrue = arg.values.some((v: any) => v.value === true);
+  const hasFalse = arg.values.some((v: any) => v.value === false);
   if (!hasTrue || !hasFalse) {
     errors.push({
-      message: "toggle values must be 'true' and 'false' (as strings)",
+      message: "toggle must have exactly two values: true and false",
       path,
     });
   }
-
-  validateArgValues(arg.values, `${path}.values`, errors);
+  // Ensures each value has a valid output
+  arg.values.forEach((value: ArgValue, index: number) => {
+    validateString({
+      fieldName: "output",
+      value: value.output,
+      required: false,
+      path: `${path}[${index}].output`,
+      errors,
+    });
+  });
+  // Ensures the default value is one of the two values
   validateValueIn({
     fieldName: "default",
     value: arg.default,
-    values: ["true", "false"],
+    values: [true, false],
     path,
     errors,
   });
@@ -214,6 +216,7 @@ const validateSelectArg = (
   path: string,
   errors: ValidationError[],
 ): void => {
+  // Ensure it has at least two values
   validateArray({
     fieldName: "values",
     value: arg.values,
@@ -222,51 +225,8 @@ const validateSelectArg = (
     path,
     errors,
   });
-  validateArgValues(arg.values, `${path}.values`, errors);
-  const values = arg.values.map((v: any) => v.value);
-  validateValueIn({
-    fieldName: "default",
-    value: arg.default,
-    values,
-    path,
-    errors,
-  });
-};
-
-const validateMultiselectArg = (
-  arg: any,
-  path: string,
-  errors: ValidationError[],
-): void => {
-  validateArray({
-    fieldName: "values",
-    value: arg.values,
-    minLength: 2,
-    maxLength: undefined,
-    path,
-    errors,
-  });
-  validateArgValues(arg.values, `${path}.values`, errors);
-  const values = arg.values.map((v: any) => v.value);
-  validateArray({
-    fieldName: "default",
-    value: arg.default,
-    minLength: 0,
-    maxLength: undefined,
-    path,
-    errors,
-  });
-  (arg.default || []).forEach((value: any) => {
-    validateValueIn({ fieldName: "default", value, values, path, errors });
-  });
-};
-
-const validateArgValues = (
-  arg: ArgConfig["values"],
-  path: string,
-  errors: ValidationError[],
-): void => {
-  (arg || []).forEach((value: ArgValue, index: number) => {
+  // Ensures each value has a valid output and value
+  arg.values.forEach((value: ArgValue, index: number) => {
     validateString({
       fieldName: "output",
       value: value.output,
@@ -280,6 +240,29 @@ const validateArgValues = (
       path: `${path}[${index}].value`,
       errors,
     });
+  });
+  // Ensures the default value is one of the values
+  const values = arg.values.map((v: any) => v.value);
+  validateValueIn({
+    fieldName: "default",
+    value: arg.default,
+    values,
+    path,
+    errors,
+  });
+};
+
+const validateInputArg = (
+  arg: any,
+  path: string,
+  errors: ValidationError[],
+): void => {
+  // Ensures the output is a string
+  validateString({
+    fieldName: "output_prefix",
+    value: arg.output_prefix,
+    path,
+    errors,
   });
 };
 
@@ -349,7 +332,12 @@ const validateValueIn = ({
   path: string;
   errors: ValidationError[];
 }): void => {
-  if (!value || !values.includes(value)) {
+  if (
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    !values.includes(value)
+  ) {
     errors.push({
       message: `${fieldName} must be one of the following values: ${values.join(", ")}`,
       path,

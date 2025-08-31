@@ -1,13 +1,12 @@
 import { getByTestId } from "@testing-library/react";
 import { describe, test } from "vitest";
+import type { ProcessConfig } from "@/electron/types";
 import { render } from "@/tests/utils";
-import type { ProcessConfig } from "@/types/electron";
 import { ProcessRow } from "./ProcessRow";
 
 const mockProcess: ProcessConfig = {
   name: "test-service",
   base_command: "npm start",
-  allows_free_text: false,
   args: [],
 };
 

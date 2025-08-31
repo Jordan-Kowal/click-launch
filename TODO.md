@@ -2,12 +2,6 @@
 
 ## Feature: SHow available processes
 
-- Handle options:
-  - Boolean
-  - Text
-  - Radio
-  - Select
-  - Free input
 - Show final output based on selected options
 - Make them readonly when running
 

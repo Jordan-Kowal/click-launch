@@ -2,7 +2,6 @@ project_name: "Test Project"
 processes:
   - name: "Test Process"
     base_command: "echo"
-    allows_free_text: true
     args:
       - type: "input"
         name: "test"

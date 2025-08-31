@@ -1,28 +1,28 @@
 import { memo } from "react";
 import { useDashboardContext } from "../contexts";
-import { ProcessRow } from "./ProcessRow";
+import { ProcessRowWrapper } from "./ProcessRow";
 
-const ProcessTable: React.FC = memo(() => {
+export const ProcessTable: React.FC = memo(() => {
   const { yamlConfig } = useDashboardContext();
 
   const processes = yamlConfig?.processes || [];
 
   return (
-    <table className="table" data-testid="process-table">
-      <thead>
-        <tr>
-          <th>Processes</th>
-          <th className="w-30">Status</th>
-          <th className="w-30">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {processes.map((process) => (
-          <ProcessRow key={process.name} process={process} />
-        ))}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="table table-fixed w-full" data-testid="process-table">
+        <thead>
+          <tr>
+            <th className="w-auto min-w-0">Processes</th>
+            <th className="w-32 flex-shrink-0">Status</th>
+            <th className="w-32 flex-shrink-0">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {processes.map((process) => (
+            <ProcessRowWrapper key={process.name} process={process} />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 });
-
-export { ProcessTable };

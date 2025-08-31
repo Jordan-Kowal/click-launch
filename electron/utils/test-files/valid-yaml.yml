@@ -3,16 +3,15 @@ project_name: "Development Services"
 processes:
   - name: "Web Server"
     base_command: "yarn start"
-    allows_free_text: true
     args:
       - type: "toggle"
         name: "Watch Mode"
         values:
-          - value: "true"
+          - value: true
             output: "--watch"
-          - value: "false"
+          - value: false
             output: ""
-        default: "true"
+        default: true
 
       - type: "select"
         name: "Environment"
@@ -25,17 +24,7 @@ processes:
             output: "--env=production"
         default: "development"
 
-      - type: "multiselect"
-        name: "Features"
-        values:
-          - value: "hot_reload"
-            output: "--hot-reload"
-          - value: "source_maps"
-            output: "--source-maps"
-          - value: "minify"
-            output: "--minify"
-        default: ["hot_reload", "source_maps"]
-
       - type: "input"
         name: "Port"
         default: "3000"
+        output_prefix: "--port"

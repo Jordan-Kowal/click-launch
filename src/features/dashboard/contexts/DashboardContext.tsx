@@ -8,8 +8,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import type { ValidationResult, YamlConfig } from "@/electron/types";
 import { useRecentProjects } from "@/hooks";
-import type { ValidationResult, YamlConfig } from "@/types/electron";
 
 type DashboardContextType = {
   isLoading: boolean;

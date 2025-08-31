@@ -5,8 +5,8 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { beforeEach, describe, test } from "vitest";
+import type { ValidationResult, YamlConfig } from "@/electron/types";
 import { validateYamlMock } from "@/tests/mocks/globals";
-import type { ValidationResult, YamlConfig } from "@/types/electron";
 import { DashboardProvider, useDashboardContext } from "./DashboardContext";
 
 const mockValidConfig: YamlConfig = {
@@ -15,7 +15,6 @@ const mockValidConfig: YamlConfig = {
     {
       name: "test-process",
       base_command: "echo",
-      allows_free_text: false,
       args: [],
     },
   ],

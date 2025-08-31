@@ -1,5 +1,6 @@
 import { getByTestId, render } from "@testing-library/react";
 import { beforeEach, describe, test, vi } from "vitest";
+import type { YamlConfig } from "@/electron/types";
 import {
   navigateMock,
   toastMock,
@@ -7,7 +8,6 @@ import {
   useSearchMock,
   validateYamlMock,
 } from "@/tests/mocks/globals";
-import type { YamlConfig } from "@/types/electron";
 import { DashboardRouter } from "./DashboardRouter";
 
 vi.mock("../pages/Dashboard", () => ({
@@ -20,7 +20,6 @@ const mockValidConfig: YamlConfig = {
     {
       name: "test-process",
       base_command: "echo",
-      allows_free_text: false,
       args: [],
     },
   ],
