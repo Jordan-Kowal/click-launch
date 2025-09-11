@@ -13,12 +13,13 @@ import { toast } from "react-toastify";
 import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
 
-const POLL_STATUS_INTERVAL_MS = 1_000;
+const POLL_STATUS_INTERVAL_MS = 500;
 
 type ProcessContextType = {
   // Raw
   name: string;
   args: ArgConfig[] | undefined;
+  processId: ProcessId | null;
   // Computed
   command: string;
   status: ProcessStatus;
@@ -51,6 +52,8 @@ export const ProcessProvider = memo(
     const [processId, setProcessId] = useState<ProcessId | null>(null);
 
     const pollStatusIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const shouldPoll =
+      status === ProcessStatus.RUNNING || status === ProcessStatus.STARTING;
 
     const command = useMemo(() => {
       const outputArgs = Object.values(argValues);
@@ -92,32 +95,36 @@ export const ProcessProvider = memo(
       }
     }, [processId]);
 
-    /** Fetch status every 1000ms */
+    /** Fetch status every X ms */
     useEffect(() => {
-      console.log("UseEffect status for processId:", processId);
-      if (processId) {
-        pollStatusIntervalRef.current = setInterval(() => {
-          window.electronAPI.getProcessStatus(processId).then((isRunning) => {
-            if (isRunning) {
-              setStatus(ProcessStatus.RUNNING);
-            } else {
-              setStatus(ProcessStatus.STOPPED);
-              setProcessId(null);
-            }
-          });
-        }, POLL_STATUS_INTERVAL_MS);
-      }
+      if (!processId || !shouldPoll) return;
+      pollStatusIntervalRef.current = setInterval(async () => {
+        const isRunning = await window.electronAPI.getProcessStatus(processId);
+        const newStatus = isRunning
+          ? ProcessStatus.RUNNING
+          : ProcessStatus.STOPPED;
+        setStatus(newStatus);
+      }, POLL_STATUS_INTERVAL_MS);
       return () => {
         if (pollStatusIntervalRef.current) {
           clearInterval(pollStatusIntervalRef.current);
         }
       };
-    }, [processId]);
+    }, [processId, shouldPoll]);
+
+    /** On status change, notify if crashed */
+    // biome-ignore lint/correctness/useExhaustiveDependencies: watched status
+    useEffect(() => {
+      if (status === ProcessStatus.CRASHED) {
+        toast.error(`${process.name} crashed`);
+      }
+    }, [status]);
 
     const context: ProcessContextType = useMemo(
       () => ({
         name: process.name,
         args: process.args,
+        processId,
         command,
         status,
         updateCommand,
@@ -126,12 +133,13 @@ export const ProcessProvider = memo(
       }),
       [
         process.name,
-        command,
         process.args,
+        processId,
+        command,
+        status,
         updateCommand,
         startProcess,
         stopProcess,
-        status,
       ],
     );
 

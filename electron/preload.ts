@@ -11,10 +11,18 @@ contextBridge.exposeInMainWorld("electronAPI", {
   validatePaths: (filePaths: string[]): Promise<[string[], string[]]> =>
     ipcRenderer.invoke("paths:validate", filePaths),
   // Process management
-  startProcess: (command: string, cwd?: string) =>
-    ipcRenderer.invoke("process:start", command, cwd),
+  startProcess: (cwd: string, command: string) =>
+    ipcRenderer.invoke("process:start", cwd, command),
   stopProcess: (processId: string) =>
     ipcRenderer.invoke("process:stop", processId),
   getProcessStatus: (processId: string) =>
     ipcRenderer.invoke("process:status", processId),
+  stopAllProcesses: () => ipcRenderer.invoke("process:stop-all"),
+  // Process log streaming
+  onProcessLog: (callback: (logData: any) => void) => {
+    ipcRenderer.on("process-log", (_, logData) => callback(logData));
+  },
+  removeProcessLogListener: () => {
+    ipcRenderer.removeAllListeners("process-log");
+  },
 });

@@ -2,20 +2,20 @@
 
 ## Feature: Handle actions
 
-- Handle actions:
-  - View logs
-- Send message on crash?
-- Handle logs:
-  - Show logs
-  - Search logs
-  - Clear logs
-- Ensure process is stopped when closing app
-  - Also when going back to project selection
+- Search logs
+  - With highlight?
+  - Input delay + loading layer on top
+- Options:
+  - Auto-scroll on refresh
+  - Wrap long lines
+  - Stop refreshing
+- Quid multiple process commands like concurrent -> only 1 log and 1 kill
 
 ## Improvements
 
 - Rename homepage to project selection
 - Better split electron code
+- Running since (duration, using a start time)
 
 ## Doc
 

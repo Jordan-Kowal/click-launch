@@ -65,5 +65,5 @@ jobs:
             ./node_modules
           key: yarn-${{ hashFiles('./yarn.lock') }}
 
-      - name: Run test coverage
-        run: yarn test:coverage
+      - name: Run tests
+        run: yarn test

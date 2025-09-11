@@ -28,6 +28,7 @@ const TestWrapper = ({ status }: { status: ProcessStatus }) => {
     updateCommand: vi.fn(),
     startProcess: mockStartProcess,
     stopProcess: mockStopProcess,
+    processId: "test-process-id",
   });
 
   return <PlayStopButton />;

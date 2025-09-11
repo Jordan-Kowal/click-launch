@@ -1,4 +1,4 @@
-import type { ArgType } from "./enums";
+import type { ArgType, LogType } from "./enums";
 
 export type ValidationResult = {
   isValid: boolean;
@@ -52,6 +52,21 @@ export type ProcessStopResult = {
   error?: string;
 };
 
+export type ProcessLogData = {
+  processId: ProcessId;
+  timestamp: string;
+} & (
+  | {
+      type: Exclude<LogType, LogType.EXIT>;
+      output: string;
+    }
+  | {
+      type: LogType.EXIT;
+      code: number | null;
+      signal: string | null;
+    }
+);
+
 export interface ElectronAPI {
   platform: string;
   version: string;
@@ -62,6 +77,10 @@ export interface ElectronAPI {
   startProcess: (cwd: string, command: string) => Promise<ProcessStartResult>;
   stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
   getProcessStatus: (processId: ProcessId) => Promise<boolean>;
+  stopAllProcesses: () => Promise<{ success: boolean }>;
+  // Process log streaming
+  onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
+  removeProcessLogListener: () => void;
 }
 
 declare global {

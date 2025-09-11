@@ -6,6 +6,8 @@ import { ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 
+import { ProcessLogModal } from "./ProcessLogModal";
+
 type ProcessRowWrapperProps = {
   process: ProcessConfig;
   index: number;
@@ -27,13 +29,24 @@ type ProcessRowProps = {
 };
 
 const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
-  const { name, command, args, status } = useProcessContext();
+  const { name, command, args, status, processId } = useProcessContext();
   const [showOptions, setShowOptions] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const toggleOptions = useCallback(
     () => setShowOptions(!showOptions),
     [showOptions],
   );
+
+  const openModal = useCallback(() => {
+    if (processId) {
+      setModalIsOpen(true);
+    }
+  }, [processId]);
+
+  const closeModal = useCallback(() => {
+    setModalIsOpen(false);
+  }, []);
 
   const statusVariant = useMemo(() => {
     switch (status) {
@@ -106,11 +119,15 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
             type="button"
             className="btn btn-neutral btn-circle btn-outline btn-sm"
             data-testid="logs-button"
+            onClick={openModal}
+            title="View logs"
+            disabled={!processId}
           >
             <ScrollText size={16} />
           </button>
         </div>
       </td>
+      <ProcessLogModal isOpen={modalIsOpen} onClose={closeModal} />
     </tr>
   );
 });

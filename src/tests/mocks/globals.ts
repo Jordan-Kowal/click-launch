@@ -10,6 +10,9 @@ export const validatePathsMock = vi.fn();
 export const startProcessMock = vi.fn();
 export const stopProcessMock = vi.fn();
 export const getProcessStatusMock = vi.fn();
+export const stopAllProcessesMock = vi.fn();
+export const onProcessLogMock = vi.fn();
+export const removeProcessLogListenerMock = vi.fn();
 export const electronAPIMock = {
   platform: "darwin",
   version: "1.0.0",
@@ -19,6 +22,9 @@ export const electronAPIMock = {
   startProcess: startProcessMock,
   stopProcess: stopProcessMock,
   getProcessStatus: getProcessStatusMock,
+  stopAllProcesses: stopAllProcessesMock,
+  onProcessLog: onProcessLogMock,
+  removeProcessLogListener: removeProcessLogListenerMock,
 };
 
 export const toastErrorMock = vi.fn();

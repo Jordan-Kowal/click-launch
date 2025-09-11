@@ -30,6 +30,14 @@ const createWindow = (): void => {
     trafficLightPosition: { x: 20, y: 24 },
   });
 
+  // On macOS, hide window instead of closing to preserve state
+  mainWindow.on("close", (event) => {
+    if (process.platform === "darwin") {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+
   // Show window when ready to prevent flash
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
@@ -111,18 +119,30 @@ app.whenReady().then(() => {
     return isProcessRunning(processId);
   });
 
+  // IPC handler for stopping all processes
+  ipcMain.handle("process:stop-all", async () => {
+    stopAllProcesses();
+    return { success: true };
+  });
+
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
+    const windows = BrowserWindow.getAllWindows();
+    if (windows.length === 0) {
       createWindow();
+    } else {
+      // Show the existing window if it's hidden
+      windows[0].show();
     }
   });
 });
 
 app.on("window-all-closed", () => {
-  // Clean up all running processes before quitting
-  stopAllProcesses();
-
   if (process.platform !== "darwin") {
+    stopAllProcesses();
     app.quit();
   }
+});
+
+app.on("before-quit", () => {
+  stopAllProcesses();
 });

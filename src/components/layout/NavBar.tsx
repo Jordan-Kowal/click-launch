@@ -9,7 +9,8 @@ export const NavBar: React.FC = memo(() => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [location, navigate] = useLocation();
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
+    await window.electronAPI.stopAllProcesses();
     navigate(navigationPaths.homepage);
   }, [navigate]);
 

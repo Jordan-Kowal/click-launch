@@ -1,6 +1,7 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { KillSignal } from "./enums";
+import { BrowserWindow } from "electron";
+import { KillSignal, LogType } from "./enums";
 
 const PROCESS_KILL_TIMEOUT_MS = 10_000;
 
@@ -27,20 +28,68 @@ export const startProcess = async (
 
     const childProcess = spawn(command, {
       cwd: cwd || process.cwd(),
-      stdio: "ignore",
-      // stdio: ["ignore", "pipe", "pipe"],
+      stdio: ["ignore", "pipe", "pipe"], // Need pipes to capture output
       detached: false,
       shell: true, // This allows the command to be executed as-is by the shell
     });
 
     runningProcesses.set(processId, childProcess);
 
-    // Handle process exit
-    childProcess.on("exit", (_code, _signal) => {
-      runningProcesses.delete(processId);
+    // Stream output to renderer process
+    childProcess.stdout?.on("data", (data) => {
+      const logData = {
+        processId,
+        type: LogType.STDOUT,
+        output: data.toString(),
+        timestamp: new Date().toISOString(),
+      };
+      // Send to all renderer processes
+      BrowserWindow.getAllWindows().forEach((window) => {
+        window.webContents.send("process-log", logData);
+      });
     });
-    childProcess.on("error", (_error) => {
+
+    childProcess.stderr?.on("data", (data) => {
+      const logData = {
+        processId,
+        type: LogType.STDERR,
+        output: data.toString(),
+        timestamp: new Date().toISOString(),
+      };
+      // Send to all renderer processes
+      BrowserWindow.getAllWindows().forEach((window) => {
+        window.webContents.send("process-log", logData);
+      });
+    });
+
+    // Handle process exit
+    childProcess.on("exit", (code, signal) => {
       runningProcesses.delete(processId);
+      // Notify renderer about process exit
+      const exitData = {
+        processId,
+        type: LogType.EXIT,
+        code,
+        signal,
+        timestamp: new Date().toISOString(),
+      };
+      BrowserWindow.getAllWindows().forEach((window) => {
+        window.webContents.send("process-log", exitData);
+      });
+    });
+
+    childProcess.on("error", (error) => {
+      runningProcesses.delete(processId);
+      // Notify renderer about process error
+      const errorData = {
+        processId,
+        type: LogType.ERROR,
+        output: error.message,
+        timestamp: new Date().toISOString(),
+      };
+      BrowserWindow.getAllWindows().forEach((window) => {
+        window.webContents.send("process-log", errorData);
+      });
     });
 
     return { success: true, processId };

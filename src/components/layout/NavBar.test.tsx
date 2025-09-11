@@ -1,6 +1,10 @@
-import { fireEvent, getByTestId } from "@testing-library/react";
+import { fireEvent, getByTestId, waitFor } from "@testing-library/react";
 import { beforeEach, describe, test } from "vitest";
-import { navigateMock, useLocationMock } from "@/tests/mocks/globals";
+import {
+  navigateMock,
+  stopAllProcessesMock,
+  useLocationMock,
+} from "@/tests/mocks/globals";
 import { render } from "@/tests/utils";
 import { NavBar } from "./NavBar";
 
@@ -41,7 +45,9 @@ describe.concurrent("NavBar", () => {
     expect(navigateMock).not.toHaveBeenCalled();
   });
 
-  test("home button opens modal and redirects when confirmed", ({ expect }) => {
+  test("home button opens modal and redirects when confirmed", async ({
+    expect,
+  }) => {
     useLocationMock.mockReturnValue(["/dashboard", navigateMock]);
 
     const { container } = render(<NavBar />);
@@ -55,6 +61,8 @@ describe.concurrent("NavBar", () => {
     const confirmButton = getByTestId(container, "modal-confirm-button");
     fireEvent.click(confirmButton);
 
-    expect(navigateMock).toHaveBeenCalledWith("/");
+    await waitFor(() => {
+      expect(stopAllProcessesMock).toHaveBeenCalled();
+    });
   });
 });

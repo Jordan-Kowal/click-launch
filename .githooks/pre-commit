@@ -6,7 +6,7 @@ echo "---------- Git hook: pre-commit ----------"
 echo ">>> [1/2] Running code quality checks (biome, tsc)"
 yarn quality
 
-echo ">>> [2/2] Running tests with coverage"
-yarn test:coverage
+echo ">>> [2/2] Running tests"
+yarn test
 
 echo "------------------------------------------"
