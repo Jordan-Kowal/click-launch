@@ -13,24 +13,6 @@ processes:
             output: ""
         default: true
 
-      - type: "toggle"
-        name: "Arg2"
-        values:
-          - value: true
-            output: "--arg2"
-          - value: false
-            output: ""
-        default: true
-
-      - type: "toggle"
-        name: "Arg3"
-        values:
-          - value: true
-            output: "--arg3"
-          - value: false
-            output: ""
-        default: true
-
       - type: "select"
         name: "Environment"
         values:

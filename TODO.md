@@ -3,7 +3,6 @@
 ## Doc
 
 - Provide logo
-- Readme
 
 ## CI/CD
 
