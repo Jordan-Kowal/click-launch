@@ -3,8 +3,6 @@
 ## Improvements
 
 - Rename homepage to project selection
-- Better split electron code
-- Running since (duration, using a start time)
 
 ## Doc
 

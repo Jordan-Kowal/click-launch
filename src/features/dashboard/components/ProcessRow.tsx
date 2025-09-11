@@ -5,7 +5,7 @@ import { ProcessProvider, useProcessContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
-
+import { ProcessDuration } from "./ProcessDuration";
 import { ProcessLogModal } from "./ProcessLogModal";
 
 type ProcessRowWrapperProps = {
@@ -29,7 +29,8 @@ type ProcessRowProps = {
 };
 
 const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
-  const { name, command, args, status, processId } = useProcessContext();
+  const { name, command, args, status, processId, startTime } =
+    useProcessContext();
   const [showOptions, setShowOptions] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -108,8 +109,12 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
         </div>
       </td>
       <td className="align-top w-32 flex-shrink-0">
-        <div className="flex align-start">
+        <div className="flex flex-col items-start gap-1">
           <div className={`badge ${statusVariant}`}>{status}</div>
+          <ProcessDuration
+            startTime={startTime}
+            isRunning={status === ProcessStatus.RUNNING}
+          />
         </div>
       </td>
       <td className="align-top w-32 flex-shrink-0">

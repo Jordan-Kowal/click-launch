@@ -29,6 +29,7 @@ const TestWrapper = ({ status }: { status: ProcessStatus }) => {
     startProcess: mockStartProcess,
     stopProcess: mockStopProcess,
     processId: "test-process-id",
+    startTime: null,
   });
 
   return <PlayStopButton />;

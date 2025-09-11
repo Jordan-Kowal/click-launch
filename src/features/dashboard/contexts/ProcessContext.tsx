@@ -23,6 +23,7 @@ type ProcessContextType = {
   // Computed
   command: string;
   status: ProcessStatus;
+  startTime: Date | null;
   // Actions
   updateCommand: (argName: string, value: string) => void;
   startProcess: () => void;
@@ -50,6 +51,7 @@ export const ProcessProvider = memo(
     const [argValues, setArgValues] = useState<Record<string, string>>({});
     const [status, setStatus] = useState(ProcessStatus.STOPPED);
     const [processId, setProcessId] = useState<ProcessId | null>(null);
+    const [startTime, setStartTime] = useState<Date | null>(null);
 
     const pollStatusIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const shouldPoll =
@@ -76,6 +78,7 @@ export const ProcessProvider = memo(
       );
       if (result.success && result.processId) {
         setProcessId(result.processId);
+        setStartTime(new Date());
         setStatus(ProcessStatus.RUNNING);
       } else {
         setStatus(ProcessStatus.CRASHED);
@@ -89,6 +92,7 @@ export const ProcessProvider = memo(
       const result = await window.electronAPI.stopProcess(processId);
       if (result.success) {
         setStatus(ProcessStatus.STOPPED);
+        setStartTime(null);
       } else {
         setStatus(ProcessStatus.RUNNING);
         toast.error(result.error || "Failed to stop process");
@@ -112,6 +116,15 @@ export const ProcessProvider = memo(
       };
     }, [processId, shouldPoll]);
 
+    /** Set start time when process starts */
+    useEffect(() => {
+      if (status === ProcessStatus.RUNNING) {
+        setStartTime(new Date());
+      } else {
+        setStartTime(null);
+      }
+    }, [status]);
+
     /** On status change, notify if crashed */
     // biome-ignore lint/correctness/useExhaustiveDependencies: watched status
     useEffect(() => {
@@ -127,6 +140,7 @@ export const ProcessProvider = memo(
         processId,
         command,
         status,
+        startTime,
         updateCommand,
         startProcess,
         stopProcess,
@@ -137,6 +151,7 @@ export const ProcessProvider = memo(
         processId,
         command,
         status,
+        startTime,
         updateCommand,
         startProcess,
         stopProcess,
