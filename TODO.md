@@ -2,7 +2,6 @@
 
 ## Doc
 
-- Change name
 - Provide logo
 - Readme
 

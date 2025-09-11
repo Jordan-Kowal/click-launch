@@ -31,7 +31,7 @@ export const NavBar: React.FC = memo(() => {
           data-testid={"navbar-home-link"}
           className="no-drag"
         >
-          <span className="text-xl font-bold">Devbox Services GUI</span>
+          <span className="text-xl font-bold">Click Launch</span>
         </Link>
       </div>
       <div className="navbar-end">

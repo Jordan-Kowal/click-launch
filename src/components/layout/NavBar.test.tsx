@@ -18,7 +18,7 @@ describe.concurrent("NavBar", () => {
     const navbar = getByTestId<HTMLDivElement>(container, "navbar");
 
     expect(navbar).toBeVisible();
-    expect(navbar).toHaveTextContent("Devbox Services GUI");
+    expect(navbar).toHaveTextContent("Click Launch");
   });
 
   test("should handle redirects", ({ expect }) => {

@@ -1,3 +1,3 @@
-# Devbox Services GUI
+# Click Launch
 
-GUI for managing devbox services
+Desktop app for managing your local dev stack - configure once, launch everything with a click.

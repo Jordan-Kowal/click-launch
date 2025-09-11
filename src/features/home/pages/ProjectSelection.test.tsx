@@ -27,7 +27,7 @@ describe("ProjectSelection", () => {
     );
 
     expect(homepage).toBeVisible();
-    expect(homepage).toHaveTextContent("Devbox Services GUI");
+    expect(homepage).toHaveTextContent("Click Launch");
     expect(homepage).toHaveTextContent("Open new project");
     expect(homepage).toHaveTextContent("Recent Projects");
   });

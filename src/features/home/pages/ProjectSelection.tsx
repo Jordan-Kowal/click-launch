@@ -40,7 +40,7 @@ const ProjectSelection: React.FC = memo(() => {
         <div className="max-w-50 mx-auto mb-6">
           <Logo />
         </div>
-        <h1>Devbox Services GUI</h1>
+        <h1>Click Launch</h1>
         <div className="flex w-full flex-col md:flex-row">
           <div className="card rounded-box p-6 flex-1 flex items-center justify-center">
             <button

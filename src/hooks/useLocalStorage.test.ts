@@ -2,7 +2,7 @@ import { describe, test } from "vitest";
 import { renderHook } from "@/tests/utils";
 import { useLocalStorage } from "./useLocalStorage";
 
-const TEMPORARY_KEY = "devbox-services-gui-test-key";
+const TEMPORARY_KEY = "click-launch-test-key";
 
 describe.concurrent("useLocalStorage", () => {
   test("should use the default value if no value is stored", ({ expect }) => {

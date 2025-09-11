@@ -1,25 +1,28 @@
 {
-  "name": "devbox-services-gui",
+  "name": "click-launch",
   "version": "1.0.0",
   "main": "dist-electron/main.js",
   "license": "MIT",
   "author": "Jordan Kowal",
-  "homepage": "https://github.com/Jordan-Kowal/devbox-services-gui#readme",
+  "homepage": "https://github.com/Jordan-Kowal/click-launch#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jordan-Kowal/devbox-services-gui.git"
+    "url": "git+https://github.com/Jordan-Kowal/click-launch.git"
   },
   "bugs": {
-    "url": "https://github.com/Jordan-Kowal/devbox-services-gui/issues"
+    "url": "https://github.com/Jordan-Kowal/click-launch/issues"
   },
-  "description": "A GUI for managing DevBox services",
+  "description": "Desktop app for managing your local dev stack - configure once, launch everything with a click.",
   "keywords": [
     "es6",
     "typescript",
     "ts",
-    "devbox",
+    "react",
     "gui",
-    "electron"
+    "electron",
+    "launcher",
+    "process manager",
+    "click launch"
   ],
   "types": "dist/index.d.ts",
   "files": [
@@ -86,8 +89,8 @@
     "wait-on": "8.0.4"
   },
   "build": {
-    "appId": "com.devbox.services-gui",
-    "productName": "DevBox Services GUI",
+    "appId": "com.click-launch",
+    "productName": "Click Launch",
     "directories": {
       "output": "release"
     },
