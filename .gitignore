@@ -12,8 +12,12 @@ node_modules
 dist
 dist-electron
 dist-ssr
+release
 *.local
 
 # Vite
 coverage
 bundle-stats.html
+
+# macOS
+**/.DS_Store

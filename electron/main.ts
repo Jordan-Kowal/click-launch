@@ -1,6 +1,9 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
+
+let isQuitting = false;
+
 import { isDev } from "./utils/constants";
 import {
   extractYamlConfig,
@@ -32,7 +35,7 @@ const createWindow = (): void => {
 
   // On macOS, hide window instead of closing to preserve state
   mainWindow.on("close", (event) => {
-    if (process.platform === "darwin") {
+    if (process.platform === "darwin" && !isQuitting) {
       event.preventDefault();
       mainWindow.hide();
     }
@@ -144,5 +147,6 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
+  isQuitting = true;
   stopAllProcesses();
 });

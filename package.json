@@ -35,6 +35,7 @@
     "clean": "rimraf dist dist-electron release",
     "start": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
     "build": "tsc && vite build && electron-builder",
+    "build:dev": "tsc && vite build && electron-builder --dir",
     "biome:check": "biome check ./src ./electron",
     "biome:check:fix": "biome check ./src ./electron --write --unsafe",
     "test": "(export NODE_NO_WARNINGS=1 && vitest)",
@@ -89,7 +90,7 @@
     "wait-on": "8.0.4"
   },
   "build": {
-    "appId": "com.click-launch",
+    "appId": "app.jkdev.click-launch",
     "productName": "Click Launch",
     "directories": {
       "output": "release"

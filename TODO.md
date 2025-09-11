@@ -19,6 +19,3 @@
 ## Later
 
 - Auto update?
-- How to report a bug
-- i18n
-- Sidebar with 2 new features: packages (read only) and shell
