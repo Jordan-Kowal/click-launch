@@ -39,7 +39,21 @@ Desktop app for managing your local dev stack - configure once, launch everythin
 
 ## 📦 Installation
 
-TBD
+### Download
+
+1. Go to the [Releases page](https://github.com/Jordan-Kowal/click-launch/releases)
+2. Download the latest `ClickLaunch-x.x.x.dmg` file
+3. Double-click the DMG file to open it
+4. Drag the ClickLaunch app to your Applications folder
+5. Launch the app from Applications or Spotlight
+
+### First Run
+
+On macOS, you may see a security warning when first opening the app. To resolve this:
+
+1. Go to **System Preferences** → **Security & Privacy**
+2. Click **"Open Anyway"** next to the ClickLaunch warning
+3. Alternatively, right-click the app and select **"Open"** from the context menu
 
 ## ⚙️ Configuration
 

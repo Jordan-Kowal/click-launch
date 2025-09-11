@@ -5,7 +5,33 @@ on:
     types: [ created ]
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: ./yarn.lock
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn
+            ./node_modules
+          key: yarn-${{ hashFiles('./yarn.lock') }}
+
+      - name: Install dependencies
+        if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+        run: yarn install
+
   build_and_release:
+    needs: setup
     runs-on: macos-latest
 
     steps:
@@ -14,6 +40,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: ./yarn.lock
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn
+            ./node_modules
+          key: yarn-${{ hashFiles('./yarn.lock') }}
 
       - name: Configure git to use HTTPS
         run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
