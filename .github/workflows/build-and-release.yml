@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Configure git to use HTTPS
+        run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+
       - name: Install dependencies
         run: yarn install
 
