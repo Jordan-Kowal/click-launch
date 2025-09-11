@@ -4,14 +4,11 @@
 
 - Change name
 - Provide logo
-- Changelog
 - Readme
-- Contributing
 
 ## CI/CD
 
-- Move test setup file?
-- Quality + tests + release build
+- Release build
 
 ## Build
 
