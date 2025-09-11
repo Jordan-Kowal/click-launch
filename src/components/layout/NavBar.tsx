@@ -35,7 +35,7 @@ export const NavBar: React.FC = memo(() => {
         </Link>
       </div>
       <div className="navbar-end">
-        <div className="tooltip tooltip-bottom" data-tip="Homepage">
+        <div className="tooltip tooltip-left" data-tip="Homepage">
           <button
             type="button"
             className="btn btn-ghost btn-circle no-drag"
