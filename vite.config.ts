@@ -4,8 +4,12 @@ import million from "million/compiler";
 import { defineConfig } from "vite";
 import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
+import pkg from "./package.json";
 
 export default defineConfig(({ mode }) => ({
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   plugins: [
     million.vite({ auto: true }),
     react(),
@@ -83,6 +87,9 @@ export default defineConfig(({ mode }) => ({
     projects: [
       // Renderer tests (React/DOM)
       {
+        define: {
+          __APP_VERSION__: JSON.stringify(pkg.version),
+        },
         test: {
           name: "renderer",
           environment: "jsdom",

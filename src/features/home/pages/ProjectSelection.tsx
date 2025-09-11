@@ -1,9 +1,10 @@
-import { FolderOpen, History } from "lucide-react";
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { Download, FolderOpen, History } from "lucide-react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
 import { useRecentProjects, useSelectFile } from "@/hooks";
+import { getLatestVersion } from "@/utils/versionCheck";
 import { ProjectItem } from "../components";
 
 const SHOWN_PROJECTS_MAX = 5;
@@ -11,6 +12,7 @@ const SHOWN_PROJECTS_MAX = 5;
 const ProjectSelection: React.FC = memo(() => {
   const handleOpenProject = useSelectFile();
   const { projects, removeProjects } = useRecentProjects();
+  const [latestVersion, setLatestVersion] = useState<string | null>(null);
 
   const shownProjects = useMemo(
     () => projects.slice(0, SHOWN_PROJECTS_MAX),
@@ -30,6 +32,15 @@ const ProjectSelection: React.FC = memo(() => {
     } catch (_) {}
   }, []);
 
+  // Check for updates on boot
+  useEffect(() => {
+    const checkUpdates = async () => {
+      const latest = await getLatestVersion();
+      setLatestVersion(latest);
+    };
+    checkUpdates();
+  }, []);
+
   useEffect(() => {
     cleanInvalidPaths();
   }, [cleanInvalidPaths]);
@@ -41,6 +52,38 @@ const ProjectSelection: React.FC = memo(() => {
           <Logo />
         </div>
         <h1>Click Launch</h1>
+        {latestVersion && (
+          <div className="alert alert-soft max-w-150 mx-auto mb-6">
+            <Download size={32} />
+            <div className="text-left">
+              <div className="font-semibold">Update Available!</div>
+              <div className="text-sm">
+                Version {latestVersion} is now available
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="btn btn-sm btn-primary"
+                onClick={() =>
+                  window.open(
+                    "https://github.com/Jordan-Kowal/click-launch/releases/latest",
+                    "_blank",
+                  )
+                }
+              >
+                Download
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-ghost"
+                onClick={() => setLatestVersion(null)}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
         <div className="flex w-full flex-col md:flex-row">
           <div className="card rounded-box p-6 flex-1 flex items-center justify-center">
             <button
