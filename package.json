@@ -34,8 +34,8 @@
   "scripts": {
     "clean": "rimraf dist dist-electron release",
     "start": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
-    "build": "tsc && vite build && electron-builder",
-    "build:dev": "tsc && vite build && electron-builder --dir",
+    "build": "yarn clean && tsc && vite build && electron-builder",
+    "build:dev": "yarn clean && tsc && vite build && electron-builder --dir",
     "biome:check": "biome check ./src ./electron",
     "biome:check:fix": "biome check ./src ./electron --write --unsafe",
     "test": "(export NODE_NO_WARNINGS=1 && vitest)",

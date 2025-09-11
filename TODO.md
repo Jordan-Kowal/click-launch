@@ -10,12 +10,9 @@
 
 ## Build
 
-- For mac only
 - Build icons
-- Check if:
-  - Toasts are triggered twice?
-  - Recent projects stay after restarting app?
+- Generate DMG instead of .app
 
 ## Later
 
-- Auto update?
+- Auto update or indicate new version is available?
