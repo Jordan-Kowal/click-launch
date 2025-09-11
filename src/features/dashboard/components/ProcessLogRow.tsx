@@ -59,7 +59,7 @@ export const ProcessLogRow = memo(
           isCurrentMatch ? "ring-2 ring-primary bg-primary/10 rounded p-1" : ""
         } ${wrapLines ? "whitespace-pre-wrap break-words" : "whitespace-pre overflow-x-auto"}`}
       >
-        <span className="text-gray-500 italic">[{log.timestamp}]</span>
+        <span className="text-gray-400 italic">[{log.timestamp}] </span>
         {segments.map((segment, segIndex) => (
           <span
             key={`${log.timestamp}-${segIndex}`}

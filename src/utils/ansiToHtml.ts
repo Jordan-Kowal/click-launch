@@ -1,7 +1,8 @@
 // ANSI color codes to CSS classes mapping
+/** biome-ignore-all lint/suspicious/noControlCharactersInRegex: Authorized */
 const ANSI_COLOR_MAP: Record<string, string> = {
   // Reset
-  "0": "text-base-content",
+  "0": "text-white",
 
   // Standard colors
   "30": "text-black",
@@ -40,7 +41,18 @@ export type AnsiSegment = {
 
 export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   const segments: AnsiSegment[] = [];
-  // biome-ignore lint/suspicious/noControlCharactersInRegex: Authorized
+
+  // First, remove cursor control sequences that don't apply to our log display
+  const cleanedText = text
+    .replace(/\x1b\[[0-9]*K/g, "") // Clear line sequences (0K, 1K, 2K)
+    .replace(/\x1b\[[0-9]*G/g, "") // Move cursor to column sequences
+    .replace(/\x1b\[[0-9]*;[0-9]*H/g, "") // Move cursor to position sequences
+    .replace(/\x1b\[[0-9]*[ABCD]/g, "") // Move cursor up/down/left/right sequences
+    .replace(/\x1b\[s/g, "") // Save cursor position
+    .replace(/\x1b\[u/g, "") // Restore cursor position
+    .replace(/\x1b\[2J/g, "") // Clear screen
+    .replace(/\x1b\[\?25[lh]/g, ""); // Show/hide cursor
+
   const ansiRegex = /\x1b\[([0-9;]*)m/g;
 
   let lastIndex = 0;
@@ -48,10 +60,10 @@ export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   let match: RegExpExecArray | null;
 
   // biome-ignore lint/suspicious/noAssignInExpressions: Supported
-  while ((match = ansiRegex.exec(text)) !== null) {
+  while ((match = ansiRegex.exec(cleanedText)) !== null) {
     // Add text before the ANSI code
     if (match.index > lastIndex) {
-      const textSegment = text.slice(lastIndex, match.index);
+      const textSegment = cleanedText.slice(lastIndex, match.index);
       if (textSegment) {
         segments.push({
           text: textSegment,
@@ -86,8 +98,8 @@ export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   }
 
   // Add remaining text
-  if (lastIndex < text.length) {
-    const remainingText = text.slice(lastIndex);
+  if (lastIndex < cleanedText.length) {
+    const remainingText = cleanedText.slice(lastIndex);
     if (remainingText) {
       segments.push({
         text: remainingText,
@@ -99,7 +111,7 @@ export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   // If no ANSI codes were found, return the whole text as one segment
   if (segments.length === 0) {
     segments.push({
-      text,
+      text: cleanedText,
       classes: [],
     });
   }

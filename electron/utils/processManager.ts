@@ -31,6 +31,13 @@ export const startProcess = async (
       stdio: ["ignore", "pipe", "pipe"], // Need pipes to capture output
       detached: false,
       shell: true, // This allows the command to be executed as-is by the shell
+      env: {
+        ...process.env,
+        // Force colored output
+        FORCE_COLOR: "1",
+        TERM: "xterm-256color",
+        COLORTERM: "truecolor",
+      },
     });
 
     runningProcesses.set(processId, childProcess);

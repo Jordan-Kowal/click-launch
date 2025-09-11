@@ -236,10 +236,13 @@ export const ProcessLogModal = memo(
           </div>
 
           {/* Logs content */}
-          <div className="flex-1 overflow-hidden">
-            <div ref={logsContainerRef} className="h-full overflow-y-auto p-4">
+          <div className="flex-1 overflow-hidden bg-gray-900">
+            <div
+              ref={logsContainerRef}
+              className="h-full overflow-y-auto p-4 bg-gray-900 text-white"
+            >
               {logs.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-gray-500">
+                <div className="flex items-center justify-center h-full text-gray-400">
                   No logs yet
                 </div>
               ) : (
