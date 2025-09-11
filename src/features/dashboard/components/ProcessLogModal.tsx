@@ -12,8 +12,6 @@ import type { ProcessLogData } from "@/electron/types";
 import { useProcessContext } from "../contexts";
 import { ProcessLogRow } from "./ProcessLogRow";
 
-const LOG_BATCH_INTERVAL_MS = 500;
-
 type ProcessLogModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -29,31 +27,12 @@ export const ProcessLogModal = memo(
     const [matchingLogIndices, setMatchingLogIndices] = useState<number[]>([]);
     const logsContainerRef = useRef<HTMLDivElement>(null);
 
-    // Batching for performance - collect logs and flush every X ms
-    const logBatchRef = useRef<ProcessLogData[]>([]);
-    const batchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-    const flushLogs = useCallback(() => {
-      if (logBatchRef.current.length === 0) return;
-      setLogs((prev) => [...prev, ...logBatchRef.current]);
-      logBatchRef.current = [];
-      batchTimeoutRef.current = null;
+    const addLog = useCallback((logData: ProcessLogData) => {
+      setLogs((prev) => [...prev, logData]);
     }, []);
-
-    const addLogToBatch = useCallback(
-      (logData: ProcessLogData) => {
-        logBatchRef.current.push(logData);
-        if (batchTimeoutRef.current) {
-          clearTimeout(batchTimeoutRef.current);
-        }
-        batchTimeoutRef.current = setTimeout(flushLogs, LOG_BATCH_INTERVAL_MS);
-      },
-      [flushLogs],
-    );
 
     const clearLogs = useCallback(() => {
       setLogs([]);
-      logBatchRef.current = [];
       setSearch("");
       setCurrentMatchIndex(-1);
       setMatchingLogIndices([]);
@@ -77,7 +56,6 @@ export const ProcessLogModal = memo(
           matches.push(index);
         }
       });
-      console.log({ search, matches });
       setMatchingLogIndices(matches);
       setCurrentMatchIndex(matches.length > 0 ? 0 : -1);
     }, [search, logs]);
@@ -137,16 +115,12 @@ export const ProcessLogModal = memo(
       if (!processId) return;
       window.electronAPI.onProcessLog((logData) => {
         if (logData.processId !== processId) return;
-        addLogToBatch(logData);
+        addLog(logData);
       });
       return () => {
         window.electronAPI.removeProcessLogListener();
-        if (batchTimeoutRef.current) {
-          clearTimeout(batchTimeoutRef.current);
-          flushLogs();
-        }
       };
-    }, [processId, addLogToBatch, flushLogs]);
+    }, [processId, addLog]);
 
     if (!isOpen || !processId) return null;
 
