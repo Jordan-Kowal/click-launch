@@ -99,8 +99,8 @@
       "dist/**/*",
       "dist-electron/**/*"
     ],
-    "mac": {},
-    "win": {},
-    "linux": {}
+    "mac": {
+      "target": "dir"
+    }
   }
 }
