@@ -13,7 +13,7 @@ export const Modal = memo(
 
       const closeModal = useCallback(() => {
         setIsLoading(false);
-        // @ts-ignore
+        // @ts-expect-error
         ref?.current?.close();
       }, [ref]);
 

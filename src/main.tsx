@@ -3,8 +3,7 @@ import ReactDOM from "react-dom/client";
 import { App } from "@/App";
 import { LoadingRing } from "@/components/ui";
 
-// @ts-ignore
-const container: HTMLDivElement = document.getElementById("root");
+const container = document.getElementById("root") as HTMLDivElement;
 const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>

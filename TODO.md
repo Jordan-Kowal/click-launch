@@ -1,9 +1,5 @@
 # TODO
 
-## Improvements
-
-- Rename homepage to project selection
-
 ## Doc
 
 - Change name

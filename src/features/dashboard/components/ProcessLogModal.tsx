@@ -146,24 +146,13 @@ export const ProcessLogModal = memo(
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <h2 className="font-bold text-xl !mb-0">Logs - {processName}</h2>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="btn btn-outline btn-error btn-sm"
-                onClick={clearLogs}
-                title="Clear logs"
-              >
-                <Trash2 size={16} />
-                Clear
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm btn-circle"
-                onClick={onClose}
-              >
-                <X size={16} />
-              </button>
-            </div>
+            <button
+              type="button"
+              className="btn btn-sm btn-circle"
+              onClick={onClose}
+            >
+              <X size={16} />
+            </button>
           </div>
           {/* Search and options */}
           <div className="p-4 border-b border-t border-base-300 gap-4 flex flex-col">
@@ -234,6 +223,15 @@ export const ProcessLogModal = memo(
                 />
                 Pause updates
               </label>
+              <button
+                type="button"
+                className="btn btn-outline btn-error btn-sm"
+                onClick={clearLogs}
+                title="Clear logs"
+              >
+                <Trash2 size={16} />
+                Clear logs
+              </button>
             </div>
           </div>
 
