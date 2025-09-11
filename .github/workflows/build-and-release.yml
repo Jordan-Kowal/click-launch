@@ -5,33 +5,7 @@ on:
     types: [ created ]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22" # Cached by github (https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#nodejs)
-          cache: "yarn"
-          cache-dependency-path: ./yarn.lock
-
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.yarn
-            ./node_modules
-          key: yarn-${{ hashFiles('./yarn.lock') }}
-
-      - name: Install dependencies
-        if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
-        run: yarn install
-
   build_and_release:
-    needs: setup
     runs-on: macos-latest
 
     steps:
@@ -40,8 +14,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: ./yarn.lock
 
       - name: Install dependencies
         run: yarn install
@@ -51,7 +23,6 @@ jobs:
 
       - name: Upload DMG to release
         uses: softprops/action-gh-release@v1
-        if: github.event_name == 'release'
         with:
           files: release/*.dmg
         env:
