@@ -1,13 +1,5 @@
 # TODO
 
-## Feature: Handle actions
-
-- Options:
-  - Auto-scroll on refresh
-  - Wrap long lines
-  - Stop refreshing
-- Quid multiple process commands like concurrent -> only 1 log and 1 kill
-
 ## Improvements
 
 - Rename homepage to project selection

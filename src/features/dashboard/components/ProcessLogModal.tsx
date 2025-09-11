@@ -25,11 +25,27 @@ export const ProcessLogModal = memo(
     const [search, setSearch] = useState("");
     const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
     const [matchingLogIndices, setMatchingLogIndices] = useState<number[]>([]);
+    const [autoScroll, setAutoScroll] = useState(true);
+    const [wrapLines, setWrapLines] = useState(true);
+    const [isPaused, setIsPaused] = useState(false);
     const logsContainerRef = useRef<HTMLDivElement>(null);
 
-    const addLog = useCallback((logData: ProcessLogData) => {
-      setLogs((prev) => [...prev, logData]);
-    }, []);
+    const addLog = useCallback(
+      (logData: ProcessLogData) => {
+        if (isPaused) return;
+        setLogs((prev) => [...prev, logData]);
+      },
+      [isPaused],
+    );
+
+    // Auto-scroll to bottom when new logs are added
+    // biome-ignore lint/correctness/useExhaustiveDependencies: watcher
+    useEffect(() => {
+      if (autoScroll && logsContainerRef.current) {
+        logsContainerRef.current.scrollTop =
+          logsContainerRef.current.scrollHeight;
+      }
+    }, [logs, autoScroll]);
 
     const clearLogs = useCallback(() => {
       setLogs([]);
@@ -129,9 +145,7 @@ export const ProcessLogModal = memo(
         <div className="modal-box w-full max-w-[100vw] h-full max-h-[100vh] flex flex-col p-0">
           {/* Header */}
           <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-4">
-              <h2 className="font-bold text-xl">Logs - {processName}</h2>
-            </div>
+            <h2 className="font-bold text-xl !mb-0">Logs - {processName}</h2>
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -151,9 +165,8 @@ export const ProcessLogModal = memo(
               </button>
             </div>
           </div>
-
-          {/* Search */}
-          <div className="p-4 border-b border-t border-base-300">
+          {/* Search and options */}
+          <div className="p-4 border-b border-t border-base-300 gap-4 flex flex-col">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <label className="input w-full">
@@ -192,6 +205,36 @@ export const ProcessLogModal = memo(
                 </div>
               )}
             </div>
+            {/* Options */}
+            <div className="flex items-center gap-4 text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm checkbox-primary"
+                  checked={autoScroll}
+                  onChange={(e) => setAutoScroll(e.target.checked)}
+                />
+                Auto-scroll to latest
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm checkbox-primary"
+                  checked={wrapLines}
+                  onChange={(e) => setWrapLines(e.target.checked)}
+                />
+                Wrap long lines
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm checkbox-primary"
+                  checked={isPaused}
+                  onChange={(e) => setIsPaused(e.target.checked)}
+                />
+                Pause updates
+              </label>
+            </div>
           </div>
 
           {/* Logs content */}
@@ -202,7 +245,9 @@ export const ProcessLogModal = memo(
                   No logs yet
                 </div>
               ) : (
-                <div className="font-mono text-sm space-y-1">
+                <div
+                  className={`font-mono text-sm space-y-1 ${wrapLines ? "" : "overflow-x-auto"}`}
+                >
                   {logs.map((log, index) => {
                     const isCurrentMatch =
                       currentMatchIndex >= 0 &&
@@ -215,6 +260,7 @@ export const ProcessLogModal = memo(
                         index={index}
                         searchTerm={search}
                         isCurrentMatch={isCurrentMatch}
+                        wrapLines={wrapLines}
                       />
                     );
                   })}

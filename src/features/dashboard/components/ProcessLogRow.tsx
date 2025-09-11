@@ -8,6 +8,7 @@ type ProcessLogRowProps = {
   index: number;
   searchTerm?: string;
   isCurrentMatch?: boolean;
+  wrapLines?: boolean;
 };
 
 const highlightSearchTerm = (text: string, searchTerm: string): ReactNode => {
@@ -32,7 +33,13 @@ const highlightSearchTerm = (text: string, searchTerm: string): ReactNode => {
 };
 
 export const ProcessLogRow = memo(
-  ({ log, index, searchTerm, isCurrentMatch }: ProcessLogRowProps) => {
+  ({
+    log,
+    index,
+    searchTerm,
+    isCurrentMatch,
+    wrapLines,
+  }: ProcessLogRowProps) => {
     if (log.type === LogType.EXIT) {
       return (
         <div>
@@ -48,9 +55,9 @@ export const ProcessLogRow = memo(
     return (
       <div
         data-log-index={index}
-        className={
+        className={`${
           isCurrentMatch ? "ring-2 ring-primary bg-primary/10 rounded p-1" : ""
-        }
+        } ${wrapLines ? "whitespace-pre-wrap break-words" : "whitespace-pre overflow-x-auto"}`}
       >
         <span className="text-gray-500 italic">[{log.timestamp}]</span>
         {segments.map((segment, segIndex) => (

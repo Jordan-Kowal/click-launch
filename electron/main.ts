@@ -54,6 +54,13 @@ const createWindow = (): void => {
 app.whenReady().then(() => {
   createWindow();
 
+  // Test logger for development - sends "ping" every 500ms
+  let logCounter = 0;
+  setInterval(() => {
+    logCounter++;
+    console.log(`ping ${logCounter}`); // Also log to terminal
+  }, 500);
+
   // IPC handler for file dialog
   ipcMain.handle("dialog:openFile", async (): Promise<string | undefined> => {
     const result = await dialog.showOpenDialog({
