@@ -143,17 +143,15 @@ export const ProcessLogModal = memo(
       };
     }, [processId, addLog]);
 
-    if (!isOpen || !processId) return null;
-
     return (
-      <dialog className="modal modal-open" onClose={onClose}>
+      <dialog className="modal" open={isOpen} onClose={onClose}>
         <div className="modal-box w-full max-w-[100vw] h-full max-h-[100vh] flex flex-col p-0">
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <h2 className="font-bold text-xl !mb-0">Logs - {processName}</h2>
             <button
               type="button"
-              className="btn btn-sm btn-circle"
+              className="btn btn-sm btn-circle relative -top-4"
               onClick={onClose}
             >
               <X size={16} />

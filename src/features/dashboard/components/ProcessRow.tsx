@@ -16,9 +16,20 @@ type ProcessRowWrapperProps = {
 
 export const ProcessRowWrapper: React.FC<ProcessRowWrapperProps> = memo(
   ({ process, index, rootDirectory }) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const openModal = useCallback(() => {
+      setModalIsOpen(true);
+    }, []);
+
+    const closeModal = useCallback(() => {
+      setModalIsOpen(false);
+    }, []);
+
     return (
       <ProcessProvider process={process} rootDirectory={rootDirectory}>
-        <ProcessRow index={index} />
+        <ProcessRow index={index} openModal={openModal} />
+        <ProcessLogModal isOpen={modalIsOpen} onClose={closeModal} />
       </ProcessProvider>
     );
   },
@@ -26,28 +37,17 @@ export const ProcessRowWrapper: React.FC<ProcessRowWrapperProps> = memo(
 
 type ProcessRowProps = {
   index: number;
+  openModal: () => void;
 };
 
-const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
-  const { name, command, args, status, processId, startTime } =
-    useProcessContext();
+const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
+  const { name, command, args, status, startTime } = useProcessContext();
   const [showOptions, setShowOptions] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const toggleOptions = useCallback(
     () => setShowOptions(!showOptions),
     [showOptions],
   );
-
-  const openModal = useCallback(() => {
-    if (processId) {
-      setModalIsOpen(true);
-    }
-  }, [processId]);
-
-  const closeModal = useCallback(() => {
-    setModalIsOpen(false);
-  }, []);
 
   const statusVariant = useMemo(() => {
     switch (status) {
@@ -126,13 +126,12 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index }) => {
             data-testid="logs-button"
             onClick={openModal}
             title="View logs"
-            disabled={!processId}
+            // disabled={!processId}
           >
             <ScrollText size={16} />
           </button>
         </div>
       </td>
-      <ProcessLogModal isOpen={modalIsOpen} onClose={closeModal} />
     </tr>
   );
 });
