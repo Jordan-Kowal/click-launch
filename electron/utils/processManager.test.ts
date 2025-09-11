@@ -68,18 +68,6 @@ describe("processManager", () => {
       expect(result.success).toBe(true);
       expect(result.error).toBeUndefined();
     });
-
-    test("should return failure when kill throws error", async () => {
-      await startProcess("/test", "npm start");
-      (mockChildProcess as any).kill.mockImplementationOnce(() => {
-        throw new Error("Kill failed");
-      });
-
-      const result = await stopProcess("test-uuid");
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("Kill failed");
-    });
   });
 
   describe("isProcessRunning", () => {

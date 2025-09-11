@@ -38,14 +38,19 @@ export const ProcessLogModal = memo(
       [isPaused],
     );
 
-    // Auto-scroll to bottom when new logs are added
+    // Auto-scroll to bottom when new logs are added or modal opens
     // biome-ignore lint/correctness/useExhaustiveDependencies: watcher
     useEffect(() => {
       if (autoScroll && logsContainerRef.current) {
-        logsContainerRef.current.scrollTop =
-          logsContainerRef.current.scrollHeight;
+        // Small delay to ensure DOM is rendered
+        setTimeout(() => {
+          if (logsContainerRef.current) {
+            logsContainerRef.current.scrollTop =
+              logsContainerRef.current.scrollHeight;
+          }
+        }, 100);
       }
-    }, [logs, autoScroll]);
+    }, [logs, autoScroll, isOpen]);
 
     const clearLogs = useCallback(() => {
       setLogs([]);

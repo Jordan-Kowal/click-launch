@@ -29,7 +29,7 @@ export const startProcess = async (
     const childProcess = spawn(command, {
       cwd: cwd || process.cwd(),
       stdio: ["ignore", "pipe", "pipe"], // Need pipes to capture output
-      detached: false,
+      detached: true, // Create new process group
       shell: true, // This allows the command to be executed as-is by the shell
       env: {
         ...process.env,
@@ -118,12 +118,19 @@ export const stopProcess = async (
       return { success: true };
     }
 
-    childProcess.kill(KillSignal.SIGTERM);
+    // Kill the entire process group (negative PID)
+    if (childProcess.pid) {
+      process.kill(-childProcess.pid, KillSignal.SIGTERM);
+    }
 
     // Give process time to gracefully shut down, then force kill
     setTimeout(() => {
-      if (runningProcesses.has(processId)) {
-        childProcess.kill(KillSignal.SIGKILL);
+      if (runningProcesses.has(processId) && childProcess.pid) {
+        try {
+          process.kill(-childProcess.pid, KillSignal.SIGKILL);
+        } catch (_e) {
+          // Process group might already be dead
+        }
       }
     }, PROCESS_KILL_TIMEOUT_MS);
 
