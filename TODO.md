@@ -12,6 +12,7 @@
 
 - Build icons
 - Generate DMG instead of .app
+- README: Installation instructions
 
 ## Later
 

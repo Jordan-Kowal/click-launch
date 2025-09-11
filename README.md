@@ -3,6 +3,7 @@
 Desktop app for managing your local dev stack - configure once, launch everything with a click.
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
+![Release](https://img.shields.io/github/v/release/Jordan-Kowal/click-launch)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
 ![Electron](https://img.shields.io/badge/Electron-191970?logo=Electron&logoColor=white)
