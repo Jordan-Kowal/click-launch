@@ -2,9 +2,7 @@
 
 ## Feature: Handle actions
 
-- Search logs
-  - With highlight?
-  - Input delay + loading layer on top
+- With highlight?
 - Options:
   - Auto-scroll on refresh
   - Wrap long lines

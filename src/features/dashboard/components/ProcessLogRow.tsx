@@ -5,9 +5,10 @@ import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 
 type ProcessLogRowProps = {
   log: ProcessLogData;
+  index: number;
 };
 
-export const ProcessLogRow = memo(({ log }: ProcessLogRowProps) => {
+export const ProcessLogRow = memo(({ log, index }: ProcessLogRowProps) => {
   if (log.type === LogType.EXIT) {
     return (
       <div>
@@ -21,7 +22,7 @@ export const ProcessLogRow = memo(({ log }: ProcessLogRowProps) => {
   const segments = parseAnsiToSegments(log.output || "");
 
   return (
-    <div>
+    <div data-log-index={index}>
       <span className="text-gray-500 italic">[{log.timestamp}]</span>
       {segments.map((segment, segIndex) => (
         <span
