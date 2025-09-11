@@ -2,7 +2,6 @@
 
 ## Feature: Handle actions
 
-- With highlight?
 - Options:
   - Auto-scroll on refresh
   - Wrap long lines

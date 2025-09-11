@@ -45,11 +45,10 @@ export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
 
   let lastIndex = 0;
   let currentClasses: string[] = [];
-  let match: RegExpExecArray | null = ansiRegex.exec(text);
+  let match: RegExpExecArray | null;
 
-  while (match !== null) {
-    match = ansiRegex.exec(text);
-    if (match === null) break;
+  // biome-ignore lint/suspicious/noAssignInExpressions: Supported
+  while ((match = ansiRegex.exec(text)) !== null) {
     // Add text before the ANSI code
     if (match.index > lastIndex) {
       const textSegment = text.slice(lastIndex, match.index);

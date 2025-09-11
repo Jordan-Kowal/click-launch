@@ -229,13 +229,21 @@ export const ProcessLogModal = memo(
                 </div>
               ) : (
                 <div className="font-mono text-sm space-y-1">
-                  {logs.map((log, index) => (
-                    <ProcessLogRow
-                      key={`${log.timestamp}-${index}`}
-                      log={log}
-                      index={index}
-                    />
-                  ))}
+                  {logs.map((log, index) => {
+                    const isCurrentMatch =
+                      currentMatchIndex >= 0 &&
+                      matchingLogIndices[currentMatchIndex] === index;
+
+                    return (
+                      <ProcessLogRow
+                        key={`${log.timestamp}-${index}`}
+                        log={log}
+                        index={index}
+                        searchTerm={search}
+                        isCurrentMatch={isCurrentMatch}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
