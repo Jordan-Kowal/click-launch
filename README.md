@@ -12,6 +12,8 @@ Desktop app for managing your local dev stack - configure once, launch everythin
   - [📖 Overview](#-overview)
   - [✨ Features](#-features)
   - [📦 Installation](#-installation)
+    - [Download](#download)
+    - [First Run](#first-run)
   - [⚙️ Configuration](#️-configuration)
     - [Root Configuration](#root-configuration)
     - [Process Configuration](#process-configuration)
@@ -27,7 +29,9 @@ Desktop app for managing your local dev stack - configure once, launch everythin
 
 ## 📖 Overview
 
-**Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click. Perfect for developers working with complex local stacks who want to eliminate the repetitive task of starting their development environment.
+**Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click.
+
+**Latest release - [ClickLaunch-1.0.0.dmg](https://github.com/Jordan-Kowal/click-launch/releases/download/1.0.0/ClickLaunch-1.0.0.dmg)**
 
 ## ✨ Features
 
