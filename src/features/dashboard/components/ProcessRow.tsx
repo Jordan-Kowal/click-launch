@@ -126,7 +126,6 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
             data-testid="logs-button"
             onClick={openModal}
             title="View logs"
-            // disabled={!processId}
           >
             <ScrollText size={16} />
           </button>
