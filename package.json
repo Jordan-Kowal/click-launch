@@ -92,7 +92,7 @@
   },
   "build": {
     "appId": "app.jkdev.click-launch",
-    "productName": "Click Launch",
+    "productName": "ClickLaunch",
     "directories": {
       "output": "release"
     },
@@ -101,7 +101,11 @@
       "dist-electron/**/*"
     ],
     "mac": {
-      "target": "dir"
+      "target": "dmg",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "dmg": {
+      "format": "UDRW"
     }
   }
 }
