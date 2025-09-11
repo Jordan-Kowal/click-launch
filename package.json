@@ -100,6 +100,10 @@
       "dist/**/*",
       "dist-electron/**/*"
     ],
+    "compression": "maximum",
+    "nsis": {
+      "oneClick": false
+    },
     "mac": {
       "target": "dmg",
       "artifactName": "${productName}-${version}.${ext}"

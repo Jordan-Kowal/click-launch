@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => ({
         },
         vite: {
           build: {
-            sourcemap: true,
-            minify: false,
+            sourcemap: false,
+            minify: true,
             outDir: "dist-electron",
             rollupOptions: {
               external: ["electron"],
@@ -39,8 +39,8 @@ export default defineConfig(({ mode }) => ({
         },
         vite: {
           build: {
-            sourcemap: "inline",
-            minify: false,
+            sourcemap: false,
+            minify: true,
             outDir: "dist-electron",
             rollupOptions: {
               external: ["electron"],
