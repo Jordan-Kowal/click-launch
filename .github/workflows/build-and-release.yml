@@ -23,6 +23,8 @@ jobs:
 
       - name: Build app
         run: yarn build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload DMG to release
         uses: softprops/action-gh-release@v1
