@@ -1,14 +1,24 @@
-# <img src="public/app-icon.png" alt="Click Launch Logo" width="60" height="60" style="position: relative; top: 16px;"/> Click Launch
+# ✨ Click Launch ✨
 
-Desktop app for managing your local dev stack - configure once, launch everything with a click.
+<div align="middle">
+  <div>
+    <img src="public/app-icon.png" alt="Click Launch Logo" width="250" height="250" style="position: relative; top: 16px;"/>
+  </div>
+  <strong>Desktop app for managing your local dev stack - configure once, launch everything with a click.</strong>
+  <br />
+  <br />
+  <div>
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+  <img src="https://img.shields.io/github/v/release/Jordan-Kowal/click-launch" alt="Release" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Electron-191970?logo=Electron&logoColor=white" alt="Electron" />
+  </div>
+  <br />
+  <br />
+</div>
 
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Release](https://img.shields.io/github/v/release/Jordan-Kowal/click-launch)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
-![Electron](https://img.shields.io/badge/Electron-191970?logo=Electron&logoColor=white)
-
-- [Click Launch](#-click-launch)
+- [✨ Click Launch ✨](#-click-launch-)
   - [📖 Overview](#-overview)
   - [✨ Features](#-features)
   - [📦 Installation](#-installation)
