@@ -81,8 +81,11 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
   const hasOptions = args && args.length > 0;
 
   return (
-    <tr data-testid={`process-row-${index}`}>
-      <td className="align-top w-auto min-w-0">
+    <tr
+      data-testid={`process-row-${index}`}
+      className={`${index % 2 !== 0 ? "bg-neutral-100" : ""}`}
+    >
+      <td className="align-top w-auto min-w-0 !p-2">
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex flex-col gap-0 min-w-0">
             <div className="truncate" data-testid="process-name">
@@ -98,7 +101,7 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
           </div>
           {hasOptions && (
             <div
-              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8 mt-2 ${!showOptions ? "hidden" : ""}`}
+              className={`flex flex-col gap-2 ${!showOptions ? "hidden" : ""}`}
               data-testid={`process-options-${index}`}
             >
               {args!.map((arg) => (
@@ -108,7 +111,7 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
           )}
         </div>
       </td>
-      <td className="align-top w-32 flex-shrink-0">
+      <td className="align-top w-32 flex-shrink-0 !p-2">
         <div className="flex flex-col items-start gap-1">
           <div className={`badge ${statusVariant}`}>{status}</div>
           <ProcessDuration
@@ -117,7 +120,7 @@ const ProcessRow: React.FC<ProcessRowProps> = memo(({ index, openModal }) => {
           />
         </div>
       </td>
-      <td className="align-top w-32 flex-shrink-0">
+      <td className="align-top w-32 flex-shrink-0 !p-2">
         <div className="flex items-center gap-2">
           <PlayStopButton />
           <button

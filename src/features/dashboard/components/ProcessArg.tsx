@@ -63,12 +63,12 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
 
   if (type === ArgType.TOGGLE) {
     return (
-      <div className="grid grid-cols-[2fr_3fr] gap-2 items-center px-2">
-        <span className="text-xs font-medium">{name}:</span>
+      <div className="flex flex-row items-center gap-2">
+        <span className="text-xs font-bold w-40">{name}:</span>
         <input
           type="checkbox"
           checked={value}
-          className="toggle toggle-primary toggle-xs justify-self-start"
+          className="toggle toggle-primary justify-self-start"
           onChange={onToggleChange}
           data-testid={`${name}-toggle`}
           disabled={!canEdit}
@@ -79,10 +79,10 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
 
   if (type === ArgType.SELECT) {
     return (
-      <div className="grid grid-cols-[2fr_3fr] gap-2 items-center px-2">
-        <span className="text-xs font-medium">{name}:</span>
+      <div className="flex flex-row items-center gap-2">
+        <span className="text-xs font-bold w-40">{name}:</span>
         <select
-          className="select select-sm select-primary w-full"
+          className="select select-sm select-primary max-w-50"
           data-testid={`${name}-select`}
           onChange={onSelectChange}
           disabled={!canEdit}
@@ -99,11 +99,11 @@ export const ProcessArg = memo(({ argConfig }: ProcessArgProps) => {
 
   if (type === ArgType.INPUT) {
     return (
-      <div className="grid grid-cols-[2fr_3fr] gap-2 items-center px-2">
-        <span className="text-xs font-medium">{name}:</span>
+      <div className="flex flex-row items-center gap-2">
+        <span className="text-xs font-bold w-40">{name}:</span>
         <input
           type="text"
-          className="input input-sm input-primary w-full"
+          className="input input-sm input-primary max-w-50"
           data-testid={`${name}-input`}
           value={value}
           onInput={onInputChange}
