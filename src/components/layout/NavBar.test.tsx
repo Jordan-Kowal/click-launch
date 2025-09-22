@@ -21,19 +21,6 @@ describe.concurrent("NavBar", () => {
     expect(navbar).toHaveTextContent("Click Launch");
   });
 
-  test("should handle redirects", ({ expect }) => {
-    const { container } = render(<NavBar />);
-
-    const navbar = getByTestId<HTMLDivElement>(container, "navbar");
-    const homeLink = getByTestId<HTMLLinkElement>(
-      container,
-      "navbar-home-link",
-    );
-
-    expect(navbar).toBeVisible();
-    expect(homeLink.href).toMatch(/\/$/);
-  });
-
   test("home button does nothing when on homepage", ({ expect }) => {
     useLocationMock.mockReturnValue(["/", navigateMock]);
 

@@ -1,9 +1,9 @@
 import { House } from "lucide-react";
 import type React from "react";
 import { memo, useCallback, useRef } from "react";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { navigationPaths } from "@/router";
-import { Modal } from "../ui";
+import { Logo, Modal } from "../ui";
 
 export const NavBar: React.FC = memo(() => {
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -25,14 +25,14 @@ export const NavBar: React.FC = memo(() => {
       data-testid="navbar"
       className="navbar fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-100 drag-region pl-24"
     >
-      <div className="navbar-start">
-        <Link
-          href={navigationPaths.homepage}
-          data-testid={"navbar-home-link"}
-          className="no-drag"
-        >
+      <div className="navbar-start" />
+      <div className="navbar-center relative -left-8">
+        <div className="flex flex-row items-center gap-2">
+          <div className="max-w-8">
+            <Logo />
+          </div>
           <span className="text-xl font-bold">Click Launch</span>
-        </Link>
+        </div>
       </div>
       <div className="navbar-end">
         <div className="tooltip tooltip-left" data-tip="Homepage">
