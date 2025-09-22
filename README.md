@@ -55,11 +55,27 @@
 
 ### Download
 
+**Option 1: One-line installer (Recommended)**. It will download the latest release and install it to your Applications folder.
+
+```bash
+curl -s https://api.github.com/repos/Jordan-Kowal/click-launch/releases/latest | \
+  grep "browser_download_url.*zip" | \
+  cut -d '"' -f 4 | \
+  xargs curl -L -o /tmp/clicklaunch.zip && \
+  unzip -q /tmp/clicklaunch.zip -d /tmp && \
+  xattr -cr /tmp/*.app && \
+  mv /tmp/*.app /Applications/ && \
+  rm /tmp/clicklaunch.zip
+```
+
+**Option 2: Manual installation**
+
 1. Go to the [Releases page](https://github.com/Jordan-Kowal/click-launch/releases)
 2. Download the latest `ClickLaunch-x.x.x.zip` file
 3. Double-click the ZIP file to extract it
-4. Drag the ClickLaunch.app to your Applications folder
-5. Launch the app from Applications or Spotlight
+4. Run: `xattr -cr ClickLaunch.app` to remove quarantine attributes (because I'm not registered on the Apple Store)
+5. Drag the ClickLaunch.app to your Applications folder
+6. Launch the app from Applications or Spotlight
 
 ### First Run
 
