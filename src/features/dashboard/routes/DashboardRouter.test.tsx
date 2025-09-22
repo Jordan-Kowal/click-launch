@@ -1,5 +1,6 @@
 import { getByTestId, render } from "@testing-library/react";
 import { beforeEach, describe, test, vi } from "vitest";
+import { AppStorageProvider } from "@/contexts";
 import type { YamlConfig } from "@/electron/types";
 import {
   navigateMock,
@@ -11,7 +12,11 @@ import {
 import { DashboardRouter } from "./DashboardRouter";
 
 vi.mock("../pages/Dashboard", () => ({
-  default: () => <div data-testid="dashboard-page">Dashboard Page</div>,
+  default: () => (
+    <AppStorageProvider>
+      <div data-testid="dashboard-page">Dashboard Page</div>
+    </AppStorageProvider>
+  ),
 }));
 
 const mockValidConfig: YamlConfig = {
@@ -43,7 +48,11 @@ describe("DashboardRouter", () => {
   }) => {
     useSearchMock.mockReturnValue("");
 
-    const { container } = render(<DashboardRouter />);
+    const { container } = render(
+      <AppStorageProvider>
+        <DashboardRouter />
+      </AppStorageProvider>,
+    );
 
     expect(container.firstChild).toBeNull();
     expect(toastMock.error).toHaveBeenCalledWith("No project file selected.");
@@ -55,7 +64,11 @@ describe("DashboardRouter", () => {
   }) => {
     useSearchMock.mockReturnValue("?file=");
 
-    const { container } = render(<DashboardRouter />);
+    const { container } = render(
+      <AppStorageProvider>
+        <DashboardRouter />
+      </AppStorageProvider>,
+    );
 
     expect(container.firstChild).toBeNull();
     expect(toastMock.error).toHaveBeenCalledWith("No project file selected.");
@@ -65,7 +78,11 @@ describe("DashboardRouter", () => {
   test("renders dashboard when selectedFile exists", ({ expect }) => {
     useSearchMock.mockReturnValue("?file=%2Fpath%2Fto%2Ffile.yaml");
 
-    const { container } = render(<DashboardRouter />);
+    const { container } = render(
+      <AppStorageProvider>
+        <DashboardRouter />
+      </AppStorageProvider>,
+    );
     const dashboard = getByTestId(container, "dashboard-page");
 
     expect(dashboard).toBeInTheDocument();

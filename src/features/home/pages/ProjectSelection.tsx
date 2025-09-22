@@ -3,7 +3,8 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
-import { useRecentProjects, useSelectFile } from "@/hooks";
+import { useAppStorage } from "@/contexts";
+import { useSelectFile } from "@/hooks";
 import { getLatestVersion } from "@/utils/versionCheck";
 import { ProjectItem } from "../components";
 
@@ -11,7 +12,7 @@ const SHOWN_PROJECTS_MAX = 5;
 
 const ProjectSelection: React.FC = memo(() => {
   const handleOpenProject = useSelectFile();
-  const { projects, removeProjects } = useRecentProjects();
+  const { projects, removeProjects } = useAppStorage();
   const [latestVersion, setLatestVersion] = useState<string | null>(null);
 
   const shownProjects = useMemo(

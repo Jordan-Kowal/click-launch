@@ -6,12 +6,14 @@ import {
   renderHook,
 } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { ThemeProvider } from "@/contexts";
+import { AppStorageProvider, ThemeProvider } from "@/contexts";
 
 const wrapComponent = (children: ReactNode) => (
   <ThemeProvider>
-    {children}
-    <Toaster />
+    <AppStorageProvider>
+      {children}
+      <Toaster />
+    </AppStorageProvider>
   </ThemeProvider>
 );
 

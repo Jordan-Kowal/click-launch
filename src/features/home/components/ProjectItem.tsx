@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { memo, useCallback } from "react";
 import { useLocation } from "wouter";
-import { useRecentProjects } from "@/hooks";
+import { useAppStorage } from "@/contexts";
 import { navigationPaths } from "@/router";
 
 type ProjectItemProps = {
@@ -12,7 +12,7 @@ type ProjectItemProps = {
 export const ProjectItem: React.FC<ProjectItemProps> = memo(
   ({ project, index }) => {
     const [, navigate] = useLocation();
-    const { removeProject } = useRecentProjects();
+    const { removeProject } = useAppStorage();
 
     const handleRecentProject = useCallback(
       (filePath: string) => {

@@ -5,6 +5,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { beforeEach, describe, test } from "vitest";
+import { AppStorageProvider } from "@/contexts";
 import type { YamlConfig } from "@/electron/types";
 import { validateYamlMock } from "@/tests/mocks/globals";
 import { DashboardProvider, useDashboardContext } from "./DashboardContext";
@@ -34,9 +35,11 @@ describe("DashboardContext", () => {
     expect,
   }) => {
     render(
-      <DashboardProvider selectedFile={null}>
-        <div data-testid="child">Test Child</div>
-      </DashboardProvider>,
+      <AppStorageProvider>
+        <DashboardProvider selectedFile={null}>
+          <div data-testid="child">Test Child</div>
+        </DashboardProvider>
+      </AppStorageProvider>,
     );
 
     expect(validateYamlMock).not.toHaveBeenCalled();
@@ -44,9 +47,11 @@ describe("DashboardContext", () => {
 
   test("Context renders children correctly", ({ expect }) => {
     const { container } = render(
-      <DashboardProvider selectedFile="/test/file.yaml">
-        <div data-testid="child">Test Child</div>
-      </DashboardProvider>,
+      <AppStorageProvider>
+        <DashboardProvider selectedFile="/test/file.yaml">
+          <div data-testid="child">Test Child</div>
+        </DashboardProvider>
+      </AppStorageProvider>,
     );
 
     const child = getByTestId(container, "child");
@@ -58,9 +63,11 @@ describe("DashboardContext", () => {
   }) => {
     const { result } = renderHook(() => useDashboardContext(), {
       wrapper: ({ children }) => (
-        <DashboardProvider selectedFile="/test/file.yaml">
-          {children}
-        </DashboardProvider>
+        <AppStorageProvider>
+          <DashboardProvider selectedFile="/test/file.yaml">
+            {children}
+          </DashboardProvider>
+        </AppStorageProvider>
       ),
     });
 
@@ -82,9 +89,11 @@ describe("DashboardContext", () => {
   }) => {
     const { result } = renderHook(() => useDashboardContext(), {
       wrapper: ({ children }) => (
-        <DashboardProvider selectedFile="/test/file.yaml">
-          {children}
-        </DashboardProvider>
+        <AppStorageProvider>
+          <DashboardProvider selectedFile="/test/file.yaml">
+            {children}
+          </DashboardProvider>
+        </AppStorageProvider>
       ),
     });
 

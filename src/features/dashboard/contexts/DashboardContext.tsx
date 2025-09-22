@@ -8,8 +8,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useAppStorage } from "@/contexts";
 import type { ValidationResult, YamlConfig } from "@/electron/types";
-import { useRecentProjects } from "@/hooks";
 
 type DashboardContextType = {
   isLoading: boolean;
@@ -42,7 +42,7 @@ export const DashboardProvider = memo(
     const [yamlConfig, setYamlConfig] = useState<YamlConfig | null>(null);
     const [rootDirectory, setRootDirectory] = useState<string | null>(null);
     const [errors, setErrors] = useState<ValidationResult["errors"]>([]);
-    const { registerProject } = useRecentProjects();
+    const { registerProject } = useAppStorage();
 
     const parseFile = useCallback(async () => {
       setIsLoading(true);
