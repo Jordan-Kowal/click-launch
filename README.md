@@ -1,4 +1,4 @@
-# ✨ Click Launch ✨
+# <img src="public/logo.png" alt="Click Launch Logo" width="40" height="40" style="position: relative; top: 4px;"/> Click Launch
 
 Desktop app for managing your local dev stack - configure once, launch everything with a click.
 
@@ -8,7 +8,7 @@ Desktop app for managing your local dev stack - configure once, launch everythin
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
 ![Electron](https://img.shields.io/badge/Electron-191970?logo=Electron&logoColor=white)
 
-- [✨ Click Launch ✨](#-click-launch-)
+- [Click Launch](#-click-launch)
   - [📖 Overview](#-overview)
   - [✨ Features](#-features)
   - [📦 Installation](#-installation)

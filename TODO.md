@@ -1,4 +1,4 @@
 # TODO
 
-- Provide logo
-- Build icons
+- Update logo in: build scripts
+- Rework option selection
