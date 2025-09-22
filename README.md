@@ -1,4 +1,4 @@
-# <img src="public/logo.png" alt="Click Launch Logo" width="40" height="40" style="position: relative; top: 4px;"/> Click Launch
+# <img src="public/app-icon.png" alt="Click Launch Logo" width="60" height="60" style="position: relative; top: 16px;"/> Click Launch
 
 Desktop app for managing your local dev stack - configure once, launch everything with a click.
 
