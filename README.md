@@ -58,14 +58,7 @@
 **Option 1: One-line installer (Recommended)**. It will download the latest release and install it to your Applications folder.
 
 ```bash
-curl -s https://api.github.com/repos/Jordan-Kowal/click-launch/releases/latest | \
-  grep "browser_download_url.*zip" | \
-  cut -d '"' -f 4 | \
-  xargs curl -L -o /tmp/clicklaunch.zip && \
-  unzip -q /tmp/clicklaunch.zip -d /tmp && \
-  xattr -cr /tmp/*.app && \
-  mv /tmp/*.app /Applications/ && \
-  rm /tmp/clicklaunch.zip
+curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/install.sh | bash
 ```
 
 **Option 2: Manual installation**
