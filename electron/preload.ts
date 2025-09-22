@@ -4,6 +4,8 @@ import type { ValidationResult } from "./utils/extractYamlConfig";
 contextBridge.exposeInMainWorld("electronAPI", {
   platform: process.platform,
   version: process.versions.electron,
+  getResourcePath: (filename: string): Promise<string> =>
+    ipcRenderer.invoke("app:getResourcePath", filename),
   openFileDialog: (): Promise<string | undefined> =>
     ipcRenderer.invoke("dialog:openFile"),
   validateYaml: (filePath: string): Promise<ValidationResult> =>

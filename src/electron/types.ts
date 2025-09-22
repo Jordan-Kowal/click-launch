@@ -70,6 +70,7 @@ export type ProcessLogData = {
 export interface ElectronAPI {
   platform: string;
   version: string;
+  getResourcePath: (filename: string) => Promise<string>;
   openFileDialog: () => Promise<string | undefined>;
   validateYaml: (filePath: string) => Promise<ValidationResult>;
   validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;

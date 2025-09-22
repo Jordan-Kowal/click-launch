@@ -131,6 +131,16 @@ app.whenReady().then(() => {
     return { success: true };
   });
 
+  // IPC handler for getting resource paths
+  ipcMain.handle("app:getResourcePath", async (_, filename: string) => {
+    if (app.isPackaged) {
+      // Production: return file:// URL for bundled resources
+      return `file://${join(process.resourcesPath, filename)}`;
+    }
+    // Development: return regular path for dev server
+    return `/${filename}`;
+  });
+
   app.on("activate", () => {
     const windows = BrowserWindow.getAllWindows();
     if (windows.length === 0) {

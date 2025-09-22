@@ -79,6 +79,7 @@ export default defineConfig(({ mode }) => ({
       "@electron": resolve(__dirname, "./electron"),
     },
   },
+  base: "./",
   build: {
     outDir: "dist",
     emptyOutDir: true,

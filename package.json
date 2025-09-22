@@ -98,16 +98,25 @@
     },
     "files": [
       "dist/**/*",
-      "dist-electron/**/*"
+      "dist-electron/**/*",
+      "public/logo.png",
+      "public/logo.icns"
     ],
     "asarUnpack": [],
+    "extraResources": [
+      {
+        "from": "public/logo.png",
+        "to": "logo.png"
+      }
+    ],
     "compression": "maximum",
     "nsis": {
       "oneClick": false
     },
     "mac": {
       "target": "dmg",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}.${ext}",
+      "icon": "./public/logo.icns"
     },
     "dmg": {
       "format": "UDRW"

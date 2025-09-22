@@ -4,6 +4,7 @@ export const navigateMock = vi.fn();
 export const useLocationMock = vi.fn(() => ["/", navigateMock]);
 export const useSearchMock = vi.fn(() => "");
 
+export const getResourcePathMock = vi.fn().mockResolvedValue("/logo.png");
 export const openFileDialogMock = vi.fn();
 export const validateYamlMock = vi.fn();
 export const validatePathsMock = vi.fn();
@@ -16,6 +17,7 @@ export const removeProcessLogListenerMock = vi.fn();
 export const electronAPIMock = {
   platform: "darwin",
   version: "1.0.0",
+  getResourcePath: getResourcePathMock,
   openFileDialog: openFileDialogMock,
   validateYaml: validateYamlMock,
   validatePaths: validatePathsMock,
