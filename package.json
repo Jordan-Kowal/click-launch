@@ -115,10 +115,14 @@
     "mac": {
       "target": "dmg",
       "artifactName": "${productName}-${version}.${ext}",
-      "icon": "./public/app-icon.icns"
+      "icon": "./public/app-icon.icns",
+      "identity": null,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": false
     },
     "dmg": {
-      "format": "UDRW"
+      "format": "UDRW",
+      "sign": false
     },
     "publish": null
   }
