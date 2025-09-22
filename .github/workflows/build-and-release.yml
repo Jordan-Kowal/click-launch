@@ -39,14 +39,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
-      - name: Remove quarantine attributes from DMG
-        run: |
-          xattr -cr release/*.dmg || true
-          xattr -d com.apple.quarantine release/*.dmg || true
-
-      - name: Upload DMG to release
+      - name: Upload ZIP to release
         uses: softprops/action-gh-release@v1
         with:
-          files: release/*.dmg
+          files: release/*.zip
         env:
           GITHUB_TOKEN: ${{ github.token }}

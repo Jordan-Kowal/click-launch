@@ -113,16 +113,10 @@
       "oneClick": false
     },
     "mac": {
-      "target": "dmg",
+      "target": "zip",
       "artifactName": "${productName}-${version}.${ext}",
       "icon": "./public/app-icon.icns",
-      "identity": null,
-      "gatekeeperAssess": false,
-      "hardenedRuntime": false
-    },
-    "dmg": {
-      "format": "UDRW",
-      "sign": false
+      "identity": null
     },
     "publish": null
   }

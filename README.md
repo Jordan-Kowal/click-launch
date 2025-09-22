@@ -41,7 +41,7 @@
 
 **Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click.
 
-**Latest release - [ClickLaunch-1.0.0.dmg](https://github.com/Jordan-Kowal/click-launch/releases/download/1.0.0/ClickLaunch-1.0.0.dmg)**
+**Latest release - [ClickLaunch-1.0.0.zip](https://github.com/Jordan-Kowal/click-launch/releases/download/1.0.0/ClickLaunch-1.0.0.zip)**
 
 ## ✨ Features
 
@@ -56,9 +56,9 @@
 ### Download
 
 1. Go to the [Releases page](https://github.com/Jordan-Kowal/click-launch/releases)
-2. Download the latest `ClickLaunch-x.x.x.dmg` file
-3. Double-click the DMG file to open it
-4. Drag the ClickLaunch app to your Applications folder
+2. Download the latest `ClickLaunch-x.x.x.zip` file
+3. Double-click the ZIP file to extract it
+4. Drag the ClickLaunch.app to your Applications folder
 5. Launch the app from Applications or Spotlight
 
 ### First Run
