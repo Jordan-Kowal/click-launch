@@ -16,7 +16,7 @@ export const onProcessLogMock = vi.fn();
 export const removeProcessLogListenerMock = vi.fn();
 export const electronAPIMock = {
   platform: "darwin",
-  version: "1.0.0",
+  version: "1.0.1",
   getResourcePath: getResourcePathMock,
   openFileDialog: openFileDialogMock,
   validateYaml: validateYamlMock,

@@ -1,6 +1,6 @@
 {
   "name": "click-launch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist-electron/main.js",
   "license": "MIT",
   "author": "Jordan Kowal",
@@ -115,7 +115,9 @@
     "mac": {
       "target": {
         "target": "zip",
-        "arch": ["arm64"]
+        "arch": [
+          "arm64"
+        ]
       },
       "artifactName": "${productName}-${version}.${ext}",
       "icon": "./public/app-icon.icns",
