@@ -99,8 +99,7 @@
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
-      "public/logo.png",
-      "public/logo.icns"
+      "public/**/*"
     ],
     "asarUnpack": [],
     "extraResources": [
@@ -116,7 +115,7 @@
     "mac": {
       "target": "dmg",
       "artifactName": "${productName}-${version}.${ext}",
-      "icon": "./public/logo.icns"
+      "icon": "./public/app-icon.icns"
     },
     "dmg": {
       "format": "UDRW"
