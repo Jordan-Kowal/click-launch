@@ -108,12 +108,15 @@
         "to": "logo.png"
       }
     ],
-    "compression": "maximum",
+    "compression": "normal",
     "nsis": {
       "oneClick": false
     },
     "mac": {
-      "target": "zip",
+      "target": {
+        "target": "zip",
+        "arch": ["arm64"]
+      },
       "artifactName": "${productName}-${version}.${ext}",
       "icon": "./public/app-icon.icns",
       "identity": null
