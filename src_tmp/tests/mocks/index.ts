@@ -1,1 +1,0 @@
-export { registerGlobalMocks } from "./globals";

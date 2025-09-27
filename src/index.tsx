@@ -3,10 +3,8 @@ import "solid-devtools";
 import "./config/dayjs";
 import "./styles/index.css";
 
-import { Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 import App from "./App";
-import { routes } from "./routes";
 
 const root = document.getElementById("root");
 
@@ -16,7 +14,4 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(
-  () => <Router root={(props) => <App>{props.children}</App>}>{routes}</Router>,
-  root!,
-);
+render(() => <App />, root!);

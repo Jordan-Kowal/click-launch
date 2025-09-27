@@ -1,20 +1,18 @@
-import { type Component, type JSX, Suspense } from "solid-js";
+import { Router } from "@solidjs/router";
+import { type Component, Suspense } from "solid-js";
 import { DEFAULT_THEME } from "./config/daisyui";
+import { routes } from "./routes";
 
-type AppProps = {
-  children: JSX.Element;
-};
-
-const App: Component<AppProps> = (props) => {
+const App: Component = () => {
   return (
-    <div
+    <main
       data-theme={DEFAULT_THEME}
       class="min-w-full prose prose-sm md:prose-base"
     >
-      <main>
-        <Suspense>{props.children}</Suspense>
-      </main>
-    </div>
+      <Router root={(props) => <Suspense>{props.children}</Suspense>}>
+        {routes}
+      </Router>
+    </main>
   );
 };
 

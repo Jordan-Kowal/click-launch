@@ -1,1 +1,1 @@
-export const DEFAULT_THEME = "retro";
+export const DEFAULT_THEME = "bumblebee";
