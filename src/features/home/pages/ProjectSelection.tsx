@@ -2,7 +2,7 @@ import { Download, FolderOpen, History } from "lucide-solid";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { HeroLayout } from "@/components/layout";
 import { Logo } from "@/components/ui";
-import { useAppStorage } from "@/contexts";
+import { useAppStorageContext } from "@/contexts";
 import { useSelectFile } from "@/hooks";
 import { getLatestVersion } from "@/utils/versionCheck";
 import { ProjectItem } from "../components";
@@ -11,7 +11,7 @@ const SHOWN_PROJECTS_MAX = 5;
 
 const ProjectSelection = () => {
   const handleOpenProject = useSelectFile();
-  const { projects, removeProjects } = useAppStorage();
+  const { projects, removeProjects } = useAppStorageContext();
   const [latestVersion, setLatestVersion] = createSignal<string | null>(null);
 
   const shownProjects = createMemo(() =>

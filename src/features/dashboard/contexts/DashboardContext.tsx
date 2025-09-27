@@ -5,7 +5,7 @@ import {
   type JSX,
   useContext,
 } from "solid-js";
-import { useAppStorage } from "@/contexts";
+import { useAppStorageContext } from "@/contexts";
 import type { ValidationResult, YamlConfig } from "@/electron/types";
 
 type DashboardContextType = {
@@ -23,7 +23,9 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
   if (!context) {
-    throw new Error("useDashboard must be used within a DashboardProvider");
+    throw new Error(
+      "useDashboardContext must be used within a DashboardProvider",
+    );
   }
   return context;
 };
@@ -38,7 +40,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   const [yamlConfig, setYamlConfig] = createSignal<YamlConfig | null>(null);
   const [rootDirectory, setRootDirectory] = createSignal<string | null>(null);
   const [errors, setErrors] = createSignal<ValidationResult["errors"]>([]);
-  const { registerProject } = useAppStorage();
+  const { registerProject } = useAppStorageContext();
 
   const parseFile = async () => {
     setIsLoading(true);

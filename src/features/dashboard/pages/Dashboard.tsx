@@ -6,6 +6,8 @@ import { useDashboardContext } from "../contexts/";
 const Dashboard = () => {
   const { isLoading, errors, yamlConfig } = useDashboardContext();
 
+  console.log(isLoading(), errors(), yamlConfig());
+
   if (isLoading()) {
     return (
       <HeroLayout class="text-center">

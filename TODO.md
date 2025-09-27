@@ -1,7 +1,6 @@
 # TODO
 
 - Change daisyUI Theme
-  - Remove context
 - Update homepage design:
   - Card structure
   - Gradient background

@@ -1,1 +1,1 @@
-export { AppStorageProvider, useAppStorage } from "./AppStorageProvider";
+export { AppStorageProvider, useAppStorageContext } from "./AppStorageProvider";

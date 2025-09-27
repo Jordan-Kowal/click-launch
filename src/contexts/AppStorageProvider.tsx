@@ -15,10 +15,12 @@ const AppStorageContext = createContext<AppStorageContextProps | undefined>(
   undefined,
 );
 
-export const useAppStorage = (): AppStorageContextProps => {
+export const useAppStorageContext = (): AppStorageContextProps => {
   const context = useContext(AppStorageContext);
   if (!context) {
-    throw new Error("useAppStorage must be used within an AppStorageProvider");
+    throw new Error(
+      "useAppStorageContext must be used within an AppStorageProvider",
+    );
   }
   return context;
 };

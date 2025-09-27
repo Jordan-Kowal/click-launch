@@ -33,7 +33,7 @@ const ProcessContext = createContext<ProcessContextType | undefined>(undefined);
 export const useProcessContext = () => {
   const context = useContext(ProcessContext);
   if (!context) {
-    throw new Error("useProcess must be used within a ProcessProvider");
+    throw new Error("useProcessContext must be used within a ProcessProvider");
   }
   return context;
 };
