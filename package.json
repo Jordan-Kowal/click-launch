@@ -34,18 +34,20 @@
   "scripts": {
     "clean": "rimraf dist dist-electron release",
     "start": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
-    "build": "yarn clean && tsc && vite build && electron-builder",
-    "build:dev": "yarn clean && tsc && vite build && electron-builder --dir",
+    "build": "pnpm clean && tsc && vite build && electron-builder",
+    "build:dev": "pnpm clean && tsc && vite build && electron-builder --dir",
     "biome:check": "biome check ./src ./electron",
     "biome:check:fix": "biome check ./src ./electron --write --unsafe",
     "test": "(export NODE_NO_WARNINGS=1 && vitest)",
-    "test:coverage": "(export NODE_NO_WARNINGS=1 && vitest --coverage --silent)",
-    "quality": "yarn biome:check && yarn tsc"
+    "tsc": "tsc"
   },
   "dependencies": {
+    "@solidjs/router": "0.15.3",
     "dayjs": "1.11.18",
+    "es-toolkit": "1.39.10",
     "fix-path": "^5.0.0",
-    "js-yaml": "4.1.0"
+    "js-yaml": "4.1.0",
+    "solid-js": "1.9.9"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
@@ -73,6 +75,7 @@
     "i18next-parser": "9.3.0",
     "jsdom": "27.0.0",
     "lucide-react": "0.544.0",
+    "lucide-solid": "0.544.0",
     "million": "3.1.11",
     "postcss": "8.5.6",
     "react": "19.1.1",
@@ -80,12 +83,14 @@
     "react-toastify": "11.0.5",
     "rimraf": "6.0.1",
     "rollup-plugin-visualizer": "6.0.3",
+    "solid-devtools": "0.34.3",
     "tailwindcss": "4.1.13",
     "ts-node": "10.9.2",
     "typescript": "5.9.2",
     "vite": "7.1.7",
     "vite-plugin-electron": "0.29.0",
     "vite-plugin-electron-renderer": "0.14.6",
+    "vite-plugin-solid": "2.11.8",
     "vitest": "3.2.4",
     "wait-on": "9.0.1",
     "wouter": "3.7.1"

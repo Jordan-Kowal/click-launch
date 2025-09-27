@@ -3,10 +3,13 @@ set -eu
 
 echo "---------- Git hook: pre-commit ----------"
 
-echo ">>> [1/2] Running code quality checks (biome, tsc)"
-yarn quality
+echo ">>> [1/3] Running biome"
+pnpm biome:check
 
-echo ">>> [2/2] Running tests"
-yarn test
+echo ">>> [2/3] Running tsc"
+pnpm tsc
+
+echo ">>> [3/3] Running tests"
+pnpm test
 
 echo "------------------------------------------"

@@ -13,28 +13,28 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: ./yarn.lock
+          node-version: "22" # Cached by github (https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#nodejs)
+          cache: "pnpm"
+          cache-dependency-path: ./pnpm-lock.yaml
 
       - name: Cache dependencies
         id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
-            ~/.yarn
+            ~/.pnpm-store
             ./node_modules
-          key: yarn-macos-${{ hashFiles('./yarn.lock') }}
+          key: pnpm-${{ hashFiles('./pnpm-lock.yaml') }}
 
       - name: Configure git to use HTTPS
         run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
 
       - name: Install dependencies
         if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
-        run: yarn install
+        run: pnpm install
 
       - name: Build app
-        run: yarn build
+        run: pnpm build
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CSC_IDENTITY_AUTO_DISCOVERY: false

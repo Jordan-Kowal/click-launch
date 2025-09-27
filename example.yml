@@ -2,7 +2,7 @@ project_name: "Development Services"
 
 processes:
   - name: "Web Server"
-    base_command: "yarn start"
+    base_command: "pnpm start"
     args:
       - type: "toggle"
         name: "Arg1"

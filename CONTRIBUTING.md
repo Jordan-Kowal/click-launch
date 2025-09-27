@@ -6,17 +6,17 @@ Simply setup the githooks, install the dependencies, and start the application.
 
 ```shell
 git config core.hooksPath .githooks
-yarn install
-yarn start
+pnpm install
+pnpm start
 ```
 
 ## QA
 
 We use `vitest` for testing (on both electron and react) and `biome` as our all-in-one linter and type checker.
 
-- `yarn quality` runs both `biome` and `tsc`
-- `yarn test` runs the tests
-- `yarn test:coverage` runs the tests with coverage
+- `pnpm quality` runs both `biome` and `tsc`
+- `pnpm test` runs the tests
+- `pnpm test:coverage` runs the tests with coverage
 
 ## CI/CD
 
