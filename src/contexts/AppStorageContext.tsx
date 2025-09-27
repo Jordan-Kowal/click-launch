@@ -11,9 +11,7 @@ export type AppStorageContextProps = {
   projects: () => string[];
 };
 
-const AppStorageContext = createContext<AppStorageContextProps | undefined>(
-  undefined,
-);
+const AppStorageContext = createContext<AppStorageContextProps>();
 
 export const useAppStorageContext = (): AppStorageContextProps => {
   const context = useContext(AppStorageContext);
@@ -30,15 +28,15 @@ export type AppStorageProviderProps = {
 };
 
 export const AppStorageProvider = (props: AppStorageProviderProps) => {
-  const [storageValue, setStorageValue] =
-    useLocalStorage<string>(RECENT_PROJECTS_KEY);
+  const [storageValue, setStorageValue] = useLocalStorage(RECENT_PROJECTS_KEY);
 
   const projects = createMemo((): string[] => {
+    console.log("projects", storageValue());
     const value = storageValue();
     if (!value) return [];
     try {
       return JSON.parse(value);
-    } catch (_) {
+    } catch {
       setStorageValue("[]");
       return [];
     }
