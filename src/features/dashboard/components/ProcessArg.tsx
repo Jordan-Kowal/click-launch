@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, Match, Switch } from "solid-js";
 import { ArgType } from "@/electron/enums";
 import type { ArgConfig } from "@/electron/types";
-import { useProcessContext } from "../contexts/ProcessContext";
+import { useProcessContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
 
 type ProcessArgProps = {

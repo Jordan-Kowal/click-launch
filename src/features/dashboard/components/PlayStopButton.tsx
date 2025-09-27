@@ -1,6 +1,6 @@
 import { Play, Square } from "lucide-solid";
 import { Match, Switch } from "solid-js";
-import { useProcessContext } from "../contexts/ProcessContext";
+import { useProcessContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
 
 export const PlayStopButton = () => {

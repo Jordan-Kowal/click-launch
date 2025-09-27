@@ -9,7 +9,7 @@ import {
 import toast from "solid-toast";
 import type { ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
-import { ProcessContext, type ProcessContextType } from "./process-context";
+import { ProcessContext, type ProcessContextType } from "./ProcessContext";
 
 const POLL_STATUS_INTERVAL_MS = 1000; // Simple 1s polling
 

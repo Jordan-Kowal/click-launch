@@ -3,7 +3,7 @@ import { useLocalStorage } from "../hooks";
 import {
   AppStorageContext,
   type AppStorageContextProps,
-} from "./app-storage-context";
+} from "./AppStorageContext";
 
 const RECENT_PROJECTS_KEY = "recent-projects";
 const MAX = 10;

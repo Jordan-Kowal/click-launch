@@ -1,2 +1,2 @@
-export { DashboardProvider, useDashboardContext } from "./DashboardContext";
-export { ProcessProvider, useProcessContext } from "./ProcessContext";
+export { DashboardProvider, useDashboardContext } from "./DashboardProvider";
+export { ProcessProvider, useProcessContext } from "./ProcessProvider";

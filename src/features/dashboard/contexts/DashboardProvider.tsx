@@ -4,7 +4,7 @@ import type { ValidationResult, YamlConfig } from "@/electron/types";
 import {
   DashboardContext,
   type DashboardContextType,
-} from "./dashboard-context";
+} from "./DashboardContext";
 
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
