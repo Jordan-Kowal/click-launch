@@ -24,7 +24,7 @@ importers:
         specifier: 1.9.9
         version: 1.9.9
       solid-toast:
-        specifier: ^0.5.0
+        specifier: 0.5.0
         version: 0.5.0(solid-js@1.9.9)
     devDependencies:
       '@biomejs/biome':

@@ -1,6 +1,7 @@
 import { Router } from "@solidjs/router";
 import { type Component, Suspense } from "solid-js";
-import { LoadingRing, Toaster } from "./components/ui";
+import { Toaster } from "solid-toast";
+import { LoadingRing } from "./components/ui";
 import { DEFAULT_THEME } from "./config/daisyui";
 import { AppStorageProvider } from "./contexts";
 import { routes } from "./routes";
@@ -19,7 +20,12 @@ const App: Component = () => {
         >
           {routes}
         </Router>
-        <Toaster />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 5000,
+          }}
+        />
       </AppStorageProvider>
     </main>
   );
