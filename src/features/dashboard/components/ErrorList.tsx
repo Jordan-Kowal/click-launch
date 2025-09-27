@@ -7,11 +7,8 @@ export const ErrorList = () => {
   const { errors, parseFile } = useDashboardContext();
   const handleOpenProject = useSelectFile();
 
-  if (errors().length === 0) {
-    return null;
-  }
-
   return (
+    <Show when={errors().length > 0}>
     <div class="mt-4">
       <div
         role="alert"
@@ -62,5 +59,6 @@ export const ErrorList = () => {
         </For>
       </ul>
     </div>
+    </Show>
   );
 };

@@ -26,9 +26,6 @@ const ProjectSelection = () => {
         await window.electronAPI.validatePaths(projectList);
       if (invalidPaths.length === 0) return;
       removeProjects(invalidPaths);
-      console.log(
-        `Removed ${invalidPaths.length} invalid project(s) from recent list`,
-      );
     } catch (_) {}
   };
 

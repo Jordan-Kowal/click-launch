@@ -31,7 +31,6 @@ export const AppStorageProvider = (props: AppStorageProviderProps) => {
   const [storageValue, setStorageValue] = useLocalStorage(RECENT_PROJECTS_KEY);
 
   const projects = createMemo((): string[] => {
-    console.log("projects", storageValue());
     const value = storageValue();
     if (!value) return [];
     try {
