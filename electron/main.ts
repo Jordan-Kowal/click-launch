@@ -1,7 +1,13 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import fixPath from "fix-path";
+
+// ES module equivalent of __dirname
+// @ts-expect-error
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 fixPath();
 

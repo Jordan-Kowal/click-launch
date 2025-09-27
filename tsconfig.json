@@ -1,36 +1,42 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+    // General
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "target": "ESNext",
+    "allowJs": false,
 
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
+    // Modules
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "jsx": "react-jsx",
 
+    // Type Checking & Safety
     "strict": true,
+    "types": ["vite/client", "solid-js"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
 
-    "allowJs": true,
-    "checkJs": false,
-
+    // Paths
     "paths": {
       "@/*": ["./src/*"],
       "@electron/*": ["./electron/*"]
-    }
+    },
+
+    // Output
+    "outDir": "dist"
   },
-  "include": ["src/**/*", "postcss.config.js", "tailwind.config.js"],
+  "include": ["src/**/*"],
   "exclude": ["dist", "dist-electron", "node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,8 +1,5 @@
 import type { RouteDefinition } from "@solidjs/router";
-import {
-  type ProjectRouteKey,
-  projectRoutes,
-} from "@/features/home/routes";
+import { type ProjectRouteKey, projectRoutes } from "@/features/home/routes";
 
 export type RouteKey = ProjectRouteKey;
 

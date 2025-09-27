@@ -1,22 +1,24 @@
 import { resolve } from "node:path";
-import react from "@vitejs/plugin-react";
-import million from "million/compiler";
+import tailwindcss from "@tailwindcss/vite";
+import devtools from "solid-devtools/vite";
 import { defineConfig } from "vite";
 import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
+import solidPlugin from "vite-plugin-solid";
 import pkg from "./package.json";
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
   plugins: [
-    million.vite({ auto: true }),
-    react(),
+    devtools(),
+    solidPlugin(),
+    tailwindcss(),
     electron([
       {
         entry: "electron/main.ts",
-        onstart(options) {
+        onstart(options: { startup: () => void }) {
           if (options.startup) {
             options.startup();
           }
@@ -38,7 +40,7 @@ export default defineConfig(({ mode }) => ({
       },
       {
         entry: "electron/preload.ts",
-        onstart(options) {
+        onstart(options: { reload: () => void }) {
           options.reload();
         },
         vite: {
@@ -62,17 +64,6 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5173,
   },
-  esbuild: {
-    loader: "tsx",
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        ".js": "jsx",
-        ".ts": "tsx",
-      },
-    },
-  },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
@@ -81,6 +72,7 @@ export default defineConfig(({ mode }) => ({
   },
   base: "./",
   build: {
+    target: "esnext",
     outDir: "dist",
     emptyOutDir: true,
   },
