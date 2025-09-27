@@ -9,13 +9,11 @@ type ModalProps = {
 
 export const Modal = (props: ModalProps) => {
   const [isLoading, setIsLoading] = createSignal(false);
+  let dialogElement: HTMLDialogElement | undefined;
 
   const closeModal = () => {
     setIsLoading(false);
-    if (typeof props.ref === "function") {
-      return;
-    }
-    props.ref?.close();
+    dialogElement?.close();
   };
 
   const handleConfirm = async () => {
@@ -28,8 +26,17 @@ export const Modal = (props: ModalProps) => {
     }
   };
 
+  const handleRef = (el: HTMLDialogElement) => {
+    dialogElement = el;
+    if (typeof props.ref === "function") {
+      props.ref(el);
+    } else {
+      props.ref = el;
+    }
+  };
+
   return (
-    <dialog ref={props.ref} class="modal">
+    <dialog ref={handleRef} class="modal">
       <div class="modal-box">
         {props.children}
         {props.closable && (
