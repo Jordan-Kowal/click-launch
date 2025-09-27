@@ -10,8 +10,7 @@
 
 ## TBD
 
-- ✨ Greatly improved performances when searching through logs.
-- ✨ Limited log size to 1000 lines to prevent memory issues.
+- ✨ Logs: Improved log performances (batching, rolling buffer, improved search)
 - 🔧 Migrated from `React` to `SolidJS` to improve performance.
 - 🔧 Changed from `yarn` to `pnpm` as the package manager.
 

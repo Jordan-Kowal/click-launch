@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, Search, Trash2, X } from "lucide-solid";
-import { createEffect, createSignal, For, onCleanup, Show } from "solid-js";
+import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { useProcessContext } from "../contexts";
@@ -10,12 +10,15 @@ type ProcessLogModalProps = {
   onClose: () => void;
 };
 
-const MAX_LOGS = 1000; // Limit to prevent memory issues
+const MAX_LOGS = 2_000;
+const BATCH_DELAY_MS = 500;
+const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 
 export const ProcessLogModal = (props: ProcessLogModalProps) => {
   const { name: processName, processId } = useProcessContext();
 
   const [logs, setLogs] = createSignal<ProcessLogData[]>([]);
+  const [pendingLogs, setPendingLogs] = createSignal<ProcessLogData[]>([]);
   const [search, setSearch] = createSignal("");
   const [currentMatchIndex, setCurrentMatchIndex] = createSignal(-1);
   const [matchingLogIndices, setMatchingLogIndices] = createSignal<number[]>(
@@ -27,33 +30,60 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
 
   let logsContainerRef!: HTMLDivElement;
   const logRefs = new Map<number, HTMLElement>();
+  let batchTimer: number | null = null;
+
+  const flushLogs = () => {
+    const pending = pendingLogs();
+    if (pending.length === 0) return;
+    setLogs((prev) => {
+      const combined = [...prev, ...pending];
+      return combined.length > MAX_LOGS ? combined.slice(-MAX_LOGS) : combined;
+    });
+    setPendingLogs([]);
+  };
 
   const addLog = (logData: ProcessLogData) => {
     if (isPaused()) return;
-    setLogs((prev) => {
-      const newLogs = [...prev, logData];
-      // Use circular buffer to prevent memory issues
-      return newLogs.length > MAX_LOGS ? newLogs.slice(-MAX_LOGS) : newLogs;
-    });
+    setPendingLogs((prev) => [...prev, logData]);
+    // Use shorter batch time when auto-scroll is enabled for better UX
+    const batchDelay = autoScroll()
+      ? BATCH_DELAY_MS_AUTO_SCROLL
+      : BATCH_DELAY_MS;
+    // Start batch timer if not already running
+    if (batchTimer === null) {
+      batchTimer = window.setTimeout(() => {
+        flushLogs();
+        batchTimer = null;
+      }, batchDelay);
+    }
   };
 
-  // Auto-scroll to bottom when new logs are added or modal opens
-  createEffect(() => {
+  const scrollToBottom = () => {
     if (autoScroll() && logsContainerRef) {
-      // Small delay to ensure DOM is rendered
       setTimeout(() => {
         if (logsContainerRef) {
-          logsContainerRef.scrollTop = logsContainerRef.scrollHeight;
+          logsContainerRef.scrollTo({
+            top: logsContainerRef.scrollHeight,
+            behavior: "smooth",
+          });
         }
-      }, 100);
+      }, 50);
     }
-  });
+  };
+
+  // Auto-scroll to bottom when logs are rendered
+  createEffect(on(logs, scrollToBottom));
 
   const clearLogs = () => {
     setLogs([]);
+    setPendingLogs([]);
     setSearch("");
     setCurrentMatchIndex(-1);
     setMatchingLogIndices([]);
+    if (batchTimer !== null) {
+      clearTimeout(batchTimer);
+      batchTimer = null;
+    }
   };
 
   const onSearchChange = (e: Event) => {
@@ -137,6 +167,11 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     onCleanup(() => {
       if (window.electronAPI) {
         window.electronAPI.removeProcessLogListener();
+      }
+      if (batchTimer !== null) {
+        clearTimeout(batchTimer);
+        flushLogs(); // Flush any remaining logs on cleanup
+        batchTimer = null;
       }
     });
   });

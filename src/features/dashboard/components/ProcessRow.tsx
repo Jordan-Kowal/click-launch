@@ -76,7 +76,7 @@ const ProcessRow = (props: ProcessRowProps) => {
   const hasOptions = () => args && args.length > 0;
 
   return (
-    <tr class={`${props.index % 2 !== 0 ? "bg-neutral-100" : ""}`}>
+    <tr class={`${props.index % 2 !== 0 ? "bg-neutral-50" : ""}`}>
       <td class="align-top w-auto min-w-0 !p-2">
         <div class="flex flex-col gap-2 min-w-0">
           <div class="flex flex-col gap-0 min-w-0">
