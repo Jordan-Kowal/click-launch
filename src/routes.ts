@@ -1,12 +1,14 @@
 import type { RouteDefinition } from "@solidjs/router";
+import { type DashboardRouteKey, dashboardRoutes } from "@/features/dashboard/routes.tsx";
 import { type ProjectRouteKey, projectRoutes } from "@/features/home/routes";
 
-export type RouteKey = ProjectRouteKey;
+export type RouteKey = ProjectRouteKey | DashboardRouteKey;
 
 export type RouteConfigMap = Record<RouteKey, RouteDefinition>;
 
 export const routeConfigMap: RouteConfigMap = {
   ...projectRoutes,
+  ...dashboardRoutes,
 };
 
 export const routes: RouteDefinition[] = Object.values(routeConfigMap);

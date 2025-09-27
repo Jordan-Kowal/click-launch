@@ -1,6 +1,7 @@
 import { useNavigate } from "@solidjs/router";
 import { X } from "lucide-solid";
 import { useAppStorage } from "@/contexts";
+import { routePaths } from "@/routes";
 
 type ProjectItemProps = {
   project: string;
@@ -12,8 +13,7 @@ export const ProjectItem = (props: ProjectItemProps) => {
   const { removeProject } = useAppStorage();
 
   const handleRecentProject = (filePath: string) => {
-    // TODO: Use route paths
-    navigate(`/dashboard?file=${encodeURIComponent(filePath)}`);
+    navigate(`${routePaths.dashboard}?file=${encodeURIComponent(filePath)}`);
   };
 
   return (

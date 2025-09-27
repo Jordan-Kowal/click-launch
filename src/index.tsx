@@ -1,6 +1,5 @@
 /* @refresh reload */
 import "solid-devtools";
-import "./config/dayjs";
 import "./styles/index.css";
 
 import { render } from "solid-js/web";

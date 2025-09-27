@@ -1,0 +1,159 @@
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  type JSX,
+  onCleanup,
+  useContext,
+} from "solid-js";
+import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
+import { ProcessStatus } from "../enums";
+
+const POLL_STATUS_INTERVAL_MS = 500;
+
+type ProcessContextType = {
+  // Raw
+  name: string;
+  args: ArgConfig[] | undefined;
+  processId: () => ProcessId | null;
+  // Computed
+  command: () => string;
+  status: () => ProcessStatus;
+  startTime: () => Date | null;
+  // Actions
+  updateCommand: (argName: string, value: string) => void;
+  startProcess: () => void;
+  stopProcess: () => void;
+};
+
+const ProcessContext = createContext<ProcessContextType | undefined>(undefined);
+
+export const useProcessContext = () => {
+  const context = useContext(ProcessContext);
+  if (!context) {
+    throw new Error("useProcess must be used within a ProcessProvider");
+  }
+  return context;
+};
+
+type ProcessProviderProps = {
+  children: JSX.Element;
+  process: ProcessConfig;
+  rootDirectory: string;
+};
+
+export const ProcessProvider = (props: ProcessProviderProps) => {
+  const [argValues, setArgValues] = createSignal<Record<string, string>>({});
+  const [status, setStatus] = createSignal(ProcessStatus.STOPPED);
+  const [processId, setProcessId] = createSignal<ProcessId | null>(null);
+  const [startTime, setStartTime] = createSignal<Date | null>(null);
+
+  let pollStatusInterval: number | null = null;
+
+  const shouldPoll = createMemo(
+    () =>
+      status() === ProcessStatus.RUNNING || status() === ProcessStatus.STARTING,
+  );
+
+  const command = createMemo(() => {
+    const outputArgs = Object.values(argValues());
+    let output = props.process.base_command;
+    if (outputArgs.length > 0) {
+      output = `${output} ${outputArgs.join(" ")}`;
+    }
+    return output;
+  });
+
+  const updateCommand = (argName: string, value: string) => {
+    setArgValues((prev) => ({ ...prev, [argName]: value }));
+  };
+
+  const startProcess = async () => {
+    setStatus(ProcessStatus.STARTING);
+    const result = await window.electronAPI.startProcess(
+      props.rootDirectory,
+      command(),
+    );
+    if (result.success && result.processId) {
+      setProcessId(result.processId);
+      setStartTime(new Date());
+      setStatus(ProcessStatus.RUNNING);
+    } else {
+      setStatus(ProcessStatus.CRASHED);
+      // TODO: Add toast notification
+      console.log(result.error || "Failed to start process");
+    }
+  };
+
+  const stopProcess = async () => {
+    const pid = processId();
+    if (!pid) return;
+    setStatus(ProcessStatus.STOPPING);
+    const result = await window.electronAPI.stopProcess(pid);
+    if (result.success) {
+      setStatus(ProcessStatus.STOPPED);
+      setStartTime(null);
+    } else {
+      setStatus(ProcessStatus.RUNNING);
+      // TODO: Add toast notification
+      console.log(result.error || "Failed to stop process");
+    }
+  };
+
+  // Fetch status every X ms
+  createEffect(() => {
+    const pid = processId();
+    if (!pid || !shouldPoll()) return;
+
+    pollStatusInterval = setInterval(async () => {
+      const isRunning = await window.electronAPI!.getProcessStatus(pid);
+      const newStatus = isRunning
+        ? ProcessStatus.RUNNING
+        : ProcessStatus.STOPPED;
+      setStatus(newStatus);
+    }, POLL_STATUS_INTERVAL_MS);
+
+    onCleanup(() => {
+      if (pollStatusInterval) {
+        clearInterval(pollStatusInterval);
+        pollStatusInterval = null;
+      }
+    });
+  });
+
+  // Set start time when process starts
+  createEffect(() => {
+    if (status() === ProcessStatus.RUNNING) {
+      setStartTime(new Date());
+    } else {
+      setStartTime(null);
+    }
+  });
+
+  // On status change, notify if crashed
+  createEffect(() => {
+    if (status() === ProcessStatus.CRASHED) {
+      // TODO: Add toast notification
+      console.log(`${props.process.name} crashed`);
+    }
+  });
+
+  const context: ProcessContextType = {
+    name: props.process.name,
+    args: props.process.args,
+    processId,
+    command,
+    status,
+    startTime,
+    updateCommand,
+    startProcess,
+    stopProcess,
+  };
+
+  return (
+    <ProcessContext.Provider value={context}>
+      {props.children}
+    </ProcessContext.Provider>
+  );
+};

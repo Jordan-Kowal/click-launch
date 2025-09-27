@@ -37,6 +37,7 @@ You are an expert in TypeScript, Node.js, SolidJS, Vite, Tailwind + DaisyUI, and
 12. **Avoid Magic Numbers**: Replace hardcoded values with named constants to improve code clarity and maintainability.
 13. **Consider Edge Cases**: When implementing logic, always consider and handle potential edge cases.
 14. **Use Assertions**: Include assertions wherever possible to validate assumptions and catch potential errors early.
+15. **Use Route Constants**: Never hardcode route paths as strings. Always use the `routePaths` constant from the centralized routing configuration.
 
 ## Key Principles
 
