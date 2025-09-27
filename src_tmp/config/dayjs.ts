@@ -9,6 +9,17 @@ dayjs.extend(calendar);
 dayjs.extend(updateLocale);
 dayjs.extend(weekOfYear);
 
+dayjs.updateLocale("fr", {
+  calendar: {
+    sameDay: "[Aujourd'hui à] HH:mm",
+    nextDay: "[Demain à] HH:mm",
+    nextWeek: "dddd [prochain à] HH:mm",
+    lastDay: "[Hier à] HH:mm",
+    lastWeek: "dddd [dernier à] HH:mm",
+    sameElse: "[Le] DD/MM/YYYY [à] HH:mm",
+  },
+});
+
 dayjs.updateLocale("en", {
   calendar: {
     sameDay: "[Today at] HH:mm",

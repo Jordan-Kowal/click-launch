@@ -1,17 +1,11 @@
-import type { RouteConfigItem } from "@/router";
-import ProjectSelection from "./pages/ProjectSelection";
+import type { RouteDefinition } from "@solidjs/router";
+import ProjectSelection from "./pages/ProjecSelection";
 
-export type HomeRouteKey = "homepage";
-export type HomeNavigationKey = "homepage";
+export type ProjectRouteKey = "projectSelection";
 
-export const homeRoutes: Record<HomeRouteKey, RouteConfigItem> = {
-  homepage: {
+export const projectRoutes: Record<ProjectRouteKey, RouteDefinition> = {
+  projectSelection: {
     path: "/",
     component: ProjectSelection,
-    key: "homepage",
   },
-};
-
-export const homeNavigationPaths: Record<HomeNavigationKey, string> = {
-  homepage: "/",
 };
