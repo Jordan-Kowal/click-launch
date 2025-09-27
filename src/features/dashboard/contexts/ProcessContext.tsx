@@ -7,6 +7,7 @@ import {
   onCleanup,
   useContext,
 } from "solid-js";
+import toast from "solid-toast";
 import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
 
@@ -81,8 +82,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
       setStatus(ProcessStatus.RUNNING);
     } else {
       setStatus(ProcessStatus.CRASHED);
-      // TODO: Add toast notification
-      console.log(result.error || "Failed to start process");
+      toast.error(`Failed to start ${props.process.name}`);
     }
   };
 
@@ -96,8 +96,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
       setStartTime(null);
     } else {
       setStatus(ProcessStatus.RUNNING);
-      // TODO: Add toast notification
-      console.log(result.error || "Failed to stop process");
+      toast.error(`Failed to stop ${props.process.name}`);
     }
   };
 
@@ -134,8 +133,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
   // On status change, notify if crashed
   createEffect(() => {
     if (status() === ProcessStatus.CRASHED) {
-      // TODO: Add toast notification
-      console.log(`${props.process.name} crashed`);
+      toast.error(`${props.process.name} crashed`);
     }
   });
 

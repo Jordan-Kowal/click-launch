@@ -1,6 +1,6 @@
 import { Router } from "@solidjs/router";
 import { type Component, Suspense } from "solid-js";
-import { LoadingRing } from "./components/ui";
+import { LoadingRing, Toaster } from "./components/ui";
 import { DEFAULT_THEME } from "./config/daisyui";
 import { AppStorageProvider } from "./contexts";
 import { routes } from "./routes";
@@ -19,6 +19,7 @@ const App: Component = () => {
         >
           {routes}
         </Router>
+        <Toaster />
       </AppStorageProvider>
     </main>
   );
