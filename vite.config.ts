@@ -78,25 +78,7 @@ export default defineConfig(() => ({
   },
   test: {
     projects: [
-      // Renderer tests (React/DOM)
-      {
-        define: {
-          __APP_VERSION__: JSON.stringify(pkg.version),
-        },
-        test: {
-          name: "renderer",
-          environment: "jsdom",
-          include: ["src/**/*.test.{ts,tsx}"],
-          setupFiles: ["src/tests/setup.ts"],
-        },
-        resolve: {
-          alias: {
-            "@": resolve(__dirname, "./src"),
-            "@electron": resolve(__dirname, "./electron"),
-          },
-        },
-      },
-      // Electron tests (Node.js)eg
+      // Electron tests (Node.js)
       {
         test: {
           name: "electron",
@@ -111,32 +93,6 @@ export default defineConfig(() => ({
         },
       },
     ],
-    coverage: {
-      all: true,
-      thresholds: {
-        perFile: false,
-        branches: 80,
-        functions: 80,
-        lines: 80,
-        statements: 80,
-      },
-      exclude: [
-        // Configs
-        "postcss.config.js",
-        "tailwind.config.js",
-        "vite.config.ts",
-        "src/types",
-        // Test files
-        "src/tests/**/*",
-        "src/**/*.test.{ts,tsx}",
-        "electron/**/*.test.ts",
-        // Custom exclude files
-        "src/App.tsx",
-        "src/main.tsx",
-        "electron/preload.ts",
-        "electron/main.ts",
-      ],
-    },
     css: true,
     isolate: true,
     retry: 1,

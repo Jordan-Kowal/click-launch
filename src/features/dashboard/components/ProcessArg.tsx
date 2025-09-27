@@ -85,9 +85,7 @@ export const ProcessArg = (props: ProcessArgProps) => {
           >
             <For each={values}>
               {(valueOption) => (
-                <option value={valueOption.value}>
-                  {valueOption.value}
-                </option>
+                <option value={valueOption.value}>{valueOption.value}</option>
               )}
             </For>
           </select>

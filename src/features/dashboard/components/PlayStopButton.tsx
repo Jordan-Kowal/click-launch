@@ -8,7 +8,12 @@ export const PlayStopButton = () => {
 
   return (
     <Switch>
-      <Match when={status() === ProcessStatus.STOPPED || status() === ProcessStatus.CRASHED}>
+      <Match
+        when={
+          status() === ProcessStatus.STOPPED ||
+          status() === ProcessStatus.CRASHED
+        }
+      >
         <button
           type="button"
           class="btn btn-primary btn-circle btn-sm"
@@ -19,10 +24,7 @@ export const PlayStopButton = () => {
       </Match>
 
       <Match when={status() === ProcessStatus.STARTING}>
-        <button
-          type="button"
-          class="btn btn-primary btn-circle btn-sm"
-        >
+        <button type="button" class="btn btn-primary btn-circle btn-sm">
           <span class="loading loading-spinner" />
         </button>
       </Match>
@@ -38,10 +40,7 @@ export const PlayStopButton = () => {
       </Match>
 
       <Match when={status() === ProcessStatus.STOPPING}>
-        <button
-          type="button"
-          class="btn btn-error btn-circle btn-sm"
-        >
+        <button type="button" class="btn btn-error btn-circle btn-sm">
           <span class="loading loading-spinner" />
         </button>
       </Match>

@@ -14,7 +14,7 @@ export const FadeIn = (props: FadeInProps) => {
     return () => clearTimeout(timer);
   });
 
-  const opacityClass = () => isVisible() ? "opacity-100" : "opacity-0";
+  const opacityClass = () => (isVisible() ? "opacity-100" : "opacity-0");
 
   return (
     <div class={`transition-opacity duration-1500 ${opacityClass()}`}>

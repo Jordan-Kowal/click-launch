@@ -26,7 +26,10 @@ export const ProcessRowWrapper = (props: ProcessRowWrapperProps) => {
   };
 
   return (
-    <ProcessProvider process={props.process} rootDirectory={props.rootDirectory}>
+    <ProcessProvider
+      process={props.process}
+      rootDirectory={props.rootDirectory}
+    >
       <ProcessRow index={props.index} openModal={openModal} />
       <ProcessLogModal isOpen={modalIsOpen()} onClose={closeModal} />
     </ProcessProvider>
@@ -78,18 +81,14 @@ const ProcessRow = (props: ProcessRowProps) => {
         <div class="flex flex-col gap-2 min-w-0">
           <div class="flex flex-col gap-0 min-w-0">
             <div class="truncate">{name}</div>
-            <div class="text-xs italic text-gray-400 truncate">
-              {command()}
-            </div>
+            <div class="text-xs italic text-gray-400 truncate">{command()}</div>
             <Show when={hasOptions()}>{button()}</Show>
           </div>
           <Show when={hasOptions()}>
             <div
               class={`flex flex-col gap-2 ${!showOptions() ? "hidden" : ""}`}
             >
-              <For each={args!}>
-                {(arg) => <ProcessArg argConfig={arg} />}
-              </For>
+              <For each={args!}>{(arg) => <ProcessArg argConfig={arg} />}</For>
             </div>
           </Show>
         </div>

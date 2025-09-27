@@ -1,5 +1,8 @@
 import type { RouteDefinition } from "@solidjs/router";
-import { type DashboardRouteKey, dashboardRoutes } from "@/features/dashboard/routes.tsx";
+import {
+  type DashboardRouteKey,
+  dashboardRoutes,
+} from "@/features/dashboard/routes.tsx";
 import { type ProjectRouteKey, projectRoutes } from "@/features/home/routes";
 
 export type RouteKey = ProjectRouteKey | DashboardRouteKey;

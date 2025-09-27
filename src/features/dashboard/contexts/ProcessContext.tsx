@@ -50,7 +50,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
   const [processId, setProcessId] = createSignal<ProcessId | null>(null);
   const [startTime, setStartTime] = createSignal<Date | null>(null);
 
-  let pollStatusInterval: number | null = null;
+  let pollStatusInterval: ReturnType<typeof setInterval> | null = null;
 
   const shouldPoll = createMemo(
     () =>
