@@ -11,7 +11,7 @@ import toast from "solid-toast";
 import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
 
-const POLL_STATUS_INTERVAL_MS = 500;
+const POLL_STATUS_INTERVAL_MS = 1000; // Simple 1s polling
 
 type ProcessContextType = {
   // Raw
@@ -100,13 +100,13 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
     }
   };
 
-  // Fetch status every X ms
+  // Simple 1s polling
   createEffect(() => {
     const pid = processId();
     if (!pid || !shouldPoll()) return;
 
     pollStatusInterval = setInterval(async () => {
-      const isRunning = await window.electronAPI!.getProcessStatus(pid);
+      const isRunning = await window.electronAPI.getProcessStatus(pid);
       const newStatus = isRunning
         ? ProcessStatus.RUNNING
         : ProcessStatus.STOPPED;

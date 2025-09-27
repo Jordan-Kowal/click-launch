@@ -10,6 +10,8 @@ type ProcessLogModalProps = {
   onClose: () => void;
 };
 
+const MAX_LOGS = 1000; // Limit to prevent memory issues
+
 export const ProcessLogModal = (props: ProcessLogModalProps) => {
   const { name: processName, processId } = useProcessContext();
 
@@ -24,10 +26,15 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   const [isPaused, setIsPaused] = createSignal(false);
 
   let logsContainerRef!: HTMLDivElement;
+  const logRefs = new Map<number, HTMLElement>();
 
   const addLog = (logData: ProcessLogData) => {
     if (isPaused()) return;
-    setLogs((prev) => [...prev, logData]);
+    setLogs((prev) => {
+      const newLogs = [...prev, logData];
+      // Use circular buffer to prevent memory issues
+      return newLogs.length > MAX_LOGS ? newLogs.slice(-MAX_LOGS) : newLogs;
+    });
   };
 
   // Auto-scroll to bottom when new logs are added or modal opens
@@ -76,7 +83,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     setCurrentMatchIndex(matches.length > 0 ? 0 : -1);
   });
 
-  // Navigate to specific match
+  // Navigate to specific match using refs
   const goToMatch = (matchIndex: number) => {
     const indices = matchingLogIndices();
     if (
@@ -87,7 +94,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
       return;
     }
     const logIndex = indices[matchIndex];
-    const logElement = document.querySelector(`[data-log-index="${logIndex}"]`);
+    const logElement = logRefs.get(logIndex);
     if (logElement && logsContainerRef) {
       logElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
@@ -267,6 +274,13 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                         searchTerm={search()}
                         isCurrentMatch={isCurrentMatch()}
                         wrapLines={wrapLines()}
+                        ref={(el: HTMLDivElement | undefined) => {
+                          if (el) {
+                            logRefs.set(index(), el);
+                          } else {
+                            logRefs.delete(index());
+                          }
+                        }}
                       />
                     );
                   }}

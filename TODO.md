@@ -15,8 +15,3 @@
 - Search issues:
   - Doesnt always scroll
   - Cannt work while receiving logs -> counter gets reset
-
-- Migrate to SolidJS
-- Remove test files
-
-- Limit log size to like N lines because it slows down the app

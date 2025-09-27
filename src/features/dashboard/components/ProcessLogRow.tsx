@@ -1,4 +1,4 @@
-import { For, type JSX } from "solid-js";
+import { createMemo, For, type JSX } from "solid-js";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
@@ -9,15 +9,16 @@ type ProcessLogRowProps = {
   searchTerm?: string;
   isCurrentMatch?: boolean;
   wrapLines?: boolean;
+  ref?: (el: HTMLDivElement | undefined) => void;
 };
 
-const highlightSearchTerm = (text: string, searchTerm: string): JSX.Element => {
+const highlightSearchTerm = (
+  text: string,
+  searchTerm: string,
+  regex: RegExp,
+): JSX.Element => {
   if (!searchTerm) return text;
 
-  const regex = new RegExp(
-    `(${searchTerm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")})`,
-    "gi",
-  );
   const parts = text.split(regex);
 
   return (
@@ -44,10 +45,24 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
     );
   }
 
-  const segments = parseAnsiToSegments(props.log.output || "");
+  // Memoize expensive ANSI parsing - only recompute when log output changes
+  const segments = createMemo(() => {
+    const output = props.log.type === LogType.EXIT ? "" : props.log.output;
+    return parseAnsiToSegments(output || "");
+  });
+
+  // Memoize search regex - only recreate when search term changes
+  const searchRegex = createMemo(() => {
+    if (!props.searchTerm) return null;
+    return new RegExp(
+      `(${props.searchTerm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")})`,
+      "gi",
+    );
+  });
 
   return (
     <div
+      ref={props.ref}
       data-log-index={props.index}
       class={`${
         props.isCurrentMatch
@@ -56,11 +71,15 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
       } ${props.wrapLines ? "whitespace-pre-wrap break-words" : "whitespace-pre overflow-x-auto"}`}
     >
       <span class="text-gray-400 italic">[{props.log.timestamp}] </span>
-      <For each={segments}>
+      <For each={segments()}>
         {(segment) => (
           <span class={segment.classes.join(" ")}>
-            {props.searchTerm
-              ? highlightSearchTerm(segment.text, props.searchTerm)
+            {props.searchTerm && searchRegex()
+              ? highlightSearchTerm(
+                  segment.text,
+                  props.searchTerm,
+                  searchRegex()!,
+                )
               : segment.text}
           </span>
         )}
