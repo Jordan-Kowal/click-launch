@@ -1,24 +1,10 @@
-import {
-  createContext,
-  createEffect,
-  createSignal,
-  type JSX,
-  useContext,
-} from "solid-js";
+import { createEffect, createSignal, type JSX, useContext } from "solid-js";
 import { useAppStorageContext } from "@/contexts";
 import type { ValidationResult, YamlConfig } from "@/electron/types";
-
-type DashboardContextType = {
-  isLoading: () => boolean;
-  yamlConfig: () => YamlConfig | null;
-  rootDirectory: () => string | null;
-  errors: () => ValidationResult["errors"];
-  parseFile: () => Promise<void>;
-};
-
-const DashboardContext = createContext<DashboardContextType | undefined>(
-  undefined,
-);
+import {
+  DashboardContext,
+  type DashboardContextType,
+} from "./dashboard-context";
 
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);

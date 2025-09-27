@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup } from "solid-js";
+import { createEffect, createSignal, onCleanup, Show } from "solid-js";
 
 type ProcessDurationProps = {
   startTime: Date | null;
@@ -35,13 +35,11 @@ export const ProcessDuration = (props: ProcessDurationProps) => {
     onCleanup(() => clearInterval(interval));
   });
 
-  if (!props.startTime || !props.isRunning) {
-    return null;
-  }
-
   return (
-    <div class="text-xs text-gray-500 font-mono relative left-2">
-      {duration()}
-    </div>
+    <Show when={props.startTime && props.isRunning}>
+      <div class="text-xs text-gray-500 font-mono relative left-2">
+        {duration()}
+      </div>
+    </Show>
   );
 };

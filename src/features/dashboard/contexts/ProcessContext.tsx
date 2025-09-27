@@ -1,5 +1,4 @@
 import {
-  createContext,
   createEffect,
   createMemo,
   createSignal,
@@ -8,27 +7,11 @@ import {
   useContext,
 } from "solid-js";
 import toast from "solid-toast";
-import type { ArgConfig, ProcessConfig, ProcessId } from "@/electron/types";
+import type { ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
+import { ProcessContext, type ProcessContextType } from "./process-context";
 
 const POLL_STATUS_INTERVAL_MS = 1000; // Simple 1s polling
-
-type ProcessContextType = {
-  // Raw
-  name: string;
-  args: ArgConfig[] | undefined;
-  processId: () => ProcessId | null;
-  // Computed
-  command: () => string;
-  status: () => ProcessStatus;
-  startTime: () => Date | null;
-  // Actions
-  updateCommand: (argName: string, value: string) => void;
-  startProcess: () => void;
-  stopProcess: () => void;
-};
-
-const ProcessContext = createContext<ProcessContextType | undefined>(undefined);
 
 export const useProcessContext = () => {
   const context = useContext(ProcessContext);

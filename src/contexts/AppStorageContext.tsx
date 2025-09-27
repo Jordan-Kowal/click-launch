@@ -1,17 +1,12 @@
-import { createContext, createMemo, type JSX, useContext } from "solid-js";
+import { createMemo, type JSX, useContext } from "solid-js";
 import { useLocalStorage } from "../hooks";
+import {
+  AppStorageContext,
+  type AppStorageContextProps,
+} from "./app-storage-context";
 
 const RECENT_PROJECTS_KEY = "recent-projects";
 const MAX = 10;
-
-export type AppStorageContextProps = {
-  registerProject: (filepath: string) => void;
-  removeProject: (filepath: string) => void;
-  removeProjects: (filepaths: string[]) => void;
-  projects: () => string[];
-};
-
-const AppStorageContext = createContext<AppStorageContextProps>();
 
 export const useAppStorageContext = (): AppStorageContextProps => {
   const context = useContext(AppStorageContext);
