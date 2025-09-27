@@ -1,5 +1,5 @@
 import type { RouteDefinition } from "@solidjs/router";
-import ProjectSelection from "./pages/ProjecSelection";
+import ProjectSelection from "./pages/ProjectSelection";
 
 export type ProjectRouteKey = "projectSelection";
 

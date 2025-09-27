@@ -1,4 +1,5 @@
-import { contextBridge, ipcRenderer } from "electron";
+const { contextBridge, ipcRenderer } = require("electron");
+
 import type { ValidationResult } from "./utils/extractYamlConfig";
 
 contextBridge.exposeInMainWorld("electronAPI", {
@@ -22,7 +23,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   stopAllProcesses: () => ipcRenderer.invoke("process:stop-all"),
   // Process log streaming
   onProcessLog: (callback: (logData: any) => void) => {
-    ipcRenderer.on("process-log", (_, logData) => callback(logData));
+    ipcRenderer.on("process-log", (_: any, logData: any) => callback(logData));
   },
   removeProcessLogListener: () => {
     ipcRenderer.removeAllListeners("process-log");

@@ -9,14 +9,14 @@ export const routeConfigMap: RouteConfigMap = {
   ...projectRoutes,
 };
 
-export const pathToRoute: Record<string, RouteDefinition> = Object.values(
+export const routes: RouteDefinition[] = Object.values(routeConfigMap);
+
+export const routePaths: Record<RouteKey, string> = Object.entries(
   routeConfigMap,
 ).reduce(
-  (acc, route) => {
-    acc[route.path] = route;
+  (acc, [key, route]) => {
+    acc[key as RouteKey] = route.path;
     return acc;
   },
-  {} as Record<string, RouteDefinition>,
+  {} as Record<RouteKey, string>,
 );
-
-export const routes: RouteDefinition[] = Object.values(routeConfigMap);

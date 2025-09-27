@@ -1,6 +1,7 @@
 import { Router } from "@solidjs/router";
 import { type Component, Suspense } from "solid-js";
 import { DEFAULT_THEME } from "./config/daisyui";
+import { AppStorageProvider } from "./contexts";
 import { routes } from "./routes";
 
 const App: Component = () => {
@@ -9,9 +10,11 @@ const App: Component = () => {
       data-theme={DEFAULT_THEME}
       class="min-w-full prose prose-sm md:prose-base"
     >
-      <Router root={(props) => <Suspense>{props.children}</Suspense>}>
-        {routes}
-      </Router>
+      <AppStorageProvider>
+        <Router root={(props) => <Suspense>{props.children}</Suspense>}>
+          {routes}
+        </Router>
+      </AppStorageProvider>
     </main>
   );
 };

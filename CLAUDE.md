@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Persona
 
-You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, Wouter, and Electron.
+You are an expert in TypeScript, Node.js, SolidJS, Vite, Tailwind + DaisyUI, and Electron.
 
 ## Generic
 
@@ -76,15 +76,9 @@ You are an expert in TypeScript, Node.js, React, Vite, Tailwind + DaisyUI, Woute
 - Ensure the design remains responsive.
 - Optimize for accessibility (e.g., aria-attributes) when using components.
 
-## Performance Optimization
-
-- Use of `useCallback` and `useMemo` for fewer rerenders and better performances
-- Always wrap components in a memo call
-- Use efficient data structures and algorithms
-
 ## Dependencies
 
-- React (main framework)
+- SolidJS (main framework)
 - Dayjs (for dates)
 - DaisyUI + Tailwind (for styling)
 - Vite (for building)
