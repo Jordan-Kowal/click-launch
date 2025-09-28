@@ -55,6 +55,16 @@ const createWindow = (): void => {
     mainWindow.show();
   });
 
+  // Handle SPA routing failures - reload index.html when navigation fails
+  mainWindow.webContents.on("did-fail-load", () => {
+    stopAllProcesses();
+    if (isDev) {
+      mainWindow.loadURL("http://localhost:5173");
+    } else {
+      mainWindow.loadFile(join(__dirname, "../dist/index.html"));
+    }
+  });
+
   if (isDev) {
     mainWindow.loadURL("http://localhost:5173");
     mainWindow.webContents.openDevTools();

@@ -10,7 +10,8 @@
 
 ## TBD
 
-- ✨ Logs: Improved log performances (batching, rolling buffer, improved search)
+- ✨ Logs: Improved log performances (batching, rolling buffer, improved search).
+- 🐞 Fixed white screen on manual reload.
 - 🔧 Migrated from `React` to `SolidJS` to improve performance.
 - 🔧 Changed from `yarn` to `pnpm` as the package manager.
 
