@@ -1,11 +1,11 @@
 import type { RouteDefinition } from "@solidjs/router";
-import ProjectSelection from "./pages/ProjectSelection";
+import { lazy } from "solid-js";
 
 export type ProjectRouteKey = "projectSelection";
 
 export const projectRoutes: Record<ProjectRouteKey, RouteDefinition> = {
   projectSelection: {
     path: "/",
-    component: ProjectSelection,
+    component: lazy(() => import("./pages/ProjectSelection")),
   },
 };

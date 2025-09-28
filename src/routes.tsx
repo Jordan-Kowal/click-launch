@@ -14,7 +14,13 @@ export const routeConfigMap: RouteConfigMap = {
   ...dashboardRoutes,
 };
 
-export const routes: RouteDefinition[] = Object.values(routeConfigMap);
+export const routes: RouteDefinition[] = [
+  ...Object.values(routeConfigMap),
+  {
+    path: "*",
+    component: projectRoutes.projectSelection.component,
+  },
+];
 
 export const routePaths: Record<RouteKey, string> = Object.entries(
   routeConfigMap,

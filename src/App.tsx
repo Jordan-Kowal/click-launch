@@ -20,12 +20,7 @@ const App: Component = () => {
         >
           {routes}
         </Router>
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            duration: 5000,
-          }}
-        />
+        <Toaster position="bottom-right" toastOptions={{ duration: 5000 }} />
       </AppStorageProvider>
     </main>
   );
