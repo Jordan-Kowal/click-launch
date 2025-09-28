@@ -21,7 +21,7 @@ export const NavBar = () => {
   };
 
   return (
-    <div class="navbar fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-100 drag-region pl-24">
+    <div class="navbar fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-300 drag-region pl-24">
       <div class="navbar-start" />
       <div class="navbar-center relative -left-8">
         <div class="flex flex-row items-center gap-2">

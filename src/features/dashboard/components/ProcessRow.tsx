@@ -52,13 +52,12 @@ const ProcessRow = (props: ProcessRowProps) => {
       case ProcessStatus.STARTING:
       case ProcessStatus.RUNNING:
       case ProcessStatus.STOPPING:
-        return "badge-primary";
+        return "badge-info";
       case ProcessStatus.STOPPED:
-        return "badge-ghost";
       case ProcessStatus.CRASHED:
         return "badge-error";
       default:
-        return "badge-neutral";
+        return "badge-ghost";
     }
   });
 
@@ -76,11 +75,11 @@ const ProcessRow = (props: ProcessRowProps) => {
   const hasOptions = () => args && args.length > 0;
 
   return (
-    <tr class={`${props.index % 2 !== 0 ? "bg-neutral-50" : ""}`}>
+    <tr class={`${props.index % 2 !== 0 ? "bg-base-200" : ""}`}>
       <td class="align-top w-auto min-w-0 !p-2">
         <div class="flex flex-col gap-2 min-w-0">
           <div class="flex flex-col gap-0 min-w-0">
-            <div class="truncate">{name}</div>
+            <div class="truncate font-bold">{name}</div>
             <div class="text-xs italic text-gray-400 truncate">{command()}</div>
             <Show when={hasOptions()}>{button()}</Show>
           </div>
@@ -107,7 +106,7 @@ const ProcessRow = (props: ProcessRowProps) => {
           <PlayStopButton />
           <button
             type="button"
-            class="btn btn-neutral btn-circle btn-outline btn-sm"
+            class="btn btn-circle btn-outline btn-sm"
             onClick={props.openModal}
             title="View logs"
           >
