@@ -1,8 +1,5 @@
 # TODO
 
-- Update homepage design:
-  - Card structure
-  - Gradient background
 - Update log page design
   - Optimize space
   - No border on selected log
