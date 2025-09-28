@@ -3,6 +3,8 @@ import { X } from "lucide-solid";
 import { useAppStorageContext } from "@/contexts";
 import { routePaths } from "@/routes";
 
+const MAX_LENGTH = 60;
+
 type ProjectItemProps = {
   project: string;
   index: number;
@@ -23,7 +25,9 @@ export const ProjectItem = (props: ProjectItemProps) => {
         class="btn btn-link flex-1 justify-start text-sm"
         onClick={() => handleRecentProject(props.project)}
       >
-        {props.project}
+        {props.project.length > MAX_LENGTH
+          ? `...${props.project.slice(-MAX_LENGTH)}`
+          : props.project}
       </button>
       <button
         type="button"

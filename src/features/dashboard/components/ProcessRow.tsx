@@ -52,7 +52,7 @@ const ProcessRow = (props: ProcessRowProps) => {
       case ProcessStatus.STARTING:
       case ProcessStatus.RUNNING:
       case ProcessStatus.STOPPING:
-        return "badge-info";
+        return "badge-primary";
       case ProcessStatus.STOPPED:
       case ProcessStatus.CRASHED:
         return "badge-error";

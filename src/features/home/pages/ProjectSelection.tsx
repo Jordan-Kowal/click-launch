@@ -80,7 +80,7 @@ const ProjectSelection = () => {
             </div>
           </Show>
         </div>
-        <div class="flex w-full flex-col md:flex-row">
+        <div class="flex w-full flex-col md:flex-row bg-base-200 rounded-box">
           <div class="card rounded-box p-6 flex-1 flex items-center justify-center">
             <button
               type="button"
@@ -102,7 +102,7 @@ const ProjectSelection = () => {
                 when={shownProjects().length > 0}
                 fallback={<p class="text-gray-500">No recent projects</p>}
               >
-                <div class="space-y-0 w-full flex flex-col gap-4">
+                <div class="space-y-0 w-full flex flex-col gap-0">
                   <For each={shownProjects()}>
                     {(project, index) => (
                       <ProjectItem project={project} index={index()} />
