@@ -191,10 +191,10 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
         </button>
         <div class="flex items-center justify-between p-0"></div>
         {/* Search and options */}
-        <div class="p-4 border-b border-t border-base-300 gap-2 flex flex-col">
-          <div class="flex items-center gap-2 min-h-12">
-            <div class="relative flex-1">
-              <label class="input w-full">
+        <div class="py-2 px-4 border-b border-t border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-4 min-h-12">
+            <div class="relative w-full md:w-96">
+              <label class="input input-sm w-full">
                 <Search size={16} />
                 <input
                   type="text"
@@ -206,7 +206,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                 />
               </label>
             </div>
-            <div class="flex items-center gap-1 w-25 justify-end">
+            <div class="flex items-center gap-1 w-25 justify-end md:justify-start">
               <Show
                 when={search()}
                 fallback={<span class="text-sm text-gray-500">No search</span>}
@@ -254,7 +254,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                   setAutoScroll((e.target as HTMLInputElement).checked)
                 }
               />
-              Auto-scroll to latest
+              Auto-scroll
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
@@ -265,7 +265,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                   setIsPaused((e.target as HTMLInputElement).checked)
                 }
               />
-              Pause updates
+              Pause
             </label>
             <button
               type="button"
