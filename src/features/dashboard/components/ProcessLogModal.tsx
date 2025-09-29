@@ -179,20 +179,20 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     <dialog class="modal" open={props.isOpen}>
       <div class="modal-box w-full max-w-[100vw] h-full max-h-[100vh] flex flex-col p-0">
         {/* Header */}
-        <div class="flex items-center justify-between p-4">
-          <h2 class="font-bold text-xl !mb-0">Logs - {processName}</h2>
-          <button
-            type="button"
-            class="btn btn-sm btn-circle relative -top-4"
-            onClick={props.onClose}
-          >
-            <X size={16} />
-          </button>
-        </div>
-
+        <h2 class="font-bold text-xl !mt-4 !mb-4 text-center">
+          Logs - {processName}
+        </h2>
+        <button
+          type="button"
+          class="btn btn-sm btn-circle absolute right-3 top-3"
+          onClick={props.onClose}
+        >
+          <X size={16} />
+        </button>
+        <div class="flex items-center justify-between p-0"></div>
         {/* Search and options */}
         <div class="p-4 border-b border-t border-base-300 gap-2 flex flex-col">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 min-h-12">
             <div class="relative flex-1">
               <label class="input w-full">
                 <Search size={16} />
@@ -220,22 +220,24 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                   <span class="text-sm text-gray-500">
                     {currentMatchIndex() + 1} / {matchingLogIndices().length}
                   </span>
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-ghost"
-                    onClick={goToPrevMatch}
-                    title="Previous match (Shift+Enter)"
-                  >
-                    <ChevronUp size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-ghost"
-                    onClick={goToNextMatch}
-                    title="Next match (Enter)"
-                  >
-                    <ChevronDown size={14} />
-                  </button>
+                  <div class="flex items-center gap-0 flex-col">
+                    <button
+                      type="button"
+                      class="btn btn-xs btn-ghost"
+                      onClick={goToPrevMatch}
+                      title="Previous match (Shift+Enter)"
+                    >
+                      <ChevronUp size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-xs btn-ghost"
+                      onClick={goToNextMatch}
+                      title="Next match (Enter)"
+                    >
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
                 </Show>
               </Show>
             </div>
@@ -276,7 +278,6 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             </button>
           </div>
         </div>
-
         {/* Logs content */}
         <div class="flex-1 overflow-hidden bg-gray-900">
           <div
