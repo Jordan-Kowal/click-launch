@@ -25,7 +25,6 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     [],
   );
   const [autoScroll, setAutoScroll] = createSignal(true);
-  const [wrapLines, setWrapLines] = createSignal(true);
   const [isPaused, setIsPaused] = createSignal(false);
 
   let logsContainerRef!: HTMLDivElement;
@@ -192,7 +191,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
         </div>
 
         {/* Search and options */}
-        <div class="p-4 border-b border-t border-base-300 gap-4 flex flex-col">
+        <div class="p-4 border-b border-t border-base-300 gap-2 flex flex-col">
           <div class="flex items-center gap-2">
             <div class="relative flex-1">
               <label class="input w-full">
@@ -207,37 +206,47 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                 />
               </label>
             </div>
-            <Show when={search() && matchingLogIndices().length > 0}>
-              <div class="flex items-center gap-1">
-                <span class="text-sm text-gray-500">
-                  {currentMatchIndex() + 1} / {matchingLogIndices().length}
-                </span>
-                <button
-                  type="button"
-                  class="btn btn-xs btn-ghost"
-                  onClick={goToPrevMatch}
-                  title="Previous match (Shift+Enter)"
+            <div class="flex items-center gap-1 w-25 justify-end">
+              <Show
+                when={search()}
+                fallback={<span class="text-sm text-gray-500">No search</span>}
+              >
+                <Show
+                  when={matchingLogIndices().length > 0}
+                  fallback={
+                    <span class="text-sm text-gray-500">No result</span>
+                  }
                 >
-                  <ChevronUp size={14} />
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-xs btn-ghost"
-                  onClick={goToNextMatch}
-                  title="Next match (Enter)"
-                >
-                  <ChevronDown size={14} />
-                </button>
-              </div>
-            </Show>
+                  <span class="text-sm text-gray-500">
+                    {currentMatchIndex() + 1} / {matchingLogIndices().length}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn-xs btn-ghost"
+                    onClick={goToPrevMatch}
+                    title="Previous match (Shift+Enter)"
+                  >
+                    <ChevronUp size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-xs btn-ghost"
+                    onClick={goToNextMatch}
+                    title="Next match (Enter)"
+                  >
+                    <ChevronDown size={14} />
+                  </button>
+                </Show>
+              </Show>
+            </div>
           </div>
 
           {/* Options */}
-          <div class="flex items-center gap-4 text-sm">
+          <div class="flex items-center gap-4 text-xs">
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                class="checkbox checkbox-sm checkbox-primary"
+                class="checkbox checkbox-xs checkbox-primary"
                 checked={autoScroll()}
                 onChange={(e) =>
                   setAutoScroll((e.target as HTMLInputElement).checked)
@@ -248,18 +257,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                class="checkbox checkbox-sm checkbox-primary"
-                checked={wrapLines()}
-                onChange={(e) =>
-                  setWrapLines((e.target as HTMLInputElement).checked)
-                }
-              />
-              Wrap long lines
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                class="checkbox checkbox-sm checkbox-primary"
+                class="checkbox checkbox-xs checkbox-primary"
                 checked={isPaused()}
                 onChange={(e) =>
                   setIsPaused((e.target as HTMLInputElement).checked)
@@ -269,7 +267,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             </label>
             <button
               type="button"
-              class="btn btn-outline btn-error btn-sm"
+              class="btn btn-outline btn-error btn-xs"
               onClick={clearLogs}
               title="Clear logs"
             >
@@ -293,9 +291,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                 </div>
               }
             >
-              <div
-                class={`font-mono text-sm space-y-1 ${wrapLines() ? "" : "overflow-x-auto"}`}
-              >
+              <div class={`font-mono text-sm space-y-1`}>
                 <For each={logs()}>
                   {(log, index) => {
                     const isCurrentMatch = () =>
@@ -308,7 +304,6 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                         index={index()}
                         searchTerm={search()}
                         isCurrentMatch={isCurrentMatch()}
-                        wrapLines={wrapLines()}
                         ref={(el: HTMLDivElement | undefined) => {
                           if (el) {
                             logRefs.set(index(), el);

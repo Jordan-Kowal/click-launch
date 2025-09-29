@@ -8,7 +8,6 @@ type ProcessLogRowProps = {
   index: number;
   searchTerm?: string;
   isCurrentMatch?: boolean;
-  wrapLines?: boolean;
   ref?: (el: HTMLDivElement | undefined) => void;
 };
 
@@ -68,7 +67,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
         props.isCurrentMatch
           ? "ring-2 ring-primary bg-primary/10 rounded p-1"
           : ""
-      } ${props.wrapLines ? "whitespace-pre-wrap break-words" : "whitespace-pre overflow-x-auto"}`}
+      } whitespace-pre-wrap break-words`}
     >
       <span class="text-gray-400 italic">[{props.log.timestamp}] </span>
       <For each={segments()}>
