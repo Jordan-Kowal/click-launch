@@ -41,7 +41,7 @@
 
 **Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click.
 
-**Latest release - [ClickLaunch-1.0.1.zip](https://github.com/Jordan-Kowal/click-launch/releases/download/1.0.1/ClickLaunch-1.0.1.zip)**
+**Latest release - [ClickLaunch-1.1.0.zip](https://github.com/Jordan-Kowal/click-launch/releases/download/1.1.0/ClickLaunch-1.1.0.zip)**
 
 ## ✨ Features
 

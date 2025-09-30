@@ -8,9 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 1.1.0 - 2025-09-30
 
-- ✨ Adds a warning when reloading the app with ongoing processes.
+- ✨ Changed theme to `Nord`
+- ✨ Added a warning when reloading the app with ongoing processes.
 - ✨ Logs: Improved log performances (batching, rolling buffer, improved search) and design.
 - 🐞 Fixed white screen on manual reload.
 - 🔧 Migrated from `React` to `SolidJS` to improve performance.
