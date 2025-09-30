@@ -64,9 +64,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
       ref={props.ref}
       data-log-index={props.index}
       class={`${
-        props.isCurrentMatch
-          ? "ring-2 ring-primary bg-primary/10 rounded p-1"
-          : ""
+        props.isCurrentMatch ? "bg-gray-700 rounded" : ""
       } whitespace-pre-wrap break-words`}
     >
       <span class="text-gray-400 italic">[{props.log.timestamp}] </span>

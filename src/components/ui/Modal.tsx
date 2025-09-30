@@ -1,4 +1,5 @@
 import { createSignal, type JSX } from "solid-js";
+import { toast } from "solid-toast";
 
 type ModalProps = {
   ref: HTMLDialogElement | ((el: HTMLDialogElement) => void);
@@ -17,11 +18,13 @@ export const Modal = (props: ModalProps) => {
   };
 
   const handleConfirm = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await props.onConfirm();
       closeModal();
     } catch (_e) {
+      toast.error("Something went wrong");
+    } finally {
       setIsLoading(false);
     }
   };

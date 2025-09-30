@@ -12,7 +12,7 @@ export type ProcessContextType = {
   status: () => ProcessStatus;
   startTime: () => Date | null;
   // Actions
-  updateCommand: (argName: string, value: string) => void;
+  setArgValues: (argName: string, value: string) => void;
   startProcess: () => void;
   stopProcess: () => void;
 };

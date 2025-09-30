@@ -1,4 +1,5 @@
 import { createEffect, createSignal, type JSX, useContext } from "solid-js";
+import { createStore } from "solid-js/store";
 import { useAppStorageContext } from "@/contexts";
 import type { ValidationResult, YamlConfig } from "@/electron/types";
 import {
@@ -23,9 +24,15 @@ type DashboardProviderProps = {
 
 export const DashboardProvider = (props: DashboardProviderProps) => {
   const [isLoading, setIsLoading] = createSignal(true);
-  const [yamlConfig, setYamlConfig] = createSignal<YamlConfig | null>(null);
-  const [rootDirectory, setRootDirectory] = createSignal<string | null>(null);
-  const [errors, setErrors] = createSignal<ValidationResult["errors"]>([]);
+  const [yamlData, setYamlData] = createStore<{
+    yamlConfig: YamlConfig | null;
+    rootDirectory: string | null;
+    errors: ValidationResult["errors"];
+  }>({
+    yamlConfig: null,
+    rootDirectory: null,
+    errors: [],
+  });
   const { registerProject } = useAppStorageContext();
 
   const parseFile = async () => {
@@ -33,14 +40,18 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     const result = await window.electronAPI.validateYaml(props.selectedFile!);
 
     if (result?.isValid && result?.config) {
-      setYamlConfig(result.config);
-      setRootDirectory(result.rootDirectory || null);
-      setErrors([]);
+      setYamlData({
+        yamlConfig: result.config,
+        rootDirectory: result.rootDirectory || null,
+        errors: [],
+      });
       registerProject(props.selectedFile!);
     } else {
-      setYamlConfig(null);
-      setRootDirectory(null);
-      setErrors(result?.errors || []);
+      setYamlData({
+        yamlConfig: null,
+        rootDirectory: null,
+        errors: result?.errors || [],
+      });
     }
 
     setIsLoading(false);
@@ -54,9 +65,9 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
 
   const value: DashboardContextType = {
     isLoading,
-    yamlConfig,
-    rootDirectory,
-    errors,
+    yamlConfig: () => yamlData.yamlConfig,
+    rootDirectory: () => yamlData.rootDirectory,
+    errors: () => yamlData.errors,
     parseFile,
   };
 

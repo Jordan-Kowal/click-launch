@@ -6,6 +6,7 @@ import {
   onCleanup,
   useContext,
 } from "solid-js";
+import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import type { ProcessConfig, ProcessId } from "@/electron/types";
 import { ProcessStatus } from "../enums";
@@ -28,7 +29,7 @@ type ProcessProviderProps = {
 };
 
 export const ProcessProvider = (props: ProcessProviderProps) => {
-  const [argValues, setArgValues] = createSignal<Record<string, string>>({});
+  const [argValues, setArgValues] = createStore<Record<string, string>>({});
   const [status, setStatus] = createSignal(ProcessStatus.STOPPED);
   const [processId, setProcessId] = createSignal<ProcessId | null>(null);
   const [startTime, setStartTime] = createSignal<Date | null>(null);
@@ -41,17 +42,13 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
   );
 
   const command = createMemo(() => {
-    const outputArgs = Object.values(argValues());
+    const outputArgs = Object.values(argValues);
     let output = props.process.base_command;
     if (outputArgs.length > 0) {
       output = `${output} ${outputArgs.join(" ")}`;
     }
     return output;
   });
-
-  const updateCommand = (argName: string, value: string) => {
-    setArgValues((prev) => ({ ...prev, [argName]: value }));
-  };
 
   const startProcess = async () => {
     setStatus(ProcessStatus.STARTING);
@@ -127,7 +124,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
     command,
     status,
     startTime,
-    updateCommand,
+    setArgValues,
     startProcess,
     stopProcess,
   };

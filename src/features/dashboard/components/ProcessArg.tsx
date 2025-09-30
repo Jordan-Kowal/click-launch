@@ -1,4 +1,11 @@
-import { createEffect, createSignal, For, Match, Switch } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Match,
+  Switch,
+} from "solid-js";
 import { ArgType } from "@/electron/enums";
 import type { ArgConfig } from "@/electron/types";
 import { useProcessContext } from "../contexts/";
@@ -18,7 +25,7 @@ export const ProcessArg = (props: ProcessArgProps) => {
   } = props.argConfig;
 
   const [value, setValue] = createSignal(defaultValue);
-  const { updateCommand, status } = useProcessContext();
+  const { setArgValues, status } = useProcessContext();
 
   const canEdit = () =>
     status() === ProcessStatus.STOPPED || status() === ProcessStatus.CRASHED;
@@ -38,26 +45,25 @@ export const ProcessArg = (props: ProcessArgProps) => {
     setValue(target.checked);
   };
 
-  // Watch value changes and update command
-  createEffect(() => {
-    let output: string;
+  const output = createMemo<string>(() => {
     switch (type) {
       case ArgType.TOGGLE:
-        output = values?.find((v) => v.value === value())?.output ?? "";
-        break;
+        return values?.find((v) => v.value === value())?.output ?? "";
       case ArgType.SELECT:
-        output = values?.find((v) => v.value === value())?.output ?? "";
-        break;
-      case ArgType.INPUT:
-        output = value() as string;
-        if (output_prefix && output !== "") {
-          output = `${output_prefix} ${output}`;
+        return values?.find((v) => v.value === value())?.output ?? "";
+      case ArgType.INPUT: {
+        let val = value() as string;
+        if (output_prefix && val !== "") {
+          val = `${output_prefix} ${val}`;
         }
-        break;
-      default:
-        output = "";
+        return val;
+      }
     }
-    updateCommand(name, output);
+  });
+
+  // Watch value changes and update command
+  createEffect(() => {
+    setArgValues(name, output());
   });
 
   return (

@@ -11,8 +11,7 @@
 ## TBD
 
 - ✨ Adds a warning when reloading the app with ongoing processes.
-- ✨ Logs: Improved log performances (batching, rolling buffer, improved search).
-- ✨ Logs: Redesigned log modal for better log display.
+- ✨ Logs: Improved log performances (batching, rolling buffer, improved search) and design.
 - 🐞 Fixed white screen on manual reload.
 - 🔧 Migrated from `React` to `SolidJS` to improve performance.
 - 🔧 Changed from `yarn` to `pnpm` as the package manager.
