@@ -51,13 +51,10 @@ const ProcessRow = (props: ProcessRowProps) => {
     switch (status()) {
       case ProcessStatus.STARTING:
       case ProcessStatus.RUNNING:
-      case ProcessStatus.STOPPING:
         return "badge-primary";
       case ProcessStatus.STOPPED:
-      case ProcessStatus.CRASHED:
+      case ProcessStatus.STOPPING:
         return "badge-error";
-      default:
-        return "badge-ghost";
     }
   });
 

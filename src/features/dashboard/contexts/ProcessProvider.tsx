@@ -61,7 +61,7 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
       setStartTime(new Date());
       setStatus(ProcessStatus.RUNNING);
     } else {
-      setStatus(ProcessStatus.CRASHED);
+      setStatus(ProcessStatus.STOPPED);
       toast.error(`Failed to start ${props.process.name}`);
     }
   };
@@ -99,22 +99,6 @@ export const ProcessProvider = (props: ProcessProviderProps) => {
         pollStatusInterval = null;
       }
     });
-  });
-
-  // Set start time when process starts
-  createEffect(() => {
-    if (status() === ProcessStatus.RUNNING) {
-      setStartTime(new Date());
-    } else {
-      setStartTime(null);
-    }
-  });
-
-  // On status change, notify if crashed
-  createEffect(() => {
-    if (status() === ProcessStatus.CRASHED) {
-      toast.error(`${props.process.name} crashed`);
-    }
   });
 
   const context: ProcessContextType = {

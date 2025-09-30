@@ -27,8 +27,7 @@ export const ProcessArg = (props: ProcessArgProps) => {
   const [value, setValue] = createSignal(defaultValue);
   const { setArgValues, status } = useProcessContext();
 
-  const canEdit = () =>
-    status() === ProcessStatus.STOPPED || status() === ProcessStatus.CRASHED;
+  const canEdit = () => status() === ProcessStatus.STOPPED;
 
   const onSelectChange = (e: Event) => {
     const target = e.target as HTMLSelectElement;
