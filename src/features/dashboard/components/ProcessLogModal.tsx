@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp, Search, Trash2, X } from "lucide-solid";
 import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
+import { createMutable, createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { useProcessContext } from "../contexts";
@@ -17,15 +18,19 @@ const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 export const ProcessLogModal = (props: ProcessLogModalProps) => {
   const { name: processName, processId } = useProcessContext();
 
-  const [logs, setLogs] = createSignal<ProcessLogData[]>([]);
+  const [uiState, setUiState] = createStore({
+    autoScroll: true,
+    isPaused: false,
+  });
+
+  const [searchState, setSearchState] = createStore({
+    term: "",
+    currentMatchIndex: -1,
+    matchingLogIndices: [] as number[],
+  });
+
+  const logs = createMutable<ProcessLogData[]>([]);
   const [pendingLogs, setPendingLogs] = createSignal<ProcessLogData[]>([]);
-  const [search, setSearch] = createSignal("");
-  const [currentMatchIndex, setCurrentMatchIndex] = createSignal(-1);
-  const [matchingLogIndices, setMatchingLogIndices] = createSignal<number[]>(
-    [],
-  );
-  const [autoScroll, setAutoScroll] = createSignal(true);
-  const [isPaused, setIsPaused] = createSignal(false);
 
   let logsContainerRef!: HTMLDivElement;
   const logRefs = new Map<number, HTMLElement>();
@@ -34,51 +39,47 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   const flushLogs = () => {
     const pending = pendingLogs();
     if (pending.length === 0) return;
-    setLogs((prev) => {
-      const combined = [...prev, ...pending];
-      return combined.length > MAX_LOGS ? combined.slice(-MAX_LOGS) : combined;
-    });
+    logs.push(...pending);
+    if (logs.length > MAX_LOGS) {
+      logs.splice(0, logs.length - MAX_LOGS);
+    }
     setPendingLogs([]);
   };
 
   const addLog = (logData: ProcessLogData) => {
-    if (isPaused()) return;
+    if (uiState.isPaused) return;
     setPendingLogs((prev) => [...prev, logData]);
     // Use shorter batch time when auto-scroll is enabled for better UX
-    const batchDelay = autoScroll()
+    const batchDelay = uiState.autoScroll
       ? BATCH_DELAY_MS_AUTO_SCROLL
       : BATCH_DELAY_MS;
     // Start batch timer if not already running
-    if (batchTimer === null) {
-      batchTimer = window.setTimeout(() => {
-        flushLogs();
-        batchTimer = null;
-      }, batchDelay);
-    }
+    if (batchTimer !== null) return;
+    batchTimer = window.setTimeout(() => {
+      flushLogs();
+      batchTimer = null;
+    }, batchDelay);
   };
 
   const scrollToBottom = () => {
-    if (autoScroll() && logsContainerRef) {
-      setTimeout(() => {
-        if (logsContainerRef) {
-          logsContainerRef.scrollTo({
-            top: logsContainerRef.scrollHeight,
-            behavior: "smooth",
-          });
-        }
-      }, 50);
-    }
+    if (!uiState.autoScroll || !logsContainerRef) return;
+    setTimeout(() => {
+      if (!logsContainerRef) return;
+      logsContainerRef.scrollTo({
+        top: logsContainerRef.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 50);
   };
 
-  // Auto-scroll to bottom when logs are rendered
-  createEffect(on(logs, scrollToBottom));
-
   const clearLogs = () => {
-    setLogs([]);
+    logs.length = 0;
     setPendingLogs([]);
-    setSearch("");
-    setCurrentMatchIndex(-1);
-    setMatchingLogIndices([]);
+    setSearchState({
+      term: "",
+      currentMatchIndex: -1,
+      matchingLogIndices: [],
+    });
     if (batchTimer !== null) {
       clearTimeout(batchTimer);
       batchTimer = null;
@@ -87,34 +88,12 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
 
   const onSearchChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    setSearch(target.value);
+    setSearchState("term", target.value);
   };
-
-  // Update matching indices when search term or logs change
-  createEffect(() => {
-    const searchTerm = search();
-    const logsList = logs();
-
-    if (!searchTerm.trim()) {
-      setMatchingLogIndices([]);
-      setCurrentMatchIndex(-1);
-      return;
-    }
-
-    const matches: number[] = [];
-    logsList.forEach((log, index) => {
-      if (log.type === LogType.EXIT) return;
-      if (log.output.toLowerCase().includes(searchTerm.toLowerCase())) {
-        matches.push(index);
-      }
-    });
-    setMatchingLogIndices(matches);
-    setCurrentMatchIndex(matches.length > 0 ? 0 : -1);
-  });
 
   // Navigate to specific match using refs
   const goToMatch = (matchIndex: number) => {
-    const indices = matchingLogIndices();
+    const indices = searchState.matchingLogIndices;
     if (
       indices.length === 0 ||
       matchIndex < 0 ||
@@ -127,22 +106,26 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     if (logElement && logsContainerRef) {
       logElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-    setCurrentMatchIndex(matchIndex);
+    setSearchState("currentMatchIndex", matchIndex);
   };
 
   const goToNextMatch = () => {
-    const indices = matchingLogIndices();
+    const indices = searchState.matchingLogIndices;
     if (indices.length === 0) return;
     const nextIndex =
-      currentMatchIndex() < indices.length - 1 ? currentMatchIndex() + 1 : 0;
+      searchState.currentMatchIndex < indices.length - 1
+        ? searchState.currentMatchIndex + 1
+        : 0;
     goToMatch(nextIndex);
   };
 
   const goToPrevMatch = () => {
-    const indices = matchingLogIndices();
+    const indices = searchState.matchingLogIndices;
     if (indices.length === 0) return;
     const prevIndex =
-      currentMatchIndex() > 0 ? currentMatchIndex() - 1 : indices.length - 1;
+      searchState.currentMatchIndex > 0
+        ? searchState.currentMatchIndex - 1
+        : indices.length - 1;
     goToMatch(prevIndex);
   };
 
@@ -152,6 +135,37 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
       e.shiftKey ? goToPrevMatch() : goToNextMatch();
     }
   };
+
+  // Auto-scroll to bottom when logs are rendered
+  createEffect(on(() => logs.length, scrollToBottom));
+
+  // Update matching indices when search term or logs change
+  createEffect(() => {
+    const searchTerm = searchState.term;
+
+    if (!searchTerm.trim()) {
+      setSearchState({
+        term: searchTerm,
+        matchingLogIndices: [],
+        currentMatchIndex: -1,
+      });
+      return;
+    }
+
+    const matches: number[] = [];
+    logs.forEach((log, index) => {
+      if (log.type === LogType.EXIT) return;
+      if (log.output.toLowerCase().includes(searchTerm.toLowerCase())) {
+        matches.push(index);
+      }
+    });
+
+    setSearchState({
+      term: searchTerm,
+      matchingLogIndices: matches,
+      currentMatchIndex: matches.length > 0 ? 0 : -1,
+    });
+  });
 
   // Listen for logs
   createEffect(() => {
@@ -200,7 +214,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                   type="text"
                   placeholder="Search logs... (Enter: next, Shift+Enter: prev)"
                   class="grow w-full"
-                  value={search()}
+                  value={searchState.term}
                   onInput={onSearchChange}
                   onKeyDown={handleSearchKeyDown}
                 />
@@ -208,17 +222,18 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             </div>
             <div class="flex items-center gap-1 w-25 justify-end md:justify-start">
               <Show
-                when={search()}
+                when={searchState.term}
                 fallback={<span class="text-sm text-gray-500">No search</span>}
               >
                 <Show
-                  when={matchingLogIndices().length > 0}
+                  when={searchState.matchingLogIndices.length > 0}
                   fallback={
                     <span class="text-sm text-gray-500">No result</span>
                   }
                 >
                   <span class="text-sm text-gray-500">
-                    {currentMatchIndex() + 1} / {matchingLogIndices().length}
+                    {searchState.currentMatchIndex + 1} /{" "}
+                    {searchState.matchingLogIndices.length}
                   </span>
                   <div class="flex items-center gap-0 flex-col">
                     <button
@@ -249,9 +264,12 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
               <input
                 type="checkbox"
                 class="checkbox checkbox-xs checkbox-primary"
-                checked={autoScroll()}
+                checked={uiState.autoScroll}
                 onChange={(e) =>
-                  setAutoScroll((e.target as HTMLInputElement).checked)
+                  setUiState(
+                    "autoScroll",
+                    (e.target as HTMLInputElement).checked,
+                  )
                 }
               />
               Auto-scroll
@@ -260,9 +278,9 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
               <input
                 type="checkbox"
                 class="checkbox checkbox-xs checkbox-primary"
-                checked={isPaused()}
+                checked={uiState.isPaused}
                 onChange={(e) =>
-                  setIsPaused((e.target as HTMLInputElement).checked)
+                  setUiState("isPaused", (e.target as HTMLInputElement).checked)
                 }
               />
               Pause
@@ -285,7 +303,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             class="h-full overflow-y-auto p-4 bg-gray-900 text-white"
           >
             <Show
-              when={logs().length > 0}
+              when={logs.length > 0}
               fallback={
                 <div class="flex items-center justify-center h-full text-gray-400">
                   No logs yet
@@ -293,17 +311,19 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
               }
             >
               <div class={`font-mono text-sm space-y-1`}>
-                <For each={logs()}>
+                <For each={logs}>
                   {(log, index) => {
                     const isCurrentMatch = () =>
-                      currentMatchIndex() >= 0 &&
-                      matchingLogIndices()[currentMatchIndex()] === index();
+                      searchState.currentMatchIndex >= 0 &&
+                      searchState.matchingLogIndices[
+                        searchState.currentMatchIndex
+                      ] === index();
 
                     return (
                       <ProcessLogRow
                         log={log}
                         index={index()}
-                        searchTerm={search()}
+                        searchTerm={searchState.term}
                         isCurrentMatch={isCurrentMatch()}
                         ref={(el: HTMLDivElement | undefined) => {
                           if (el) {
