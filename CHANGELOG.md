@@ -11,7 +11,9 @@
 ## TBD
 
 - ✨ Reduced header size for better UX.
+- ✨ Logs are now displayed in a drawer component instead of a modal.
 - ✨ Added debounce to log search (when typing) to improve user experience.
+- 🔧 Use a single drawer component for all logs (instead of one per process).
 - 🔧 Removed `Zed` editor configuration.
 - 🔧 Upgraded dependencies.
 
