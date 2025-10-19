@@ -1,6 +1,6 @@
 import { For } from "solid-js";
 import { useDashboardContext } from "../contexts";
-import { ProcessRowWrapper } from "./ProcessRow";
+import { ProcessRow } from "./ProcessRow";
 
 export const ProcessTable = () => {
   const { yamlConfig, rootDirectory } = useDashboardContext();
@@ -20,7 +20,7 @@ export const ProcessTable = () => {
         <tbody>
           <For each={processes()}>
             {(process, index) => (
-              <ProcessRowWrapper
+              <ProcessRow
                 process={process}
                 index={index()}
                 rootDirectory={rootDirectory()!}

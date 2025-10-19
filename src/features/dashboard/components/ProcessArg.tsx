@@ -8,10 +8,11 @@ import {
 } from "solid-js";
 import { ArgType } from "@/electron/enums";
 import type { ArgConfig } from "@/electron/types";
-import { useProcessContext } from "../contexts/";
+import { useDashboardContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
 
 type ProcessArgProps = {
+  processName: string;
   argConfig: ArgConfig;
 };
 
@@ -25,7 +26,8 @@ export const ProcessArg = (props: ProcessArgProps) => {
   } = props.argConfig;
 
   const [value, setValue] = createSignal(defaultValue);
-  const { setArgValues, status } = useProcessContext();
+  const { setArgValues, getProcessStatus } = useDashboardContext();
+  const status = () => getProcessStatus(props.processName);
 
   const canEdit = () => status() === ProcessStatus.STOPPED;
 
@@ -62,7 +64,7 @@ export const ProcessArg = (props: ProcessArgProps) => {
 
   // Watch value changes and update command
   createEffect(() => {
-    setArgValues(name, output());
+    setArgValues(props.processName, name, output());
   });
 
   return (

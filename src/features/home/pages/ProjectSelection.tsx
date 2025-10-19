@@ -23,7 +23,7 @@ const ProjectSelection = () => {
 
   return (
     <HeroLayout>
-      <div class="text-center flex flex-col gap-10 relative -top-10">
+      <div class="text-center flex flex-col gap-10 relative">
         <RippledLogo />
         <VersionStatus />
         <ProjectActions />

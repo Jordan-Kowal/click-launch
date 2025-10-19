@@ -29,7 +29,7 @@ import { validatePaths } from "./utils/validatePaths";
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 900,
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: false,
@@ -39,7 +39,7 @@ const createWindow = (): void => {
     show: false,
     // Move traffic lights to the top left within our own nav bar
     titleBarStyle: "hiddenInset",
-    trafficLightPosition: { x: 20, y: 24 },
+    trafficLightPosition: { x: 8, y: 6 },
   });
 
   // On macOS, hide window instead of closing to preserve state

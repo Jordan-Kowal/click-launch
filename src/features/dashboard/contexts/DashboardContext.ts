@@ -1,5 +1,19 @@
 import { createContext } from "solid-js";
-import type { ValidationResult, YamlConfig } from "@/electron/types";
+import type {
+  ArgConfig,
+  ProcessId,
+  ValidationResult,
+  YamlConfig,
+} from "@/electron/types";
+import type { ProcessStatus } from "../enums";
+
+export type ProcessData = {
+  argValues: Record<string, string>;
+  status: ProcessStatus;
+  processId: ProcessId | null;
+  startTime: Date | null;
+  command: string;
+};
 
 export type DashboardContextType = {
   isLoading: () => boolean;
@@ -7,6 +21,16 @@ export type DashboardContextType = {
   rootDirectory: () => string | null;
   errors: () => ValidationResult["errors"];
   parseFile: () => Promise<void>;
+  // Process-specific data and actions
+  getProcessData: (processName: string) => ProcessData | undefined;
+  getProcessCommand: (processName: string) => string;
+  getProcessStatus: (processName: string) => ProcessStatus;
+  getProcessStartTime: (processName: string) => Date | null;
+  getProcessId: (processName: string) => ProcessId | null;
+  getProcessArgs: (processName: string) => ArgConfig[] | undefined;
+  setArgValues: (processName: string, argName: string, value: string) => void;
+  startProcess: (processName: string) => Promise<void>;
+  stopProcess: (processName: string) => Promise<void>;
 };
 
 export const DashboardContext = createContext<DashboardContextType | undefined>(

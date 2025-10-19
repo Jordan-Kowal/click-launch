@@ -21,24 +21,27 @@ export const NavBar = () => {
   };
 
   return (
-    <div class="navbar fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-300 drag-region pl-24">
-      <div class="navbar-start" />
-      <div class="navbar-center relative -left-8">
-        <div class="flex flex-row items-center gap-2">
-          <div class="max-w-8">
+    <>
+      <div
+        class="fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-300 w-full drag-region"
+        data-tauri-drag-region
+      >
+        <div class="flex flex-row items-center gap-2 mx-auto w-35 text-center py-1">
+          <div class="max-w-4">
             <Logo />
           </div>
-          <span class="text-xl font-bold">Click Launch</span>
+          <span class="font-bold text-sm">Click Launch</span>
         </div>
-      </div>
-      <div class="navbar-end">
-        <div class="tooltip tooltip-left" data-tip="Homepage">
+        <div
+          class="tooltip tooltip-left absolute -top-0.5 right-1"
+          data-tip="Homepage"
+        >
           <button
             type="button"
-            class="btn btn-ghost btn-circle no-drag"
+            class="btn btn-ghost btn-circle btn-sm no-drag"
             onClick={onHomeButtonClick}
           >
-            <House />
+            <House size={20} />
           </button>
         </div>
       </div>
@@ -46,6 +49,6 @@ export const NavBar = () => {
         <h1 class="text-xl font-bold">Return to project selection?</h1>
         <p>Any ongoing processes will be shut down.</p>
       </Modal>
-    </div>
+    </>
   );
 };

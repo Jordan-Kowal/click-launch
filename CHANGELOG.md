@@ -8,6 +8,13 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- ✨ Reduced header size for better UX.
+- ✨ Added debounce to log search (when typing) to improve user experience.
+- 🔧 Removed `Zed` editor configuration.
+- 🔧 Upgraded dependencies.
+
 ## 1.1.0 - 2025-09-30
 
 - ✨ Changed theme to `Nord`

@@ -83,5 +83,5 @@ You are an expert in TypeScript, Node.js, SolidJS, Vite, Tailwind + DaisyUI, and
 - Dayjs (for dates)
 - DaisyUI + Tailwind (for styling)
 - Vite (for building)
-- Wouter (for routing)
+- SolidJS Router (for routing)
 - Electron (for desktop app packaging)

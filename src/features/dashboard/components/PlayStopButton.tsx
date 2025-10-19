@@ -1,10 +1,15 @@
 import { Play, Square } from "lucide-solid";
 import { Match, Switch } from "solid-js";
-import { useProcessContext } from "../contexts/";
+import { useDashboardContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
 
-export const PlayStopButton = () => {
-  const { status, startProcess, stopProcess } = useProcessContext();
+type PlayStopButtonProps = {
+  processName: string;
+};
+
+export const PlayStopButton = (props: PlayStopButtonProps) => {
+  const { getProcessStatus, startProcess, stopProcess } = useDashboardContext();
+  const status = () => getProcessStatus(props.processName);
 
   return (
     <Switch>
@@ -12,7 +17,7 @@ export const PlayStopButton = () => {
         <button
           type="button"
           class="btn btn-primary btn-circle btn-sm"
-          onClick={startProcess}
+          onClick={() => startProcess(props.processName)}
         >
           <Play size={16} />
         </button>
@@ -32,7 +37,7 @@ export const PlayStopButton = () => {
         <button
           type="button"
           class="btn btn-error btn-circle btn-sm"
-          onClick={stopProcess}
+          onClick={() => stopProcess(props.processName)}
         >
           <Square size={16} />
         </button>

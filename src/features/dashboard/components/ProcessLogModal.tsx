@@ -3,26 +3,31 @@ import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
 import { createMutable, createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
-import { useProcessContext } from "../contexts";
+import { useDashboardContext } from "../contexts";
 import { ProcessLogRow } from "./ProcessLogRow";
 
 type ProcessLogModalProps = {
+  processName: string;
   isOpen: boolean;
   onClose: () => void;
 };
 
-const MAX_LOGS = 2_000;
+const MAX_LOGS = 1_500;
 const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
+const SEARCH_DELAY_MS = 500;
 
 export const ProcessLogModal = (props: ProcessLogModalProps) => {
-  const { name: processName, processId } = useProcessContext();
+  const { getProcessId } = useDashboardContext();
+  const processId = () => getProcessId(props.processName);
 
   const [uiState, setUiState] = createStore({
     autoScroll: true,
     isPaused: false,
   });
 
+  let searchTimer: number | null = null;
+  const [searchValue, setSearchValue] = createSignal<string | undefined>("");
   const [searchState, setSearchState] = createStore({
     term: "",
     currentMatchIndex: -1,
@@ -35,6 +40,18 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   let logsContainerRef!: HTMLDivElement;
   const logRefs = new Map<number, HTMLElement>();
   let batchTimer: number | null = null;
+
+  const clearBatchTimer = () => {
+    if (batchTimer === null) return;
+    clearTimeout(batchTimer);
+    batchTimer = null;
+  };
+
+  const clearSearchTimer = () => {
+    if (searchTimer === null) return;
+    clearTimeout(searchTimer);
+    searchTimer = null;
+  };
 
   const flushLogs = () => {
     const pending = pendingLogs();
@@ -80,15 +97,18 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
       currentMatchIndex: -1,
       matchingLogIndices: [],
     });
-    if (batchTimer !== null) {
-      clearTimeout(batchTimer);
-      batchTimer = null;
-    }
+    clearBatchTimer();
+    clearSearchTimer();
   };
 
   const onSearchChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    setSearchState("term", target.value);
+    setSearchValue(target.value);
+    clearSearchTimer();
+    searchTimer = window.setTimeout(() => {
+      setSearchState("term", target.value);
+      searchTimer = null;
+    }, SEARCH_DELAY_MS);
   };
 
   // Navigate to specific match using refs
@@ -178,14 +198,10 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     });
 
     onCleanup(() => {
-      if (window.electronAPI) {
-        window.electronAPI.removeProcessLogListener();
-      }
-      if (batchTimer !== null) {
-        clearTimeout(batchTimer);
-        flushLogs(); // Flush any remaining logs on cleanup
-        batchTimer = null;
-      }
+      window.electronAPI.removeProcessLogListener();
+      clearBatchTimer();
+      clearSearchTimer();
+      flushLogs(); // Flush any remaining logs on cleanup
     });
   });
 
@@ -194,7 +210,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
       <div class="modal-box w-full max-w-[100vw] h-full max-h-[100vh] flex flex-col p-0">
         {/* Header */}
         <h2 class="font-bold text-xl !mt-4 !mb-4 text-center">
-          Logs - {processName}
+          Logs - {props.processName}
         </h2>
         <button
           type="button"
@@ -214,7 +230,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
                   type="text"
                   placeholder="Search logs... (Enter: next, Shift+Enter: prev)"
                   class="grow w-full"
-                  value={searchState.term}
+                  value={searchValue()}
                   onInput={onSearchChange}
                   onKeyDown={handleSearchKeyDown}
                 />

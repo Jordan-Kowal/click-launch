@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find:*)",
-      "WebFetch(domain:docs.solidjs.com)"
-    ],
-    "deny": []
-  }
-}
