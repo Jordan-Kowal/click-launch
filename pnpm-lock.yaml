@@ -8,28 +8,19 @@ importers:
 
   .:
     dependencies:
-      '@solidjs/router':
-        specifier: 0.15.3
-        version: 0.15.3(solid-js@1.9.9)
-      es-toolkit:
-        specifier: 1.40.0
-        version: 1.40.0
       fix-path:
         specifier: 5.0.0
         version: 5.0.0
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
-      solid-js:
-        specifier: 1.9.9
-        version: 1.9.9
-      solid-toast:
-        specifier: 0.5.0
-        version: 0.5.0(solid-js@1.9.9)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.6
         version: 2.2.6
+      '@solidjs/router':
+        specifier: 0.15.3
+        version: 0.15.3(solid-js@1.9.9)
       '@tailwindcss/typography':
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.1.14)
@@ -75,6 +66,12 @@ importers:
       solid-devtools:
         specifier: 0.34.4
         version: 0.34.4(solid-js@1.9.9)(vite@7.1.10(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1))
+      solid-js:
+        specifier: 1.9.9
+        version: 1.9.9
+      solid-toast:
+        specifier: 0.5.0
+        version: 0.5.0(solid-js@1.9.9)
       tailwindcss:
         specifier: 4.1.14
         version: 4.1.14
@@ -1480,9 +1477,6 @@ packages:
   es-set-tostringtag@2.1.0:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
-
-  es-toolkit@1.40.0:
-    resolution: {integrity: sha512-8o6w0KFmU0CiIl0/Q/BCEOabF2IJaELM1T2PWj6e8KqzHv1gdx+7JtFnDwOx1kJH/isJ5NwlDG1nCr1HrRF94Q==}
 
   es6-error@4.1.1:
     resolution: {integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==}
@@ -4389,8 +4383,6 @@ snapshots:
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
       hasown: 2.0.2
-
-  es-toolkit@1.40.0: {}
 
   es6-error@4.1.1:
     optional: true

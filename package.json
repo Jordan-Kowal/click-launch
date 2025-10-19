@@ -44,15 +44,12 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@solidjs/router": "0.15.3",
-    "es-toolkit": "1.40.0",
     "fix-path": "5.0.0",
-    "js-yaml": "4.1.0",
-    "solid-js": "1.9.9",
-    "solid-toast": "0.5.0"
+    "js-yaml": "4.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
+    "@solidjs/router": "0.15.3",
     "@tailwindcss/typography": "0.5.19",
     "@tailwindcss/vite": "4.1.14",
     "@types/js-yaml": "4.0.9",
@@ -68,6 +65,8 @@
     "postcss": "8.5.6",
     "rimraf": "6.0.1",
     "solid-devtools": "0.34.4",
+    "solid-js": "1.9.9",
+    "solid-toast": "0.5.0",
     "tailwindcss": "4.1.14",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
@@ -87,7 +86,9 @@
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
-      "public/**/*"
+      "public/**/*",
+      "package.json",
+      "!node_modules/**/*"
     ],
     "asarUnpack": [],
     "extraResources": [
