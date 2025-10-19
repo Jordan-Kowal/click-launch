@@ -6,12 +6,12 @@ import { ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 import { ProcessDuration } from "./ProcessDuration";
-import { ProcessLogModal } from "./ProcessLogModal";
 
 type ProcessRowProps = {
   process: ProcessConfig;
   index: number;
   rootDirectory: string;
+  onOpenModal: (processName: string) => void;
 };
 
 export const ProcessRow = (props: ProcessRowProps) => {
@@ -26,11 +26,9 @@ export const ProcessRow = (props: ProcessRowProps) => {
   const status = () => getProcessStatus(props.process.name);
   const startTime = () => getProcessStartTime(props.process.name);
   const [showOptions, setShowOptions] = createSignal(false);
-  const [modalIsOpen, setModalIsOpen] = createSignal(false);
 
   const toggleOptions = () => setShowOptions(!showOptions());
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const openModal = () => props.onOpenModal(props.process.name);
 
   const statusVariant = createMemo(() => {
     switch (status()) {
@@ -57,61 +55,54 @@ export const ProcessRow = (props: ProcessRowProps) => {
   const hasOptions = () => args() && args()!.length > 0;
 
   return (
-    <>
-      <tr class={`${props.index % 2 !== 0 ? "bg-base-200" : ""}`}>
-        <td class="align-top w-auto min-w-0 !p-2">
-          <div class="flex flex-col gap-2 min-w-0">
-            <div class="flex flex-col gap-0 min-w-0">
-              <div class="truncate font-bold">{props.process.name}</div>
-              <div class="text-xs italic text-gray-400 whitespace-pre-wrap break-words">
-                {command()}
-              </div>
-              <Show when={hasOptions()}>{button()}</Show>
+    <tr class={`${props.index % 2 !== 0 ? "bg-base-200" : ""}`}>
+      <td class="align-top w-auto min-w-0 !p-2">
+        <div class="flex flex-col gap-2 min-w-0">
+          <div class="flex flex-col gap-0 min-w-0">
+            <div class="truncate font-bold">{props.process.name}</div>
+            <div class="text-xs italic text-gray-400 whitespace-pre-wrap break-words">
+              {command()}
             </div>
-            <Show when={hasOptions()}>
-              <div
-                class={`flex flex-col gap-2 ${!showOptions() ? "hidden" : ""}`}
-              >
-                <For each={args()!}>
-                  {(arg) => (
-                    <ProcessArg
-                      processName={props.process.name}
-                      argConfig={arg}
-                    />
-                  )}
-                </For>
-              </div>
-            </Show>
+            <Show when={hasOptions()}>{button()}</Show>
           </div>
-        </td>
-        <td class="align-top w-32 flex-shrink-0 !p-2">
-          <div class="flex flex-col items-start gap-1">
-            <div class={`badge ${statusVariant()}`}>{status()}</div>
-            <ProcessDuration
-              startTime={startTime()}
-              isRunning={status() === ProcessStatus.RUNNING}
-            />
-          </div>
-        </td>
-        <td class="align-top w-32 flex-shrink-0 !p-2">
-          <div class="flex items-center gap-2">
-            <PlayStopButton processName={props.process.name} />
-            <button
-              type="button"
-              class="btn btn-circle btn-outline btn-sm"
-              onClick={openModal}
-              title="View logs"
+          <Show when={hasOptions()}>
+            <div
+              class={`flex flex-col gap-2 ${!showOptions() ? "hidden" : ""}`}
             >
-              <ScrollText size={16} />
-            </button>
-          </div>
-        </td>
-      </tr>
-      <ProcessLogModal
-        processName={props.process.name}
-        isOpen={modalIsOpen()}
-        onClose={closeModal}
-      />
-    </>
+              <For each={args()!}>
+                {(arg) => (
+                  <ProcessArg
+                    processName={props.process.name}
+                    argConfig={arg}
+                  />
+                )}
+              </For>
+            </div>
+          </Show>
+        </div>
+      </td>
+      <td class="align-top w-32 flex-shrink-0 !p-2">
+        <div class="flex flex-col items-start gap-1">
+          <div class={`badge ${statusVariant()}`}>{status()}</div>
+          <ProcessDuration
+            startTime={startTime()}
+            isRunning={status() === ProcessStatus.RUNNING}
+          />
+        </div>
+      </td>
+      <td class="align-top w-32 flex-shrink-0 !p-2">
+        <div class="flex items-center gap-2">
+          <PlayStopButton processName={props.process.name} />
+          <button
+            type="button"
+            class="btn btn-circle btn-outline btn-sm"
+            onClick={openModal}
+            title="View logs"
+          >
+            <ScrollText size={16} />
+          </button>
+        </div>
+      </td>
+    </tr>
   );
 };

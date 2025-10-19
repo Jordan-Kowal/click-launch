@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp, Search, Trash2, X } from "lucide-solid";
 import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
-import { createMutable, createStore } from "solid-js/store";
+import { createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { useDashboardContext } from "../contexts";
@@ -18,8 +18,7 @@ const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
 
 export const ProcessLogModal = (props: ProcessLogModalProps) => {
-  const { getProcessId } = useDashboardContext();
-  const processId = () => getProcessId(props.processName);
+  const { yamlConfig, getProcessId } = useDashboardContext();
 
   const [uiState, setUiState] = createStore({
     autoScroll: true,
@@ -34,8 +33,15 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     matchingLogIndices: [] as number[],
   });
 
-  const logs = createMutable<ProcessLogData[]>([]);
-  const [pendingLogs, setPendingLogs] = createSignal<ProcessLogData[]>([]);
+  const [logsByProcess, setLogsByProcess] = createStore<
+    Record<string, ProcessLogData[]>
+  >({});
+  const [pendingLogsByProcess, setPendingLogsByProcess] = createStore<
+    Record<string, ProcessLogData[]>
+  >({});
+
+  const currentLogs = () => logsByProcess[props.processName] || [];
+  const processNames = () => yamlConfig()?.processes.map((p) => p.name) || [];
 
   let logsContainerRef!: HTMLDivElement;
   const logRefs = new Map<number, HTMLElement>();
@@ -54,18 +60,36 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   };
 
   const flushLogs = () => {
-    const pending = pendingLogs();
-    if (pending.length === 0) return;
-    logs.push(...pending);
-    if (logs.length > MAX_LOGS) {
-      logs.splice(0, logs.length - MAX_LOGS);
-    }
-    setPendingLogs([]);
+    const names = processNames();
+    names.forEach((processName) => {
+      const pending = pendingLogsByProcess[processName] || [];
+      if (pending.length === 0) return;
+
+      const current = logsByProcess[processName] || [];
+      const updated = [...current, ...pending];
+
+      if (updated.length > MAX_LOGS) {
+        updated.splice(0, updated.length - MAX_LOGS);
+      }
+
+      setLogsByProcess(processName, updated);
+      setPendingLogsByProcess(processName, []);
+    });
   };
 
   const addLog = (logData: ProcessLogData) => {
     if (uiState.isPaused) return;
-    setPendingLogs((prev) => [...prev, logData]);
+
+    const names = processNames();
+    const processName = names.find(
+      (name) => logData.processId === getProcessId(name),
+    );
+
+    if (!processName) return;
+
+    const currentPending = pendingLogsByProcess[processName] || [];
+    setPendingLogsByProcess(processName, [...currentPending, logData]);
+
     // Use shorter batch time when auto-scroll is enabled for better UX
     const batchDelay = uiState.autoScroll
       ? BATCH_DELAY_MS_AUTO_SCROLL
@@ -90,8 +114,9 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   };
 
   const clearLogs = () => {
-    logs.length = 0;
-    setPendingLogs([]);
+    const processName = props.processName;
+    setLogsByProcess(processName, []);
+    setPendingLogsByProcess(processName, []);
     setSearchState({
       term: "",
       currentMatchIndex: -1,
@@ -157,11 +182,12 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   };
 
   // Auto-scroll to bottom when logs are rendered
-  createEffect(on(() => logs.length, scrollToBottom));
+  createEffect(on(() => currentLogs().length, scrollToBottom));
 
   // Update matching indices when search term or logs change
   createEffect(() => {
     const searchTerm = searchState.term;
+    const logs = currentLogs();
 
     if (!searchTerm.trim()) {
       setSearchState({
@@ -187,13 +213,9 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
     });
   });
 
-  // Listen for logs
+  // Listen for logs from all processes
   createEffect(() => {
-    const pid = processId();
-    if (!pid) return;
-
     window.electronAPI.onProcessLog((logData) => {
-      if (logData.processId !== pid) return;
       addLog(logData);
     });
 
@@ -319,7 +341,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             class="h-full overflow-y-auto p-4 bg-gray-900 text-white"
           >
             <Show
-              when={logs.length > 0}
+              when={currentLogs().length > 0}
               fallback={
                 <div class="flex items-center justify-center h-full text-gray-400">
                   No logs yet
@@ -327,7 +349,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
               }
             >
               <div class={`font-mono text-sm space-y-1`}>
-                <For each={logs}>
+                <For each={currentLogs()}>
                   {(log, index) => {
                     const isCurrentMatch = () =>
                       searchState.currentMatchIndex >= 0 &&
