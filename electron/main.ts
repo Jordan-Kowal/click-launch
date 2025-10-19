@@ -19,6 +19,7 @@ import {
   type ValidationResult,
 } from "./utils/extractYamlConfig";
 import {
+  getBulkProcessStatus,
   isProcessRunning,
   startProcess,
   stopAllProcesses,
@@ -139,6 +140,11 @@ app.whenReady().then(() => {
   // IPC handler for getting process status
   ipcMain.handle("process:status", async (_, processId: string) => {
     return isProcessRunning(processId);
+  });
+
+  // IPC handler for getting bulk process status
+  ipcMain.handle("process:bulk-status", async (_, processIds: string[]) => {
+    return getBulkProcessStatus(processIds);
   });
 
   // IPC handler for stopping all processes

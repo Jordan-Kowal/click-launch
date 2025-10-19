@@ -160,3 +160,13 @@ export const isProcessRunning = async (processId: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const getBulkProcessStatus = async (
+  processIds: string[],
+): Promise<Record<string, boolean>> => {
+  const statusMap: Record<string, boolean> = {};
+  for (const processId of processIds) {
+    statusMap[processId] = await isProcessRunning(processId);
+  }
+  return statusMap;
+};

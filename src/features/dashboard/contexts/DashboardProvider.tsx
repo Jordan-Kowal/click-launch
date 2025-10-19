@@ -50,8 +50,8 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   const [processesData, setProcessesData] = createStore<
     Record<string, ProcessData>
   >({});
-  // Map to track polling intervals for each process
-  const pollIntervals = new Map<string, ReturnType<typeof setInterval>>();
+  // Single polling interval for all processes
+  let pollInterval: ReturnType<typeof setInterval> | null = null;
 
   const parseFile = async () => {
     setIsLoading(true);
@@ -96,12 +96,12 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     }
   });
 
-  // Cleanup polling intervals on unmount
+  // Cleanup polling interval on unmount
   onCleanup(() => {
-    pollIntervals.forEach((interval) => {
-      clearInterval(interval);
-    });
-    pollIntervals.clear();
+    if (pollInterval) {
+      clearInterval(pollInterval);
+      pollInterval = null;
+    }
   });
 
   // Helper to get process config
@@ -123,32 +123,45 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     return output;
   };
 
-  // Start polling for a process
-  const startPolling = (processName: string, pid: ProcessId) => {
+  // Start or restart polling for all processes
+  const startPolling = () => {
     // Clear existing interval if any
-    const existingInterval = pollIntervals.get(processName);
-    if (existingInterval) {
-      clearInterval(existingInterval);
+    if (pollInterval) {
+      clearInterval(pollInterval);
     }
 
-    const interval = setInterval(async () => {
-      const isRunning = await window.electronAPI.getProcessStatus(pid);
-      const newStatus = isRunning
-        ? ProcessStatus.RUNNING
-        : ProcessStatus.STOPPED;
-      setProcessesData(processName, "status", newStatus);
-
-      if (!isRunning) {
-        // Stop polling when process stops
-        const intervalToStop = pollIntervals.get(processName);
-        if (intervalToStop) {
-          clearInterval(intervalToStop);
-          pollIntervals.delete(processName);
+    pollInterval = setInterval(async () => {
+      // Collect all active process IDs
+      const activeProcesses: Array<{ name: string; pid: ProcessId }> = [];
+      Object.entries(processesData).forEach(([name, data]) => {
+        if (data.processId && data.status !== ProcessStatus.STOPPED) {
+          activeProcesses.push({ name, pid: data.processId });
         }
-      }
-    }, POLL_STATUS_INTERVAL_MS);
+      });
 
-    pollIntervals.set(processName, interval);
+      if (activeProcesses.length === 0) {
+        // No active processes, stop polling
+        if (pollInterval) {
+          clearInterval(pollInterval);
+          pollInterval = null;
+        }
+        return;
+      }
+
+      // Query all statuses at once
+      const processIds = activeProcesses.map((p) => p.pid);
+      const statusMap =
+        await window.electronAPI.getBulkProcessStatus(processIds);
+
+      // Update all process statuses
+      activeProcesses.forEach(({ name, pid }) => {
+        const isRunning = statusMap[pid];
+        const newStatus = isRunning
+          ? ProcessStatus.RUNNING
+          : ProcessStatus.STOPPED;
+        setProcessesData(name, "status", newStatus);
+      });
+    }, POLL_STATUS_INTERVAL_MS);
   };
 
   // Context API methods
@@ -204,7 +217,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         startTime: new Date(),
         status: ProcessStatus.RUNNING,
       });
-      startPolling(processName, result.processId);
+      startPolling();
     } else {
       setProcessesData(processName, "status", ProcessStatus.STOPPED);
       toast.error(`Failed to start ${processName}`);
@@ -223,12 +236,6 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         status: ProcessStatus.STOPPED,
         startTime: null,
       });
-      // Clear polling interval
-      const interval = pollIntervals.get(processName);
-      if (interval) {
-        clearInterval(interval);
-        pollIntervals.delete(processName);
-      }
     } else {
       setProcessesData(processName, "status", ProcessStatus.RUNNING);
       toast.error(`Failed to stop ${processName}`);

@@ -67,6 +67,8 @@ export type ProcessLogData = {
     }
 );
 
+export type BulkProcessStatusResult = Record<ProcessId, boolean>;
+
 export interface ElectronAPI {
   platform: string;
   version: string;
@@ -78,6 +80,9 @@ export interface ElectronAPI {
   startProcess: (cwd: string, command: string) => Promise<ProcessStartResult>;
   stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
   getProcessStatus: (processId: ProcessId) => Promise<boolean>;
+  getBulkProcessStatus: (
+    processIds: ProcessId[],
+  ) => Promise<BulkProcessStatusResult>;
   stopAllProcesses: () => Promise<{ success: boolean }>;
   // Process log streaming
   onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
