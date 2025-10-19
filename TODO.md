@@ -2,9 +2,7 @@
 
 **UX**
 
-- Rework log modal
-  - Drawer component instead of modal
-  - Add status in title
+- Animation when opening
 - Intercept refreshes from menu (not just shortcuts)
 
 **TECH**

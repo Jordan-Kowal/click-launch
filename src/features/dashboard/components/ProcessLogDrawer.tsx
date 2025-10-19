@@ -1,4 +1,11 @@
-import { ChevronDown, ChevronUp, Search, Trash2, X } from "lucide-solid";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Trash2,
+  X,
+} from "lucide-solid";
 import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
@@ -6,7 +13,7 @@ import type { ProcessLogData } from "@/electron/types";
 import { useDashboardContext } from "../contexts";
 import { ProcessLogRow } from "./ProcessLogRow";
 
-type ProcessLogModalProps = {
+type ProcessLogDrawerProps = {
   processName: string;
   isOpen: boolean;
   onClose: () => void;
@@ -17,7 +24,7 @@ const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
 
-export const ProcessLogModal = (props: ProcessLogModalProps) => {
+export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const { yamlConfig, getProcessId } = useDashboardContext();
 
   const [uiState, setUiState] = createStore({
@@ -228,22 +235,37 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
   });
 
   return (
-    <dialog class="modal" open={props.isOpen}>
-      <div class="modal-box w-full max-w-[100vw] h-full max-h-[100vh] flex flex-col p-0">
+    <div class="drawer-side">
+      <button
+        type="button"
+        class="drawer-overlay"
+        onClick={props.onClose}
+        aria-label="Close drawer"
+      />
+      <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6">
         {/* Header */}
-        <h2 class="font-bold text-xl !mt-4 !mb-4 text-center">
-          Logs - {props.processName}
-        </h2>
-        <button
-          type="button"
-          class="btn btn-sm btn-circle absolute right-3 top-3"
-          onClick={props.onClose}
-        >
-          <X size={16} />
-        </button>
-        <div class="flex items-center justify-between p-0"></div>
+        <div class="px-4 py-2 border-b border-base-300">
+          <div class="flex flex-row items-center gap-2">
+            <button
+              type="button"
+              class="btn btn-ghost btn-circle btn-sm no-drag"
+              onClick={props.onClose}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <h3 class="font-bold m-0!">Logs - {props.processName}</h3>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-circle absolute right-4 top-8"
+            onClick={props.onClose}
+          >
+            <X size={16} />
+          </button>
+        </div>
+
         {/* Search and options */}
-        <div class="py-2 px-4 border-b border-t border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="py-2 px-4 border-b border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
           <div class="flex items-center gap-4 min-h-12">
             <div class="relative w-full md:w-96">
               <label class="input input-sm w-full">
@@ -334,6 +356,7 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
             </button>
           </div>
         </div>
+
         {/* Logs content */}
         <div class="flex-1 overflow-hidden bg-gray-900">
           <div
@@ -379,6 +402,6 @@ export const ProcessLogModal = (props: ProcessLogModalProps) => {
           </div>
         </div>
       </div>
-    </dialog>
+    </div>
   );
 };
