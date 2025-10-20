@@ -10,6 +10,7 @@
 
 ## TBD
 
+- 🐞 When upgrading the app, added a rollback mechanism to revert to the previous version if the installation fails.
 - 🐞 Fixed animation when opening log drawer.
 
 ## 1.2.0 - 2025-10-19

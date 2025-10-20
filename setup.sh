@@ -36,15 +36,31 @@ unzip -q /tmp/clicklaunch/clicklaunch.zip -d /tmp/clicklaunch
 echo "🔓 Removing quarantine attributes..."
 xattr -cr /tmp/clicklaunch/*.app
 
-# Remove existing installation
+# Backup existing installation
+BACKUP_PATH=""
 if [ -d "/Applications/ClickLaunch.app" ]; then
-  echo "🗑️ Removing existing installation..."
-  rm -rf /Applications/ClickLaunch.app
+  echo "💾 Backing up existing installation..."
+  BACKUP_PATH="/Applications/ClickLaunch.app.backup"
+  mv /Applications/ClickLaunch.app "$BACKUP_PATH"
 fi
 
 # Install to Applications
 echo "📱 Installing to Applications folder..."
-mv /tmp/clicklaunch/*.app /Applications/
-
-echo "✅ Click Launch has been successfully installed!"
-echo "💡 You can now launch it from Applications or Spotlight"
+if mv /tmp/clicklaunch/*.app /Applications/; then
+  # Installation successful, remove backup
+  if [ -n "$BACKUP_PATH" ] && [ -d "$BACKUP_PATH" ]; then
+    echo "🗑️ Removing old version..."
+    rm -rf "$BACKUP_PATH"
+  fi
+  echo "✅ Click Launch has been successfully installed!"
+  echo "💡 You can now launch it from Applications or Spotlight"
+else
+  # Installation failed, restore backup
+  echo "❌ Installation failed!"
+  if [ -n "$BACKUP_PATH" ] && [ -d "$BACKUP_PATH" ]; then
+    echo "♻️ Restoring previous version..."
+    mv "$BACKUP_PATH" /Applications/ClickLaunch.app
+    echo "⚠️ Previous version has been restored"
+  fi
+  exit 1
+fi

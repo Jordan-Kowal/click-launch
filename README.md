@@ -58,7 +58,7 @@
 **Option 1: One-line installer (Recommended)**. It will download the latest release and install it to your Applications folder.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash
 ```
 
 **Option 2: Manual installation**
