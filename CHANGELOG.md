@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🐞 Fixed animation when opening log drawer.
+
 ## 1.2.0 - 2025-10-19
 
 - ✨ Reduced header size for better UX.

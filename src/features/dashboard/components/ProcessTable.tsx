@@ -9,20 +9,27 @@ export const ProcessTable = () => {
     string | null
   >(null);
 
+  let drawerCheckboxRef!: HTMLInputElement;
+
   const processes = () => yamlConfig()?.processes || [];
 
-  const openModal = (processName: string) =>
+  const openModal = (processName: string) => {
     setSelectedProcessName(processName);
-  const closeModal = () => setSelectedProcessName(null);
+    drawerCheckboxRef.checked = true;
+  };
+
+  const closeModal = () => {
+    setSelectedProcessName(null);
+    drawerCheckboxRef.checked = false;
+  };
 
   return (
     <div class="drawer drawer-end">
       <input
+        ref={drawerCheckboxRef!}
         id="log-drawer"
         type="checkbox"
         class="drawer-toggle"
-        checked={selectedProcessName() !== null}
-        onChange={() => {}}
       />
       <div class="drawer-content">
         <div class="overflow-x-auto">
