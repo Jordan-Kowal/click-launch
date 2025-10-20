@@ -166,7 +166,11 @@ app.whenReady().then(() => {
 
   // IPC handler for installing update
   ipcMain.handle("app:installUpdate", async () => {
-    const updateCommand = `(sleep 2; curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash; open /Applications/ClickLaunch.app) &`;
+    const updateCommand = `(
+      sleep 2
+      curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash >> /dev/null 2>&1
+      open /Applications/ClickLaunch.app
+    ) &`;
 
     exec(updateCommand, (error) => {
       if (error) {
