@@ -72,6 +72,8 @@ export type BulkProcessStatusResult = Record<ProcessId, boolean>;
 export interface ElectronAPI {
   platform: string;
   version: string;
+  installUpdate: () => Promise<void>;
+  // App utils
   getResourcePath: (filename: string) => Promise<string>;
   openFileDialog: () => Promise<string | undefined>;
   validateYaml: (filePath: string) => Promise<ValidationResult>;

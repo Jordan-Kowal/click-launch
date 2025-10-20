@@ -30,4 +30,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   removeProcessLogListener: () => {
     ipcRenderer.removeAllListeners("process-log");
   },
+  // Update management
+  installUpdate: () => ipcRenderer.invoke("app:installUpdate"),
 });

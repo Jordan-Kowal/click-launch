@@ -1,12 +1,12 @@
 declare const __APP_VERSION__: string;
 
+export const getCurrentVersion = (): string => __APP_VERSION__;
+
 /**
  * Gets the latest version from GitHub releases
- * Returns null if failed or if already latest
+ * Returns null if failed to fetch
  */
 export const getLatestVersion = async (): Promise<string | null> => {
-  const currentVersion = __APP_VERSION__;
-
   try {
     const response = await fetch(
       "https://api.github.com/repos/Jordan-Kowal/click-launch/releases/latest",
@@ -22,9 +22,7 @@ export const getLatestVersion = async (): Promise<string | null> => {
     }
 
     const release = await response.json();
-    const latestVersion = release.tag_name.replace(/^v/, "");
-
-    return currentVersion !== latestVersion ? latestVersion : null;
+    return release.tag_name.replace(/^v/, "");
   } catch (error) {
     console.error("Failed to check for updates:", error);
     return null;

@@ -10,6 +10,7 @@
 
 ## TBD
 
+- 🚀 You can now upgrade the app in one-click from the home screen.
 - 🐞 When upgrading the app, added a rollback mechanism to revert to the previous version if the installation fails.
 - 🐞 Fixed animation when opening log drawer.
 

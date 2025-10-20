@@ -1,3 +1,4 @@
+import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -161,6 +162,22 @@ app.whenReady().then(() => {
     }
     // Development: return regular path for dev server
     return `/${filename}`;
+  });
+
+  // IPC handler for installing update
+  ipcMain.handle("app:installUpdate", async () => {
+    const updateCommand = `(sleep 2; curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash; open /Applications/ClickLaunch.app) &`;
+
+    exec(updateCommand, (error) => {
+      if (error) {
+        console.error("Failed to start update process:", error);
+      }
+    });
+
+    // Quit the app immediately after spawning the update process
+    isQuitting = true;
+    stopAllProcesses();
+    app.quit();
   });
 
   app.on("activate", () => {
