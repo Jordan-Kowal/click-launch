@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- ✨ New button to stop all processes at once in the dashboard.
+
 ## 1.2.1 - 2025-10-20
 
 - 🚀 You can now upgrade the app in one-click from the home screen.

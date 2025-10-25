@@ -1,5 +1,13 @@
 import { useNavigate, useSearchParams } from "@solidjs/router";
-import { createEffect, Match, onCleanup, onMount, Switch } from "solid-js";
+import { Square } from "lucide-solid";
+import {
+  createEffect,
+  Match,
+  onCleanup,
+  onMount,
+  Show,
+  Switch,
+} from "solid-js";
 import toast from "solid-toast";
 import { BaseLayout, HeroLayout } from "@/components/layout";
 import { LoadingRing, Modal, ScreenTitle } from "@/components/ui";
@@ -36,7 +44,8 @@ const DashboardPage = () => {
 };
 
 const Dashboard = () => {
-  const { isLoading, errors, yamlConfig } = useDashboardContext();
+  const { isLoading, errors, yamlConfig, hasRunningProcesses } =
+    useDashboardContext();
   let modalRef!: HTMLDialogElement;
 
   const handleReloadConfirm = async () => {
@@ -53,6 +62,10 @@ const Dashboard = () => {
       event.preventDefault();
       modalRef?.showModal();
     }
+  };
+
+  const handleStopAll = async () => {
+    await window.electronAPI.stopAllProcesses();
   };
 
   onMount(() => {
@@ -79,9 +92,24 @@ const Dashboard = () => {
         </Match>
         <Match when={!isLoading() && errors().length === 0}>
           <BaseLayout>
-            <ScreenTitle
-              title={`Dashboard for ${yamlConfig()!.project_name}`}
-            />
+            <div class="flex flex-row gap-2 items-center">
+              <ScreenTitle
+                title={`Dashboard for ${yamlConfig()!.project_name}`}
+              />
+              <Show
+                when={hasRunningProcesses()}
+                fallback={<div class="badge badge-neutral">Idle</div>}
+              >
+                <div class="badge badge-primary">Running</div>
+                <button
+                  type="button"
+                  class="btn btn-error btn-circle btn-sm"
+                  onClick={() => handleStopAll()}
+                >
+                  <Square size={16} />
+                </button>
+              </Show>
+            </div>
             <ProcessTable />
           </BaseLayout>
         </Match>

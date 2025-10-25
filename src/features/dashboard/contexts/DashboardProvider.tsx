@@ -1,5 +1,6 @@
 import {
   createEffect,
+  createMemo,
   createSignal,
   type JSX,
   onCleanup,
@@ -52,6 +53,14 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   >({});
   // Single polling interval for all processes
   let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+  const hasRunningProcesses = createMemo(() => {
+    return (
+      Object.values(processesData).filter(
+        (p) => p.status === ProcessStatus.RUNNING,
+      ).length > 0
+    );
+  });
 
   const parseFile = async () => {
     setIsLoading(true);
@@ -248,6 +257,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     rootDirectory: () => yamlData.rootDirectory,
     errors: () => yamlData.errors,
     parseFile,
+    hasRunningProcesses,
     getProcessData,
     getProcessCommand,
     getProcessStatus,

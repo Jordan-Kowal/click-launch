@@ -37,7 +37,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
         return "badge-primary";
       case ProcessStatus.STOPPED:
       case ProcessStatus.STOPPING:
-        return "badge-error";
+        return "badge-neutral";
     }
   });
 

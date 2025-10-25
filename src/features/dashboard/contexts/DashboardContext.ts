@@ -21,6 +21,7 @@ export type DashboardContextType = {
   rootDirectory: () => string | null;
   errors: () => ValidationResult["errors"];
   parseFile: () => Promise<void>;
+  hasRunningProcesses: () => boolean;
   // Process-specific data and actions
   getProcessData: (processName: string) => ProcessData | undefined;
   getProcessCommand: (processName: string) => string;
