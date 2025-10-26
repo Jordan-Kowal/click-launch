@@ -23,6 +23,12 @@ vi.mock("node:crypto", () => ({
   randomUUID: vi.fn(() => "test-uuid"),
 }));
 
+vi.mock("electron", () => ({
+  BrowserWindow: {
+    getAllWindows: vi.fn(() => []),
+  },
+}));
+
 describe("processManager", () => {
   beforeEach(() => {
     vi.clearAllMocks();

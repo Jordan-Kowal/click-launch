@@ -17,6 +17,7 @@
 - 🐞 Correctly shutdown all processes when reloading the dashboard page manually.
 - 🔧 Added screenshots to README.
 - 🔧 Provided a richer `example.yml` file.
+- 🔧 Upgraded dependencies.
 
 ## 1.2.1 - 2025-10-20
 
