@@ -9,4 +9,3 @@
 ## DX
 
 - Add screenshot to README
-- Show current version somewhere

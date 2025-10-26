@@ -11,6 +11,7 @@
 ## TBD
 
 - ✨ New button to stop all processes at once in the dashboard.
+- ✨ Improved the MacOS help menu with links to the documentation and changelog.
 
 ## 1.2.1 - 2025-10-20
 

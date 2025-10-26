@@ -2,7 +2,7 @@ import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
 import fixPath from "fix-path";
 
 // ES module equivalent of __dirname
@@ -13,6 +13,47 @@ const __dirname = dirname(__filename);
 fixPath();
 
 let isQuitting = false;
+
+const CUSTOM_HELP_MENU = {
+  label: "Help",
+  role: "help" as const,
+  submenu: [
+    {
+      label: "Documentation",
+      click: () => {
+        shell.openExternal(
+          "https://github.com/Jordan-Kowal/click-launch#readme",
+        );
+      },
+    },
+    {
+      label: "Changelog",
+      click: () => {
+        shell.openExternal(
+          "https://github.com/Jordan-Kowal/click-launch/blob/main/CHANGELOG.md",
+        );
+      },
+    },
+    { type: "separator" as const },
+    {
+      label: `Version: ${app.getVersion()}`,
+      enabled: false,
+    },
+  ],
+};
+
+const createAppMenu = (): void => {
+  const defaultMenu = Menu.getApplicationMenu();
+  if (!defaultMenu) return;
+
+  const itemsWithoutHelp = defaultMenu.items.filter(
+    (item) => item.role !== "help",
+  );
+
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate([...itemsWithoutHelp, CUSTOM_HELP_MENU]),
+  );
+};
 
 import { isDev } from "./utils/constants";
 import {
@@ -77,6 +118,7 @@ const createWindow = (): void => {
 
 app.whenReady().then(() => {
   createWindow();
+  createAppMenu();
 
   // IPC handler for file dialog
   ipcMain.handle("dialog:openFile", async (): Promise<string | undefined> => {

@@ -77,6 +77,11 @@ You are an expert in TypeScript, Node.js, SolidJS, Vite, Tailwind + DaisyUI, and
 - Ensure the design remains responsive.
 - Optimize for accessibility (e.g., aria-attributes) when using components.
 
+## Package Manager & Commands
+
+- **Package Manager**: Use `pnpm` for all package management tasks (install, add, remove, etc.)
+- **Commands**: Always lookup available commands in `package.json` scripts section before running any command
+
 ## Dependencies
 
 - SolidJS (main framework)
