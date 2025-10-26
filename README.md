@@ -51,6 +51,10 @@
 - **Process monitoring**: Real-time status, logs, and runtime tracking
 - **Argument types**: Toggle switches, dropdowns, and text inputs
 
+| Homepage | Dashboard | Log Drawer |
+| --- | --- | --- |
+| ![Homepage](resources/1-homepage.png) | ![Dashboard](resources/2-dashboard.png) | ![Log Drawer](resources/3-log-drawer.png) |
+
 ## 📦 Installation
 
 ### Download

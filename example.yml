@@ -2,26 +2,26 @@ project_name: "Development Services"
 
 processes:
   - name: "Web Server"
-    base_command: "pnpm start"
+    base_command: "bash ./resources/web-server.sh"
     args:
       - type: "toggle"
-        name: "Arg1"
+        name: "Watch Mode"
         values:
           - value: true
-            output: "--arg1"
+            output: "--watch-mode=true"
           - value: false
-            output: ""
-        default: true
+            output: "--watch-mode=false"
+        default: false
 
       - type: "select"
         name: "Environment"
         values:
           - value: "development"
-            output: "--env=development"
+            output: "--environment=development"
           - value: "staging"
-            output: "--env=staging"
+            output: "--environment=staging"
           - value: "production"
-            output: "--env=production"
+            output: "--environment=production"
         default: "development"
 
       - type: "input"
@@ -29,10 +29,57 @@ processes:
         default: "3000"
         output_prefix: "--port"
 
+  - name: "Database"
+    base_command: "bash ./resources/database.sh"
+    args:
+      - type: "select"
+        name: "Compression"
+        values:
+          - value: "gzip"
+            output: "--compression=gzip"
+          - value: "zstd"
+            output: "--compression=zstd"
+          - value: "none"
+            output: "--compression=none"
+        default: "gzip"
+
+      - type: "select"
+        name: "Verbosity"
+        values:
+          - value: "debug"
+            output: "--verbosity=debug"
+          - value: "info"
+            output: "--verbosity=info"
+          - value: "warn"
+            output: "--verbosity=warn"
+        default: "info"
+
       - type: "input"
-        name: "Additional args"
-        default: ""
-        output_prefix: ""
+        name: "Port"
+        default: "5432"
+        output_prefix: "--port"
+
+  - name: "API Server"
+    base_command: "bash ./resources/api-server.sh"
+    args:
+      - type: "toggle"
+        name: "Enable Caching"
+        values:
+          - value: true
+            output: "--cache-enabled=true"
+          - value: false
+            output: "--cache-enabled=false"
+        default: true
+
+      - type: "input"
+        name: "Rate Limit (req/min)"
+        default: "1000"
+        output_prefix: "--rate-limit"
+
+      - type: "input"
+        name: "Custom Port"
+        default: "8000"
+        output_prefix: "--custom-port"
 
   - name: "Counter with Replacement"
     base_command: "bash ./resources/counter-with-replacement.sh"

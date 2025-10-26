@@ -8,12 +8,15 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 1.3.0 - 2025-10-26
 
-- ✨ New button to stop all processes at once in the dashboard.
+- 🚀 New button to stop all processes at once in the dashboard.
+- ✨ Show process status in the log drawer title.
 - ✨ Improved the MacOS help menu with links to the documentation and changelog.
 - 🐞 Correctly handle "live update" log instructions.
 - 🐞 Correctly shutdown all processes when reloading the dashboard page manually.
+- 🔧 Added screenshots to README.
+- 🔧 Provided a richer `example.yml` file.
 
 ## 1.2.1 - 2025-10-20
 

@@ -12,6 +12,7 @@ import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 import { useDashboardContext } from "../contexts";
+import { ProcessStatus } from "../enums";
 import { ProcessLogRow } from "./ProcessLogRow";
 
 type ProcessLogDrawerProps = {
@@ -26,7 +27,9 @@ const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
-  const { yamlConfig, getProcessId } = useDashboardContext();
+  const { yamlConfig, getProcessId, getProcessStatus } = useDashboardContext();
+  const processStatus = () => getProcessStatus(props.processName);
+  const isRunning = () => processStatus() === ProcessStatus.RUNNING;
 
   const [uiState, setUiState] = createStore({
     autoScroll: true,
@@ -267,6 +270,12 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               <ArrowLeft size={20} />
             </button>
             <h3 class="font-bold m-0!">Logs - {props.processName}</h3>
+            <Show
+              when={isRunning()}
+              fallback={<div class="badge badge-neutral">Idle</div>}
+            >
+              <div class="badge badge-primary">Running</div>
+            </Show>
           </div>
           <button
             type="button"
