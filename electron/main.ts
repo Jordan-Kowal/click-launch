@@ -108,6 +108,14 @@ const createWindow = (): void => {
     }
   });
 
+  // Intercept all reloads from the dashboard page and stops all related processes
+  mainWindow.webContents.on("did-finish-load", () => {
+    const currentUrl = mainWindow.webContents.getURL();
+    if (currentUrl?.includes("dashboard")) {
+      stopAllProcesses();
+    }
+  });
+
   if (isDev) {
     mainWindow.loadURL("http://localhost:5173");
     mainWindow.webContents.openDevTools();

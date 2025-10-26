@@ -36,3 +36,6 @@ processes:
 
   - name: "Counter with Replacement"
     base_command: "bash ./resources/counter-with-replacement.sh"
+
+  - name: "Infinite Process"
+    base_command: "bash ./resources/infinite-process.sh"

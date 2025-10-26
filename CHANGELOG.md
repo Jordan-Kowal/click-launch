@@ -13,6 +13,7 @@
 - ✨ New button to stop all processes at once in the dashboard.
 - ✨ Improved the MacOS help menu with links to the documentation and changelog.
 - 🐞 Correctly handle "live update" log instructions.
+- 🐞 Correctly shutdown all processes when reloading the dashboard page manually.
 
 ## 1.2.1 - 2025-10-20
 

@@ -21,3 +21,6 @@ bundle-stats.html
 
 # macOS
 **/.DS_Store
+
+# Lock files
+resources/infinite_process.lock
