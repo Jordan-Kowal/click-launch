@@ -33,3 +33,6 @@ processes:
         name: "Additional args"
         default: ""
         output_prefix: ""
+
+  - name: "Counter with Replacement"
+    base_command: "bash ./resources/counter-with-replacement.sh"

@@ -10,6 +10,7 @@ import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
+import { isLiveUpdate } from "@/utils/ansiToHtml";
 import { useDashboardContext } from "../contexts";
 import { ProcessLogRow } from "./ProcessLogRow";
 
@@ -73,7 +74,19 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       if (pending.length === 0) return;
 
       const current = logsByProcess[processName] || [];
-      const updated = [...current, ...pending];
+      const updated = [...current];
+
+      // Process each pending log
+      // If it's a live update, it will replace the previous log
+      pending.forEach((log) => {
+        const isUpdate = log.type !== LogType.EXIT && isLiveUpdate(log.output);
+
+        if (isUpdate && updated.length > 0) {
+          updated[updated.length - 1] = log;
+        } else {
+          updated.push(log);
+        }
+      });
 
       if (updated.length > MAX_LOGS) {
         updated.splice(0, updated.length - MAX_LOGS);

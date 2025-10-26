@@ -39,6 +39,10 @@ export type AnsiSegment = {
   classes: string[];
 };
 
+export const isLiveUpdate = (text: string): boolean => {
+  return /\x1b\[[0-9]*[ABCD]/.test(text) || /\x1b\[2K/.test(text);
+};
+
 export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   const segments: AnsiSegment[] = [];
 
