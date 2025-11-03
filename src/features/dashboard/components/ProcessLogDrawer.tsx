@@ -55,6 +55,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const processNames = () => yamlConfig()?.processes.map((p) => p.name) || [];
 
   let logsContainerRef!: HTMLDivElement;
+  let searchInputRef!: HTMLInputElement;
   const logRefs = new Map<number, HTMLElement>();
   let batchTimer: number | null = null;
 
@@ -250,6 +251,22 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     });
   });
 
+  /* Exits the drawer on "Escape" key if the drawer is open and the search input is not focused */
+  const handleEscape = (e: KeyboardEvent) => {
+    if (e.key !== "Escape" || !props.isOpen) return;
+    const activeElement = document.activeElement;
+    if (activeElement === searchInputRef) return;
+    props.onClose();
+  };
+
+  createEffect(() => {
+    if (!props.isOpen) return;
+    window.addEventListener("keydown", handleEscape);
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleEscape);
+    });
+  });
+
   return (
     <div class="drawer-side">
       <button
@@ -293,6 +310,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               <label class="input input-sm w-full">
                 <Search size={16} />
                 <input
+                  ref={searchInputRef!}
                   type="text"
                   placeholder="Search logs... (Enter: next, Shift+Enter: prev)"
                   class="grow w-full"

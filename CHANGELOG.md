@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- ✨ The "Escape" key can be used to close the log drawer.
+
 ## 1.3.0 - 2025-10-26
 
 - 🚀 New button to stop all processes at once in the dashboard.
