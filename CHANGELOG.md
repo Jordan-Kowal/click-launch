@@ -10,6 +10,7 @@
 
 ## TBD
 
+- ✨ Added a "Scroll to bottom" button in the log drawer.
 - ✨ Pressing `CMD+F` will now focus the search input in the log drawer.
 - ✨ Pressing `Escape` will now close the log drawer.
 

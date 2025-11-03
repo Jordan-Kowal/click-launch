@@ -1,4 +1,5 @@
 import {
+  ArrowDown,
   ArrowLeft,
   ChevronDown,
   ChevronUp,
@@ -25,6 +26,7 @@ const MAX_LOGS = 1_500;
 const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
+const SCROLL_TO_BOTTOM_THRESHOLD = 200;
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const { yamlConfig, getProcessId, getProcessStatus } = useDashboardContext();
@@ -35,6 +37,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     autoScroll: true,
     isPaused: false,
   });
+  const [isAtBottom, setIsAtBottom] = createSignal(true);
 
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
@@ -126,6 +129,14 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     }, batchDelay);
   };
 
+  const checkIfAtBottom = () => {
+    if (!logsContainerRef) return;
+    const { scrollTop, scrollHeight, clientHeight } = logsContainerRef;
+    const atBottom =
+      scrollHeight - scrollTop - clientHeight < SCROLL_TO_BOTTOM_THRESHOLD;
+    setIsAtBottom(atBottom);
+  };
+
   const scrollToBottom = () => {
     if (!uiState.autoScroll || !logsContainerRef) return;
     setTimeout(() => {
@@ -135,6 +146,14 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         behavior: "smooth",
       });
     }, 50);
+  };
+
+  const scrollToBottomManual = () => {
+    if (!logsContainerRef) return;
+    logsContainerRef.scrollTo({
+      top: logsContainerRef.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
   const clearLogs = () => {
@@ -205,6 +224,28 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     }
   };
 
+  /* Exits the drawer on "Escape" key if the drawer is open and the search input is not focused */
+  const handleEscape = (e: KeyboardEvent) => {
+    if (e.key !== "Escape" || !props.isOpen) return;
+    const activeElement = document.activeElement;
+    if (activeElement === searchInputRef) return;
+    props.onClose();
+  };
+
+  /* Focuses the search input on CMD+F if the drawer is open and the search input is not focused */
+  const handleCmdF = (e: KeyboardEvent) => {
+    if (e.key !== "f" || !e.metaKey || !props.isOpen) return;
+    const activeElement = document.activeElement;
+    if (activeElement === searchInputRef) return;
+    e.preventDefault();
+    searchInputRef.focus();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    handleEscape(e);
+    handleCmdF(e);
+  };
+
   // Auto-scroll to bottom when logs are rendered
   createEffect(on(() => currentLogs().length, scrollToBottom));
 
@@ -251,33 +292,24 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     });
   });
 
-  /* Exits the drawer on "Escape" key if the drawer is open and the search input is not focused */
-  const handleEscape = (e: KeyboardEvent) => {
-    if (e.key !== "Escape" || !props.isOpen) return;
-    const activeElement = document.activeElement;
-    if (activeElement === searchInputRef) return;
-    props.onClose();
-  };
-
-  /* Focuses the search input on CMD+F if the drawer is open and the search input is not focused */
-  const handleCmdF = (e: KeyboardEvent) => {
-    if (e.key !== "f" || !e.metaKey || !props.isOpen) return;
-    const activeElement = document.activeElement;
-    if (activeElement === searchInputRef) return;
-    e.preventDefault();
-    searchInputRef.focus();
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    handleEscape(e);
-    handleCmdF(e);
-  };
-
+  /* Register the keydown event listener */
   createEffect(() => {
     if (!props.isOpen) return;
     window.addEventListener("keydown", handleKeyDown);
     onCleanup(() => {
       window.removeEventListener("keydown", handleKeyDown);
+    });
+  });
+
+  /* Track scroll position to show/hide scroll to bottom button */
+  createEffect(() => {
+    if (!props.isOpen) return;
+    const container = logsContainerRef;
+    if (!container) return;
+    checkIfAtBottom();
+    container.addEventListener("scroll", checkIfAtBottom);
+    onCleanup(() => {
+      container.removeEventListener("scroll", checkIfAtBottom);
     });
   });
 
@@ -412,7 +444,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         </div>
 
         {/* Logs content */}
-        <div class="flex-1 overflow-hidden bg-gray-900">
+        <div class="flex-1 overflow-hidden bg-gray-900 relative">
           <div
             ref={logsContainerRef!}
             class="h-full overflow-y-auto p-4 bg-gray-900 text-white"
@@ -454,6 +486,16 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               </div>
             </Show>
           </div>
+          <Show when={!isAtBottom()}>
+            <button
+              type="button"
+              class="btn btn-circle btn-primary absolute bottom-3 right-6 shadow-lg"
+              onClick={scrollToBottomManual}
+              title="Scroll to bottom"
+            >
+              <ArrowDown size={20} />
+            </button>
+          </Show>
         </div>
       </div>
     </div>
