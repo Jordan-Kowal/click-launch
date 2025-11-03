@@ -10,7 +10,8 @@
 
 ## TBD
 
-- ✨ The "Escape" key can be used to close the log drawer.
+- ✨ Pressing `CMD+F` will now focus the search input in the log drawer.
+- ✨ Pressing `Escape` will now close the log drawer.
 
 ## 1.3.0 - 2025-10-26
 

@@ -259,11 +259,25 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     props.onClose();
   };
 
+  /* Focuses the search input on CMD+F if the drawer is open and the search input is not focused */
+  const handleCmdF = (e: KeyboardEvent) => {
+    if (e.key !== "f" || !e.metaKey || !props.isOpen) return;
+    const activeElement = document.activeElement;
+    if (activeElement === searchInputRef) return;
+    e.preventDefault();
+    searchInputRef.focus();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    handleEscape(e);
+    handleCmdF(e);
+  };
+
   createEffect(() => {
     if (!props.isOpen) return;
-    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleKeyDown);
     onCleanup(() => {
-      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("keydown", handleKeyDown);
     });
   });
 
