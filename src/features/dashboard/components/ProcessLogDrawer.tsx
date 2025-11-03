@@ -61,6 +61,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   let searchInputRef!: HTMLInputElement;
   const logRefs = new Map<number, HTMLElement>();
   let batchTimer: number | null = null;
+  let scrollAnimationFrame: number | null = null;
 
   const clearBatchTimer = () => {
     if (batchTimer === null) return;
@@ -135,6 +136,14 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     const atBottom =
       scrollHeight - scrollTop - clientHeight < SCROLL_TO_BOTTOM_THRESHOLD;
     setIsAtBottom(atBottom);
+  };
+
+  const handleScrollThrottled = () => {
+    if (scrollAnimationFrame !== null) return;
+    scrollAnimationFrame = requestAnimationFrame(() => {
+      checkIfAtBottom();
+      scrollAnimationFrame = null;
+    });
   };
 
   const scrollToBottom = () => {
@@ -307,9 +316,13 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     const container = logsContainerRef;
     if (!container) return;
     checkIfAtBottom();
-    container.addEventListener("scroll", checkIfAtBottom);
+    container.addEventListener("scroll", handleScrollThrottled);
     onCleanup(() => {
-      container.removeEventListener("scroll", checkIfAtBottom);
+      container.removeEventListener("scroll", handleScrollThrottled);
+      if (scrollAnimationFrame !== null) {
+        cancelAnimationFrame(scrollAnimationFrame);
+        scrollAnimationFrame = null;
+      }
     });
   });
 
