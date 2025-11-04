@@ -10,7 +10,7 @@ processes:
           - value: true
             output: "--watch-mode=true"
           - value: false
-            output: "--watch-mode=false"
+            output: ""
         default: false
 
       - type: "select"

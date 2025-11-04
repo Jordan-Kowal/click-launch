@@ -8,6 +8,11 @@
 - 🔧 Others
 - 💥 Breaking
 
+## 1.4.1 - 2025-11-05
+
+- 🐞 Fixed extra spaces in command output when an argument is empty.
+- 🔧 Upgraded dependencies.
+
 ## 1.4.0 - 2025-11-04
 
 - ✨ Added a "Scroll to bottom" button in the log drawer.

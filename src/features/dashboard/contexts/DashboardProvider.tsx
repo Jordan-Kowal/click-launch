@@ -126,9 +126,10 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
 
     const outputArgs = Object.values(data.argValues);
     let output = processConfig.base_command;
-    if (outputArgs.length > 0) {
-      output = `${output} ${outputArgs.join(" ")}`;
-    }
+    outputArgs.forEach((arg) => {
+      if (arg === "") return;
+      output = `${output} ${arg}`;
+    });
     return output;
   };
 
