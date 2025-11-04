@@ -8,11 +8,12 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 1.4.0 - 2025-11-04
 
 - ✨ Added a "Scroll to bottom" button in the log drawer.
 - ✨ Pressing `CMD+F` will now focus the search input in the log drawer.
 - ✨ Pressing `Escape` will now close the log drawer.
+- 🐞 Fixed log search position being reset when receiving new logs.
 
 ## 1.3.0 - 2025-10-26
 

@@ -5,7 +5,6 @@ import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 
 type ProcessLogRowProps = {
   log: ProcessLogData;
-  index: number;
   searchTerm?: string;
   isCurrentMatch?: boolean;
   ref?: (el: HTMLDivElement | undefined) => void;
@@ -62,10 +61,9 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   return (
     <div
       ref={props.ref}
-      data-log-index={props.index}
       class={`${
         props.isCurrentMatch ? "bg-gray-700 rounded" : ""
-      } whitespace-pre-wrap break-words`}
+      } whitespace-pre-wrap wrap-break-word`}
     >
       <span class="text-gray-400 italic">[{props.log.timestamp}] </span>
       <For each={segments()}>

@@ -22,6 +22,8 @@ type ProcessLogDrawerProps = {
   onClose: () => void;
 };
 
+type LogWithId = ProcessLogData & { id: string };
+
 const MAX_LOGS = 1_500;
 const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
@@ -38,17 +40,18 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     isPaused: false,
   });
   const [isAtBottom, setIsAtBottom] = createSignal(true);
+  const [selectedLogId, setSelectedLogId] = createSignal<string | null>(null);
 
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
   const [searchState, setSearchState] = createStore({
     term: "",
     currentMatchIndex: -1,
-    matchingLogIndices: [] as number[],
+    matchingLogIds: [] as string[],
   });
 
   const [logsByProcess, setLogsByProcess] = createStore<
-    Record<string, ProcessLogData[]>
+    Record<string, LogWithId[]>
   >({});
   const [pendingLogsByProcess, setPendingLogsByProcess] = createStore<
     Record<string, ProcessLogData[]>
@@ -59,9 +62,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
 
   let logsContainerRef!: HTMLDivElement;
   let searchInputRef!: HTMLInputElement;
-  const logRefs = new Map<number, HTMLElement>();
+  const logRefs = new Map<string, HTMLElement>();
   let batchTimer: number | null = null;
   let scrollAnimationFrame: number | null = null;
+  let previousSearchTerm = "";
 
   const clearBatchTimer = () => {
     if (batchTimer === null) return;
@@ -90,9 +94,12 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         const isUpdate = log.type !== LogType.EXIT && isLiveUpdate(log.output);
 
         if (isUpdate && updated.length > 0) {
-          updated[updated.length - 1] = log;
+          // Replace the last log with updated version, keeping the same ID
+          const lastLog = updated[updated.length - 1];
+          updated[updated.length - 1] = { ...log, id: lastLog.id };
         } else {
-          updated.push(log);
+          // Generate unique ID for new log
+          updated.push({ ...log, id: crypto.randomUUID() });
         }
       });
 
@@ -172,8 +179,9 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     setSearchState({
       term: "",
       currentMatchIndex: -1,
-      matchingLogIndices: [],
+      matchingLogIds: [],
     });
+    setSelectedLogId(null);
     clearBatchTimer();
     clearSearchTimer();
   };
@@ -190,39 +198,36 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
 
   // Navigate to specific match using refs
   const goToMatch = (matchIndex: number) => {
-    const indices = searchState.matchingLogIndices;
-    if (
-      indices.length === 0 ||
-      matchIndex < 0 ||
-      matchIndex >= indices.length
-    ) {
+    const logIds = searchState.matchingLogIds;
+    if (logIds.length === 0 || matchIndex < 0 || matchIndex >= logIds.length) {
       return;
     }
-    const logIndex = indices[matchIndex];
-    const logElement = logRefs.get(logIndex);
+    const logId = logIds[matchIndex];
+    const logElement = logRefs.get(logId);
     if (logElement && logsContainerRef) {
       logElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     setSearchState("currentMatchIndex", matchIndex);
+    setSelectedLogId(logId);
   };
 
   const goToNextMatch = () => {
-    const indices = searchState.matchingLogIndices;
-    if (indices.length === 0) return;
+    const logIds = searchState.matchingLogIds;
+    if (logIds.length === 0) return;
     const nextIndex =
-      searchState.currentMatchIndex < indices.length - 1
+      searchState.currentMatchIndex < logIds.length - 1
         ? searchState.currentMatchIndex + 1
         : 0;
     goToMatch(nextIndex);
   };
 
   const goToPrevMatch = () => {
-    const indices = searchState.matchingLogIndices;
-    if (indices.length === 0) return;
+    const logIds = searchState.matchingLogIds;
+    if (logIds.length === 0) return;
     const prevIndex =
       searchState.currentMatchIndex > 0
         ? searchState.currentMatchIndex - 1
-        : indices.length - 1;
+        : logIds.length - 1;
     goToMatch(prevIndex);
   };
 
@@ -258,32 +263,59 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   // Auto-scroll to bottom when logs are rendered
   createEffect(on(() => currentLogs().length, scrollToBottom));
 
-  // Update matching indices when search term or logs change
+  // Update matching log IDs when search term or logs change
   createEffect(() => {
     const searchTerm = searchState.term;
     const logs = currentLogs();
 
     if (!searchTerm.trim()) {
+      previousSearchTerm = searchTerm;
       setSearchState({
         term: searchTerm,
-        matchingLogIndices: [],
+        matchingLogIds: [],
         currentMatchIndex: -1,
       });
+      setSelectedLogId(null);
       return;
     }
 
-    const matches: number[] = [];
-    logs.forEach((log, index) => {
+    const matchingIds: string[] = [];
+    logs.forEach((log) => {
       if (log.type === LogType.EXIT) return;
       if (log.output.toLowerCase().includes(searchTerm.toLowerCase())) {
-        matches.push(index);
+        matchingIds.push(log.id);
       }
     });
 
+    // Preserve the current selection if search term hasn't changed
+    let newCurrentMatchIndex = -1;
+    const currentSelectedId = selectedLogId();
+
+    if (matchingIds.length > 0) {
+      // If search term changed, reset to first match
+      if (searchTerm !== previousSearchTerm) {
+        newCurrentMatchIndex = 0;
+        setSelectedLogId(matchingIds[0]);
+      }
+      // If search term is the same, try to preserve selection
+      else if (currentSelectedId && matchingIds.includes(currentSelectedId)) {
+        // Same log is still in matches, preserve selection
+        newCurrentMatchIndex = matchingIds.indexOf(currentSelectedId);
+      } else {
+        // No valid selection, default to first match
+        newCurrentMatchIndex = 0;
+        setSelectedLogId(matchingIds[0]);
+      }
+    } else {
+      setSelectedLogId(null);
+    }
+
+    previousSearchTerm = searchTerm;
+
     setSearchState({
       term: searchTerm,
-      matchingLogIndices: matches,
-      currentMatchIndex: matches.length > 0 ? 0 : -1,
+      matchingLogIds: matchingIds,
+      currentMatchIndex: newCurrentMatchIndex,
     });
   });
 
@@ -385,14 +417,14 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 fallback={<span class="text-sm text-gray-500">No search</span>}
               >
                 <Show
-                  when={searchState.matchingLogIndices.length > 0}
+                  when={searchState.matchingLogIds.length > 0}
                   fallback={
                     <span class="text-sm text-gray-500">No result</span>
                   }
                 >
                   <span class="text-sm text-gray-500">
                     {searchState.currentMatchIndex + 1} /{" "}
-                    {searchState.matchingLogIndices.length}
+                    {searchState.matchingLogIds.length}
                   </span>
                   <div class="flex items-center gap-0 flex-col">
                     <button
@@ -472,24 +504,19 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
             >
               <div class={`font-mono text-sm space-y-1`}>
                 <For each={currentLogs()}>
-                  {(log, index) => {
-                    const isCurrentMatch = () =>
-                      searchState.currentMatchIndex >= 0 &&
-                      searchState.matchingLogIndices[
-                        searchState.currentMatchIndex
-                      ] === index();
+                  {(log) => {
+                    const isCurrentMatch = () => selectedLogId() === log.id;
 
                     return (
                       <ProcessLogRow
                         log={log}
-                        index={index()}
                         searchTerm={searchState.term}
                         isCurrentMatch={isCurrentMatch()}
                         ref={(el: HTMLDivElement | undefined) => {
                           if (el) {
-                            logRefs.set(index(), el);
+                            logRefs.set(log.id, el);
                           } else {
-                            logRefs.delete(index());
+                            logRefs.delete(log.id);
                           }
                         }}
                       />
