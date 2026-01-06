@@ -126,21 +126,22 @@ const testCases: TestCase[] = [
 ];
 
 describe.concurrent("extractYamlConfig", async () => {
-  test.each(testCases)(
-    "$name",
-    async ({ filename, expectedErrors, shouldBeValid }) => {
-      const yamlContent = readFileSync(filename, "utf8");
-      const result = extractYamlConfig(yamlContent);
+  test.each(testCases)("$name", async ({
+    filename,
+    expectedErrors,
+    shouldBeValid,
+  }) => {
+    const yamlContent = readFileSync(filename, "utf8");
+    const result = extractYamlConfig(yamlContent);
 
-      expect(result.isValid).toBe(shouldBeValid);
+    expect(result.isValid).toBe(shouldBeValid);
 
-      if (shouldBeValid) {
-        expect(result.config).not.toBe(null);
-        expect(result.errors).toHaveLength(0);
-      } else {
-        expect(result.config).toBe(null);
-        expect(result.errors).toEqual(expectedErrors);
-      }
-    },
-  );
+    if (shouldBeValid) {
+      expect(result.config).not.toBe(null);
+      expect(result.errors).toHaveLength(0);
+    } else {
+      expect(result.config).toBe(null);
+      expect(result.errors).toEqual(expectedErrors);
+    }
+  });
 });
