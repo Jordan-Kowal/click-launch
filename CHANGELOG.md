@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## 1.4.2 - 2026-01-06
+
+- 🔧 Upgraded dependencies.
+
 ## 1.4.1 - 2025-11-05
 
 - 🐞 Fixed extra spaces in command output when an argument is empty.

@@ -1,6 +1,6 @@
 {
   "name": "click-launch",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "dist-electron/main.js",
   "type": "module",
   "license": "MIT",
