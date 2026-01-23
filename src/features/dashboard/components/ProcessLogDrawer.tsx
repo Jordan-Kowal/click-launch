@@ -45,6 +45,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
 
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
+  const [isFilterMode, setIsFilterMode] = createSignal(false);
   const [searchState, setSearchState] = createStore({
     term: "",
     currentMatchIndex: -1,
@@ -60,6 +61,15 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
 
   const currentLogs = () => logsByProcess[props.processName] || [];
   const processNames = () => yamlConfig()?.processes.map((p) => p.name) || [];
+
+  // Filter logs based on mode: in filter mode, only show matching logs
+  const displayedLogs = () => {
+    const logs = currentLogs();
+    if (!isFilterMode() || !searchState.term.trim()) {
+      return logs;
+    }
+    return logs.filter((log) => searchState.matchingLogIds.includes(log.id));
+  };
 
   let logsContainerRef!: HTMLDivElement;
   let searchInputRef!: HTMLInputElement;
@@ -232,9 +242,9 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     goToMatch(prevIndex);
   };
 
-  // Moves to next or previous match using Enter key
+  // Moves to next or previous match using Enter key (search mode only)
   const handleSearchKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isFilterMode()) {
       e.shiftKey ? goToPrevMatch() : goToNextMatch();
     }
   };
@@ -405,7 +415,11 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 <input
                   ref={searchInputRef!}
                   type="text"
-                  placeholder="Search logs... (Enter: next, Shift+Enter: prev)"
+                  placeholder={
+                    isFilterMode()
+                      ? "Filter logs..."
+                      : "Search logs... (Enter: next, Shift+Enter: prev)"
+                  }
                   class="grow w-full"
                   value={searchValue()}
                   onInput={onSearchChange}
@@ -413,6 +427,17 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 />
               </label>
             </div>
+            <label class="flex items-center gap-2 cursor-pointer text-xs whitespace-nowrap">
+              <input
+                type="checkbox"
+                class="toggle toggle-xs toggle-primary"
+                checked={isFilterMode()}
+                onChange={(e) =>
+                  setIsFilterMode((e.target as HTMLInputElement).checked)
+                }
+              />
+              Filter mode
+            </label>
             <div class="flex items-center gap-1 w-25 justify-end md:justify-start">
               <Show
                 when={searchState.term}
@@ -424,28 +449,40 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                     <span class="text-sm text-gray-500">No result</span>
                   }
                 >
-                  <span class="text-sm text-gray-500">
-                    {searchState.currentMatchIndex + 1} /{" "}
-                    {searchState.matchingLogIds.length}
-                  </span>
-                  <div class="flex items-center gap-0 flex-col">
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-ghost"
-                      onClick={goToPrevMatch}
-                      title="Previous match (Shift+Enter)"
-                    >
-                      <ChevronUp size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-ghost"
-                      onClick={goToNextMatch}
-                      title="Next match (Enter)"
-                    >
-                      <ChevronDown size={14} />
-                    </button>
-                  </div>
+                  <Show
+                    when={isFilterMode()}
+                    fallback={
+                      <>
+                        <span class="text-sm text-gray-500">
+                          {searchState.currentMatchIndex + 1} /{" "}
+                          {searchState.matchingLogIds.length}
+                        </span>
+                        <div class="flex items-center gap-0 flex-col">
+                          <button
+                            type="button"
+                            class="btn btn-xs btn-ghost"
+                            onClick={goToPrevMatch}
+                            title="Previous match (Shift+Enter)"
+                          >
+                            <ChevronUp size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-xs btn-ghost"
+                            onClick={goToNextMatch}
+                            title="Next match (Enter)"
+                          >
+                            <ChevronDown size={14} />
+                          </button>
+                        </div>
+                      </>
+                    }
+                  >
+                    <span class="text-sm text-gray-500">
+                      {searchState.matchingLogIds.length} match
+                      {searchState.matchingLogIds.length === 1 ? "" : "es"}
+                    </span>
+                  </Show>
                 </Show>
               </Show>
             </div>
@@ -505,7 +542,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               }
             >
               <div class={`font-mono text-sm space-y-1`}>
-                <For each={currentLogs()}>
+                <For each={displayedLogs()}>
                   {(log) => {
                     const isCurrentMatch = () => selectedLogId() === log.id;
 
