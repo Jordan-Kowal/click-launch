@@ -14,6 +14,7 @@ import type { ProcessLogData } from "@/electron/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 import { useDashboardContext } from "../contexts";
 import { ProcessStatus } from "../enums";
+import { PlayStopButton } from "./PlayStopButton";
 import { ProcessLogRow } from "./ProcessLogRow";
 
 type ProcessLogDrawerProps = {
@@ -378,6 +379,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               <ArrowLeft size={20} />
             </button>
             <h3 class="font-bold m-0!">Logs - {props.processName}</h3>
+            <PlayStopButton processName={props.processName} />
             <Show
               when={isRunning()}
               fallback={<div class="badge badge-neutral">Idle</div>}
