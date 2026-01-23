@@ -6,6 +6,7 @@ import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 type ProcessLogRowProps = {
   log: ProcessLogData;
   searchTerm?: string;
+  isRegexMode?: boolean;
   isCurrentMatch?: boolean;
   ref?: (el: HTMLDivElement | undefined) => void;
 };
@@ -52,10 +53,14 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   // Memoize search regex - only recreate when search term changes
   const searchRegex = createMemo(() => {
     if (!props.searchTerm) return null;
-    return new RegExp(
-      `(${props.searchTerm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")})`,
-      "gi",
-    );
+    try {
+      const pattern = props.isRegexMode
+        ? props.searchTerm
+        : props.searchTerm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+      return new RegExp(`(${pattern})`, "gi");
+    } catch {
+      return null;
+    }
   });
 
   return (

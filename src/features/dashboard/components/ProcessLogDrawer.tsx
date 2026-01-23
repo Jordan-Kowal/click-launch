@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ChevronDown,
   ChevronUp,
+  Regex,
   Search,
   Trash2,
   X,
@@ -46,6 +47,8 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
   const [isFilterMode, setIsFilterMode] = createSignal(false);
+  const [isRegexMode, setIsRegexMode] = createSignal(false);
+  const [regexError, setRegexError] = createSignal<string | null>(null);
   const [searchState, setSearchState] = createStore({
     term: "",
     currentMatchIndex: -1,
@@ -278,9 +281,11 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   createEffect(() => {
     const searchTerm = searchState.term;
     const logs = currentLogs();
+    const useRegex = isRegexMode();
 
     if (!searchTerm.trim()) {
       previousSearchTerm = searchTerm;
+      setRegexError(null);
       setSearchState({
         term: searchTerm,
         matchingLogIds: [],
@@ -290,10 +295,31 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       return;
     }
 
+    let regex: RegExp | null = null;
+    if (useRegex) {
+      try {
+        regex = new RegExp(searchTerm, "i");
+        setRegexError(null);
+      } catch (error) {
+        setRegexError((error as Error).message);
+        setSearchState({
+          term: searchTerm,
+          matchingLogIds: [],
+          currentMatchIndex: -1,
+        });
+        setSelectedLogId(null);
+        previousSearchTerm = searchTerm;
+        return;
+      }
+    }
+
     const matchingIds: string[] = [];
     logs.forEach((log) => {
       if (log.type === LogType.EXIT) return;
-      if (log.output.toLowerCase().includes(searchTerm.toLowerCase())) {
+      const matches = useRegex
+        ? regex?.test(log.output)
+        : log.output.toLowerCase().includes(searchTerm.toLowerCase());
+      if (matches) {
         matchingIds.push(log.id);
       }
     });
@@ -425,7 +451,20 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                   onInput={onSearchChange}
                   onKeyDown={handleSearchKeyDown}
                 />
+                <button
+                  type="button"
+                  class={`btn btn-ghost btn-xs btn-circle ${isRegexMode() ? "text-primary" : ""}`}
+                  onClick={() => setIsRegexMode(!isRegexMode())}
+                  title="Toggle regex mode"
+                >
+                  <Regex size={16} />
+                </button>
               </label>
+              <Show when={regexError()}>
+                <div class="text-error text-xs mt-1 absolute">
+                  Invalid regex: {regexError()}
+                </div>
+              </Show>
             </div>
             <div class="flex items-center gap-1 w-18 justify-end md:justify-start">
               <Show
@@ -550,6 +589,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                       <ProcessLogRow
                         log={log}
                         searchTerm={searchState.term}
+                        isRegexMode={isRegexMode()}
                         isCurrentMatch={isCurrentMatch()}
                         ref={(el: HTMLDivElement | undefined) => {
                           if (el) {
