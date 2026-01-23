@@ -427,18 +427,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 />
               </label>
             </div>
-            <label class="flex items-center gap-2 cursor-pointer text-xs whitespace-nowrap">
-              <input
-                type="checkbox"
-                class="toggle toggle-xs toggle-primary"
-                checked={isFilterMode()}
-                onChange={(e) =>
-                  setIsFilterMode((e.target as HTMLInputElement).checked)
-                }
-              />
-              Filter mode
-            </label>
-            <div class="flex items-center gap-1 w-25 justify-end md:justify-start">
+            <div class="flex items-center gap-1 w-18 justify-end md:justify-start">
               <Show
                 when={searchState.term}
                 fallback={<span class="text-sm text-gray-500">No search</span>}
@@ -486,6 +475,17 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 </Show>
               </Show>
             </div>
+            <label class="flex items-center gap-2 cursor-pointer text-xs whitespace-nowrap">
+              <input
+                type="checkbox"
+                class="toggle toggle-xs toggle-primary"
+                checked={isFilterMode()}
+                onChange={(e) =>
+                  setIsFilterMode((e.target as HTMLInputElement).checked)
+                }
+              />
+              Filter mode
+            </label>
           </div>
 
           {/* Options */}

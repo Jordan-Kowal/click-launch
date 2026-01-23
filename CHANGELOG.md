@@ -8,6 +8,12 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🚀 Added **filter mode** to the search bar, to only display rows that match your search
+- ✨ Processes can now be started/stopped from the log drawer header
+- 🔧 Added setup for ClaudeCode
+
 ## 1.4.2 - 2026-01-06
 
 - 🔧 Upgraded dependencies.
