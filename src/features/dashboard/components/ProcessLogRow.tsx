@@ -56,7 +56,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
     try {
       const pattern = props.isRegexMode
         ? props.searchTerm
-        : props.searchTerm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+        : props.searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       return new RegExp(`(${pattern})`, "gi");
     } catch {
       return null;
