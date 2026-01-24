@@ -16,6 +16,7 @@
 - 🔧 Added setup for ClaudeCode.
 - 🔧 Minor performance improvements for the development server.
 - 🔧 Upgraded dependencies.
+- 🔧 Upgraded node version to 24.
 
 ## 1.4.2 - 2026-01-06
 
