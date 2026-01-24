@@ -8,11 +8,14 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 1.5.0 - 2026-01-24
 
-- 🚀 Added **filter mode** to the search bar, to only display rows that match your search
-- ✨ Processes can now be started/stopped from the log drawer header
-- 🔧 Added setup for ClaudeCode
+- 🚀 Added **filter mode** to the search bar, to only display rows that match your search.
+- 🚀 Added **regex mode** to the search bar, to search for logs using a regular expression.
+- ✨ Processes can now be started/stopped from the log drawer header.
+- 🔧 Added setup for ClaudeCode.
+- 🔧 Minor performance improvements for the development server.
+- 🔧 Upgraded dependencies.
 
 ## 1.4.2 - 2026-01-06
 

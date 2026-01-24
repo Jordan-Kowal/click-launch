@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ChevronDown,
   ChevronUp,
+  Regex,
   Search,
   Trash2,
   X,
@@ -46,6 +47,8 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
   const [isFilterMode, setIsFilterMode] = createSignal(false);
+  const [isRegexMode, setIsRegexMode] = createSignal(false);
+  const [regexError, setRegexError] = createSignal<string | null>(null);
   const [searchState, setSearchState] = createStore({
     term: "",
     currentMatchIndex: -1,
@@ -278,9 +281,11 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   createEffect(() => {
     const searchTerm = searchState.term;
     const logs = currentLogs();
-
+    const useRegex = isRegexMode();
+    // Early exit: empty search term clears all matches and selections
     if (!searchTerm.trim()) {
       previousSearchTerm = searchTerm;
+      setRegexError(null);
       setSearchState({
         term: searchTerm,
         matchingLogIds: [],
@@ -289,40 +294,59 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       setSelectedLogId(null);
       return;
     }
-
+    // Regex mode: compile pattern and validate syntax
+    let regex: RegExp | null = null;
+    if (useRegex) {
+      try {
+        regex = new RegExp(searchTerm, "i");
+        setRegexError(null);
+      } catch (error) {
+        // Invalid regex: show error and clear matches
+        setRegexError((error as Error).message);
+        setSearchState({
+          term: searchTerm,
+          matchingLogIds: [],
+          currentMatchIndex: -1,
+        });
+        setSelectedLogId(null);
+        previousSearchTerm = searchTerm;
+        return;
+      }
+    }
+    // Find all logs matching the search term (excluding EXIT logs)
     const matchingIds: string[] = [];
     logs.forEach((log) => {
       if (log.type === LogType.EXIT) return;
-      if (log.output.toLowerCase().includes(searchTerm.toLowerCase())) {
+      const matches = useRegex
+        ? regex?.test(log.output)
+        : log.output.toLowerCase().includes(searchTerm.toLowerCase());
+      if (matches) {
         matchingIds.push(log.id);
       }
     });
-
-    // Preserve the current selection if search term hasn't changed
+    // Determine which match to select and highlight
     let newCurrentMatchIndex = -1;
     const currentSelectedId = selectedLogId();
-
     if (matchingIds.length > 0) {
-      // If search term changed, reset to first match
       if (searchTerm !== previousSearchTerm) {
+        // New search term: jump to first match
         newCurrentMatchIndex = 0;
         setSelectedLogId(matchingIds[0]);
-      }
-      // If search term is the same, try to preserve selection
-      else if (currentSelectedId && matchingIds.includes(currentSelectedId)) {
-        // Same log is still in matches, preserve selection
+      } else if (currentSelectedId && matchingIds.includes(currentSelectedId)) {
+        // Same search, current selection still valid: preserve it
         newCurrentMatchIndex = matchingIds.indexOf(currentSelectedId);
       } else {
-        // No valid selection, default to first match
+        // Same search, but current selection no longer valid: reset to first match
         newCurrentMatchIndex = 0;
         setSelectedLogId(matchingIds[0]);
       }
     } else {
+      // No matches found: clear selection
       setSelectedLogId(null);
     }
-
+    // Update state tracking for next effect run
     previousSearchTerm = searchTerm;
-
+    // Commit the new search state
     setSearchState({
       term: searchTerm,
       matchingLogIds: matchingIds,
@@ -407,7 +431,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         </div>
 
         {/* Search and options */}
-        <div class="py-2 px-4 border-b border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="py-3 px-4 border-b border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
           <div class="flex items-center gap-4 min-h-12">
             <div class="relative w-full md:w-96">
               <label class="input input-sm w-full">
@@ -425,7 +449,20 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                   onInput={onSearchChange}
                   onKeyDown={handleSearchKeyDown}
                 />
+                <button
+                  type="button"
+                  class={`btn btn-xs btn-circle ${isRegexMode() ? "btn-secondary" : "btn-ghost"}`}
+                  onClick={() => setIsRegexMode(!isRegexMode())}
+                  title="Toggle regex mode"
+                >
+                  <Regex size={16} />
+                </button>
               </label>
+              <Show when={regexError()}>
+                <div class="text-error text-xs mt-1 absolute">
+                  {regexError()}
+                </div>
+              </Show>
             </div>
             <div class="flex items-center gap-1 w-18 justify-end md:justify-start">
               <Show
@@ -550,6 +587,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                       <ProcessLogRow
                         log={log}
                         searchTerm={searchState.term}
+                        isRegexMode={isRegexMode()}
                         isCurrentMatch={isCurrentMatch()}
                         ref={(el: HTMLDivElement | undefined) => {
                           if (el) {
