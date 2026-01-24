@@ -19,6 +19,9 @@ release
 coverage
 bundle-stats.html
 
+# TypeScript
+.tsbuildinfo
+
 # macOS
 **/.DS_Store
 

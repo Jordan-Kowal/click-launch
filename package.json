@@ -1,6 +1,6 @@
 {
   "name": "click-launch",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "main": "dist-electron/main.js",
   "type": "module",
   "license": "MIT",
@@ -36,8 +36,8 @@
     "clean": "rimraf dist dist-electron release",
     "reinstall": "rm -rf pnpm-lock.yaml node_modules/ && pnpm cache delete && pnpm install",
     "start": "concurrently \"vite\" \"wait-on dist-electron/main.js && IS_DEV=true electron .\"",
-    "build": "pnpm clean && tsc && vite build && electron-builder",
-    "build:dev": "pnpm clean && tsc && vite build && electron-builder --dir",
+    "build": "pnpm clean && concurrently \"tsc\" \"vite build\" && electron-builder",
+    "build:dev": "pnpm clean && concurrently \"tsc\" \"vite build\" && electron-builder --dir",
     "biome:check": "biome check ./src ./electron",
     "biome:check:fix": "biome check ./src ./electron --write --unsafe",
     "test": "(export NODE_NO_WARNINGS=1 && vitest)",
