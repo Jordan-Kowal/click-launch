@@ -1,5 +1,7 @@
 import type { ArgType, LogType } from "./enums";
 
+export type ProcessEnv = Record<string, string>;
+
 export type RestartConfig = {
   enabled: boolean;
   max_retries?: number; // Default: 3
@@ -25,6 +27,7 @@ export type YamlConfig = {
     name: string;
     base_command: string;
     cwd?: string;
+    env?: ProcessEnv;
     restart?: RestartConfig;
     args?: {
       type: ArgType;
@@ -107,6 +110,7 @@ export interface ElectronAPI {
     cwd: string,
     command: string,
     restartConfig?: RestartConfig,
+    env?: ProcessEnv,
   ) => Promise<ProcessStartResult>;
   stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
   getProcessStatus: (processId: ProcessId) => Promise<boolean>;

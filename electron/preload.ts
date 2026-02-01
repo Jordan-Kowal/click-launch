@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
+import type { ProcessEnv } from "@/electron/types";
 import type { ValidationResult } from "./utils/extractYamlConfig";
 
 contextBridge.exposeInMainWorld("electronAPI", {
@@ -14,8 +15,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   validatePaths: (filePaths: string[]): Promise<[string[], string[]]> =>
     ipcRenderer.invoke("paths:validate", filePaths),
   // Process management
-  startProcess: (cwd: string, command: string, restartConfig?: any) =>
-    ipcRenderer.invoke("process:start", cwd, command, restartConfig),
+  startProcess: (
+    cwd: string,
+    command: string,
+    restartConfig?: any,
+    env?: ProcessEnv,
+  ) => ipcRenderer.invoke("process:start", cwd, command, restartConfig, env),
   stopProcess: (processId: string) =>
     ipcRenderer.invoke("process:stop", processId),
   getProcessStatus: (processId: string) =>

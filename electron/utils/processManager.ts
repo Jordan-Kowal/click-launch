@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { BrowserWindow } from "electron";
-import type { RestartConfig } from "@/electron/types";
+import type { ProcessEnv, RestartConfig } from "@/electron/types";
 import { KillSignal, LogType } from "./enums";
 
 const PROCESS_KILL_TIMEOUT_MS = 10_000;
@@ -14,6 +14,7 @@ type ProcessState = {
   childProcess: ChildProcess;
   cwd: string;
   command: string;
+  customEnv?: ProcessEnv;
   restartConfig?: RestartConfig;
   retryCount: number;
   lastStartTime: number;
@@ -47,6 +48,7 @@ const spawnProcess = (
   command: string,
   restartConfig?: RestartConfig,
   retryCount = 0,
+  customEnv?: ProcessEnv,
 ): ChildProcess => {
   const childProcess = spawn(command, {
     cwd: cwd || process.cwd(),
@@ -59,6 +61,8 @@ const spawnProcess = (
       FORCE_COLOR: "1",
       TERM: "xterm-256color",
       COLORTERM: "truecolor",
+      // Custom env vars (user values take precedence)
+      ...customEnv,
     },
   });
 
@@ -67,6 +71,7 @@ const spawnProcess = (
     childProcess,
     cwd,
     command,
+    customEnv,
     restartConfig,
     retryCount,
     lastStartTime: Date.now(),
@@ -123,8 +128,15 @@ const handleProcessExit = (
   const state = runningProcesses.get(processId);
   if (!state) return;
 
-  const { restartConfig, manualStop, lastStartTime, retryCount, cwd, command } =
-    state;
+  const {
+    restartConfig,
+    manualStop,
+    lastStartTime,
+    retryCount,
+    cwd,
+    command,
+    customEnv,
+  } = state;
 
   // Clean up
   runningProcesses.delete(processId);
@@ -199,7 +211,14 @@ const handleProcessExit = (
     });
 
     // Spawn new process with same ID
-    spawnProcess(processId, cwd, command, restartConfig, newRetryCount);
+    spawnProcess(
+      processId,
+      cwd,
+      command,
+      restartConfig,
+      newRetryCount,
+      customEnv,
+    );
   }, delayMs);
 
   // Store the timer reference in case we need to cancel it
@@ -215,6 +234,7 @@ export const startProcess = async (
   cwd: string,
   command: string,
   restartConfig?: RestartConfig,
+  customEnv?: ProcessEnv,
 ): Promise<ProcessStartResult> => {
   try {
     // Verify working directory exists
@@ -227,7 +247,7 @@ export const startProcess = async (
     }
 
     const processId = randomUUID();
-    spawnProcess(processId, cwd, command, restartConfig, 0);
+    spawnProcess(processId, cwd, command, restartConfig, 0, customEnv);
     return { success: true, processId };
   } catch (error) {
     console.error("Error starting process:", error);

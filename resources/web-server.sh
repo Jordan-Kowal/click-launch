@@ -34,6 +34,15 @@ if [ "$watch_mode" = "true" ]; then
 fi
 echo "---"
 
+# Display custom environment variables if set
+if [ -n "$NODE_ENV" ] || [ -n "$DEBUG" ] || [ -n "$API_URL" ]; then
+  echo "Custom environment variables:"
+  [ -n "$NODE_ENV" ] && echo "  NODE_ENV=$NODE_ENV"
+  [ -n "$DEBUG" ] && echo "  DEBUG=$DEBUG"
+  [ -n "$API_URL" ] && echo "  API_URL=$API_URL"
+  echo "---"
+fi
+
 counter=0
 while true; do
   counter=$((counter + 1))

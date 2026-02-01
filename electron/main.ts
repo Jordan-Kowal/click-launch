@@ -181,8 +181,14 @@ app.whenReady().then(() => {
   // IPC handler for starting a process
   ipcMain.handle(
     "process:start",
-    async (_, cwd: string, command: string, restartConfig?: any) => {
-      return startProcess(cwd, command, restartConfig);
+    async (
+      _,
+      cwd: string,
+      command: string,
+      restartConfig?: any,
+      env?: Record<string, string>,
+    ) => {
+      return startProcess(cwd, command, restartConfig, env);
     },
   );
 

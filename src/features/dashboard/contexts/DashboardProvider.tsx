@@ -312,10 +312,13 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
       ? { ...processConfig.restart }
       : undefined;
     const cwd = resolveProcessCwd(processConfig);
+    // Spread env to create a plain object for IPC
+    const env = processConfig.env ? { ...processConfig.env } : undefined;
     const result = await window.electronAPI.startProcess(
       cwd,
       command,
       restartConfig,
+      env,
     );
 
     if (result.success && result.processId) {

@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import type { RestartConfig } from "@/electron/types";
+import type { ProcessEnv, RestartConfig } from "@/electron/types";
 
 export enum ArgType {
   TOGGLE = "toggle",
@@ -26,7 +26,7 @@ export type YamlConfig = {
     name: string;
     base_command: string;
     cwd?: string;
-    env?: Record<string, string>;
+    env?: ProcessEnv;
     restart?: RestartConfig;
     args?: {
       type: ArgType;
