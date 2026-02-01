@@ -1,5 +1,12 @@
 import type { ArgType, LogType } from "./enums";
 
+export type RestartConfig = {
+  enabled: boolean;
+  max_retries?: number; // Default: 3
+  delay_ms?: number; // Default: 1000
+  reset_after_ms?: number; // Default: 30000
+};
+
 export type ValidationResult = {
   isValid: boolean;
   config: YamlConfig | null;
@@ -17,6 +24,7 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
+    restart?: RestartConfig;
     args?: {
       type: ArgType;
       name: string;
@@ -69,6 +77,21 @@ export type ProcessLogData = {
 
 export type BulkProcessStatusResult = Record<ProcessId, boolean>;
 
+export type ProcessRestartData = {
+  processId: ProcessId;
+  retryCount: number;
+  maxRetries: number;
+  timestamp: string;
+};
+
+export type ProcessCrashData = {
+  processId: ProcessId;
+  exitCode: number | null;
+  signal: string | null;
+  willRestart: boolean;
+  timestamp: string;
+};
+
 export interface ElectronAPI {
   platform: string;
   version: string;
@@ -79,7 +102,11 @@ export interface ElectronAPI {
   validateYaml: (filePath: string) => Promise<ValidationResult>;
   validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;
   // Process management
-  startProcess: (cwd: string, command: string) => Promise<ProcessStartResult>;
+  startProcess: (
+    cwd: string,
+    command: string,
+    restartConfig?: RestartConfig,
+  ) => Promise<ProcessStartResult>;
   stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
   getProcessStatus: (processId: ProcessId) => Promise<boolean>;
   getBulkProcessStatus: (
@@ -89,6 +116,11 @@ export interface ElectronAPI {
   // Process log streaming
   onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
   removeProcessLogListener: () => void;
+  // Process restart events
+  onProcessRestart: (callback: (data: ProcessRestartData) => void) => void;
+  removeProcessRestartListener: () => void;
+  onProcessCrash: (callback: (data: ProcessCrashData) => void) => void;
+  removeProcessCrashListener: () => void;
 }
 
 declare global {

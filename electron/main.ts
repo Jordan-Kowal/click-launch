@@ -179,9 +179,12 @@ app.whenReady().then(() => {
   );
 
   // IPC handler for starting a process
-  ipcMain.handle("process:start", async (_, cwd: string, command: string) => {
-    return startProcess(cwd, command);
-  });
+  ipcMain.handle(
+    "process:start",
+    async (_, cwd: string, command: string, restartConfig?: any) => {
+      return startProcess(cwd, command, restartConfig);
+    },
+  );
 
   // IPC handler for stopping a process
   ipcMain.handle("process:stop", async (_, processId: string) => {

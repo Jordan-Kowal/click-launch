@@ -20,11 +20,13 @@ export const ProcessRow = (props: ProcessRowProps) => {
     getProcessArgs,
     getProcessStatus,
     getProcessStartTime,
+    getProcessData,
   } = useDashboardContext();
   const command = () => getProcessCommand(props.process.name);
   const args = () => getProcessArgs(props.process.name);
   const status = () => getProcessStatus(props.process.name);
   const startTime = () => getProcessStartTime(props.process.name);
+  const processData = () => getProcessData(props.process.name);
   const [showOptions, setShowOptions] = createSignal(false);
 
   const toggleOptions = () => setShowOptions(!showOptions());
@@ -35,10 +37,25 @@ export const ProcessRow = (props: ProcessRowProps) => {
       case ProcessStatus.STARTING:
       case ProcessStatus.RUNNING:
         return "badge-primary";
+      case ProcessStatus.RESTARTING:
+        return "badge-warning";
+      case ProcessStatus.CRASHED:
+        return "badge-error";
       case ProcessStatus.STOPPED:
       case ProcessStatus.STOPPING:
         return "badge-neutral";
     }
+  });
+
+  const statusText = createMemo(() => {
+    const currentStatus = status();
+    if (currentStatus === ProcessStatus.RESTARTING) {
+      const data = processData();
+      if (data) {
+        return `Restart (${data.retryCount}/${data.maxRetries})`;
+      }
+    }
+    return currentStatus;
   });
 
   const button = createMemo(() => (
@@ -83,10 +100,13 @@ export const ProcessRow = (props: ProcessRowProps) => {
       </td>
       <td class="align-top w-32 flex-shrink-0 !p-2">
         <div class="flex flex-col items-start gap-1">
-          <div class={`badge ${statusVariant()}`}>{status()}</div>
+          <div class={`badge ${statusVariant()}`}>{statusText()}</div>
           <ProcessDuration
             startTime={startTime()}
-            isRunning={status() === ProcessStatus.RUNNING}
+            isRunning={
+              status() === ProcessStatus.RUNNING ||
+              status() === ProcessStatus.RESTARTING
+            }
           />
         </div>
       </td>

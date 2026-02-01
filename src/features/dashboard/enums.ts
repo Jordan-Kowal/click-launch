@@ -3,4 +3,6 @@ export enum ProcessStatus {
   STARTING = "Starting",
   RUNNING = "Running",
   STOPPING = "Stopping",
+  CRASHED = "Crashed",
+  RESTARTING = "Restarting",
 }

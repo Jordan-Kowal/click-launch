@@ -86,3 +86,14 @@ processes:
 
   - name: "Infinite Process"
     base_command: "bash ./resources/infinite-process.sh"
+
+  - name: "Crashing Process (Auto-Restart)"
+    base_command: "bash ./resources/crashing-process.sh 3 1"
+    restart:
+      enabled: true
+      max_retries: 3
+      delay_ms: 1000
+      reset_after_ms: 30000
+
+  - name: "Crashing Process (No Restart)"
+    base_command: "bash ./resources/crashing-process.sh 2 1"
