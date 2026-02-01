@@ -715,14 +715,11 @@ After completing a feature from this list, you **must** update the following fil
    - Remove the completed feature section entirely
    - Update the Table of Contents to reflect the removal
    - Renumber remaining sections if necessary
-   - Update the "Implementation Priority" section accordingly
 
 2. **README.md** (Documentation)
    - Document the new feature in the appropriate section
-   - Add configuration examples if the feature affects `config.yml`
-   - Update screenshots if UI has changed significantly
+   - Add configuration examples if the feature affects it
 
 3. **CHANGELOG.md**
    - Add an entry under the appropriate version section
-   - Follow the existing format: `- feat: description of the new feature`
-   - If CHANGELOG.md doesn't exist, create it following [Keep a Changelog](https://keepachangelog.com/) format
+   - Follow the existing format
