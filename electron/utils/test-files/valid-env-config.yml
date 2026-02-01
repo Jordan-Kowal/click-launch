@@ -1,0 +1,17 @@
+project_name: "Test Project"
+
+processes:
+  - name: "Process with env vars"
+    base_command: "echo hello"
+    env:
+      NODE_ENV: development
+      DEBUG: "api:*"
+      DATABASE_URL: "postgres://localhost:5432/mydb"
+      EMPTY_VAR: ""
+
+  - name: "Process without env"
+    base_command: "echo world"
+
+  - name: "Process with empty env object"
+    base_command: "echo test"
+    env: {}

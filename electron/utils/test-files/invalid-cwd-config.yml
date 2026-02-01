@@ -1,0 +1,10 @@
+project_name: "Invalid CWD Test"
+
+processes:
+  - name: "Process with numeric cwd"
+    base_command: "echo test"
+    cwd: 123
+
+  - name: "Process with empty cwd"
+    base_command: "echo test"
+    cwd: ""

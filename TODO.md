@@ -6,92 +6,16 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 ## Table of Contents
 
-1. [Environment Variables Support](#1-environment-variables-support)
-2. [Log Export/Save](#2-log-exportsave)
-3. [Keyboard Shortcuts Reference](#4-keyboard-shortcuts-reference)
-4. [Process Grouping/Tags](#5-process-groupingtags)
-5. [Settings/Preferences Panel](#6-settingspreferences-panel)
-6. [Resource Monitoring](#7-resource-monitoring)
-7. [Working Directory Override](#8-working-directory-override)
-8. [Copy Log Line](#9-copy-log-line)
+1. [Log Export/Save](#1-log-exportsave)
+2. [Keyboard Shortcuts Reference](#2-keyboard-shortcuts-reference)
+3. [Process Grouping/Tags](#3-process-groupingtags)
+4. [Settings/Preferences Panel](#4-settingspreferences-panel)
+5. [Resource Monitoring](#5-resource-monitoring)
+6. [Copy Log Line](#6-copy-log-line)
 
 ---
 
-## 1. Environment Variables Support
-
-**Priority:** High
-**Complexity:** Medium
-**Feature:** Allow users to define custom environment variables per process in `config.yml`
-
-### User Story
-
-As a developer, I want to set environment variables for each process so that I can configure different environments (dev/staging) without modifying my application code.
-
-### Configuration Schema
-
-Extend the process configuration to support an optional `env` field:
-
-```yaml
-processes:
-  - name: "API Server"
-    base_command: "pnpm start"
-    env:
-      NODE_ENV: development
-      DEBUG: "api:*"
-      DATABASE_URL: "postgres://localhost:5432/mydb"
-      API_KEY: "dev-key-12345"
-```
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/utils/extractYamlConfig.ts`**
-   - Update `ProcessConfig` type to include optional `env: Record<string, string>`
-   - Add validation for `env` field (must be object with string values)
-   - Ensure env keys are valid (no spaces, valid shell variable names)
-
-2. **`electron/main.ts`** (IPC handler for `process:start`)
-   - Pass environment variables to `processManager.start()`
-   - Merge with existing `process.env` (user vars take precedence)
-
-3. **`electron/utils/processManager.ts`**
-   - Update `start()` function signature to accept `env` parameter
-   - Pass to `spawn()` options: `{ env: { ...process.env, ...customEnv } }`
-
-4. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Store `env` in process state
-   - Pass to IPC when starting process
-
-5. **`src/features/dashboard/components/ProcessRow.tsx`** (optional enhancement)
-   - Add visual indicator when process has custom env vars
-   - Tooltip showing configured variables (values hidden for security)
-
-#### Validation Rules
-
-- `env` field is optional
-- If present, must be an object
-- All keys must be non-empty strings matching `/^[A-Z_][A-Z0-9_]*$/i`
-- All values must be strings (numbers should be quoted in YAML)
-
-#### Test Cases to Add
-
-```typescript
-// In extractYamlConfig.test.ts
-- Valid config with env variables
-- Invalid env key (contains spaces)
-- Invalid env value (non-string)
-- Empty env object (should be valid)
-```
-
-#### Security Considerations
-
-- Never log environment variable values (may contain secrets)
-- Consider adding `.env` file support in future iteration
-
----
-
-## 2. Log Export/Save
+## 1. Log Export/Save
 
 **Priority:** High
 **Complexity:** Low
@@ -178,7 +102,7 @@ export const stripAnsiCodes = (text: string): string => { ... }
 
 ---
 
-## 3. Keyboard Shortcuts Reference
+## 2. Keyboard Shortcuts Reference
 
 **Priority:** Medium
 **Complexity:** Low
@@ -272,7 +196,7 @@ export const KEYBOARD_SHORTCUTS = {
 
 ---
 
-## 4. Process Grouping/Tags
+## 3. Process Grouping/Tags
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -370,7 +294,7 @@ const groupProcesses = (processes: ProcessConfig[]): GroupedProcesses => {
 
 ---
 
-## 5. Settings/Preferences Panel
+## 4. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -476,7 +400,7 @@ type Settings = {
 
 ---
 
-## 6. Resource Monitoring
+## 5. Resource Monitoring
 
 **Priority:** Medium
 **Complexity:** High
@@ -579,93 +503,7 @@ const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> 
 
 ---
 
-## 7. Working Directory Override
-
-**Priority:** Medium
-**Complexity:** Low
-**Feature:** Allow per-process working directory configuration
-
-### User Story
-
-As a developer with a monorepo, I want to set different working directories for each process so that I can run commands from the correct package folder.
-
-### Configuration Schema
-
-```yaml
-processes:
-  - name: "API Server"
-    base_command: "pnpm dev"
-    cwd: "./packages/api"  # Relative to config file location
-
-  - name: "Web App"
-    base_command: "pnpm dev"
-    cwd: "./packages/web"
-
-  - name: "Root Process"
-    base_command: "pnpm lint"
-    # No cwd - uses config file directory (current behavior)
-```
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/utils/extractYamlConfig.ts`**
-   - Add optional `cwd: string` field to `ProcessConfig`
-   - Validate cwd is a valid relative or absolute path
-   - No validation that path exists (validated at runtime)
-
-2. **`electron/main.ts`** (IPC handler for `process:start`)
-   - Resolve `cwd` relative to config file directory
-   - Pass resolved `cwd` to process manager
-   - If path doesn't exist, return error before starting
-
-3. **`electron/utils/processManager.ts`**
-   - Update `start()` to accept `cwd` parameter
-   - Pass to `spawn()` options: `{ cwd: resolvedCwd }`
-
-4. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Store `cwd` in process state
-   - Pass to IPC when starting
-
-5. **`src/features/dashboard/components/ProcessRow.tsx`** (optional)
-   - Show cwd in tooltip or expanded view
-
-#### Path Resolution
-
-```typescript
-import path from 'path';
-
-const resolveProcessCwd = (
-  configDir: string,
-  processCwd: string | undefined
-): string => {
-  if (!processCwd) return configDir;
-  if (path.isAbsolute(processCwd)) return processCwd;
-  return path.resolve(configDir, processCwd);
-};
-```
-
-#### Error Handling
-
-- If `cwd` directory doesn't exist at start time:
-  - Return error: `"Working directory not found: ./packages/api"`
-  - Don't start the process
-  - Show error in UI
-
-#### Test Cases
-
-```typescript
-// In extractYamlConfig.test.ts
-- Config with relative cwd
-- Config with absolute cwd
-- Config without cwd (should be valid)
-- Config with cwd containing ".." (should be valid)
-```
-
----
-
-## 8. Copy Log Line
+## 6. Copy Log Line
 
 **Priority:** Low
 **Complexity:** Low
@@ -775,14 +613,12 @@ Use existing `solid-toast` integration.
 
 Suggested implementation order based on value and dependencies:
 
-1. **Working Directory Override** - Simple, high value for monorepo users
-2. **Environment Variables** - High value, enables more use cases
-3. **Log Export** - Low effort, frequently requested
-4. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
-5. **Copy Log Line** - Low effort, quality of life
-6. **Settings Panel** - Medium effort, enables other features
-7. **Process Grouping** - Medium effort, helps larger projects
-8. **Resource Monitoring** - High effort, nice to have
+1. **Log Export** - Low effort, frequently requested
+2. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
+3. **Copy Log Line** - Low effort, quality of life
+4. **Settings Panel** - Medium effort, enables other features
+5. **Process Grouping** - Medium effort, helps larger projects
+6. **Resource Monitoring** - High effort, nice to have
 
 ---
 
@@ -793,5 +629,20 @@ When implementing a feature:
 1. Create a feature branch: `feature/{feature-name}`
 2. Follow existing code patterns (see `CLAUDE.md`)
 3. Add tests for new functionality
-4. Update this TODO to mark the feature as complete
-5. Submit a PR with screenshots/recordings if UI changes
+
+### Post-Implementation Checklist
+
+After completing a feature from this list, you **must** update the following files:
+
+1. **This TODO.md file**
+   - Remove the completed feature section entirely
+   - Update the Table of Contents to reflect the removal
+   - Renumber remaining sections if necessary
+
+2. **README.md** (Documentation)
+   - Document the new feature in the appropriate section
+   - Add configuration examples if the feature affects it
+
+3. **CHANGELOG.md**
+   - Add an entry under the appropriate version section
+   - Follow the existing format

@@ -156,6 +156,56 @@ const testCases: TestCase[] = [
     expectedErrors: [],
     shouldBeValid: true,
   },
+  {
+    name: "valid cwd config (relative and absolute paths)",
+    filename: "./electron/utils/test-files/valid-cwd-config.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
+  {
+    name: "invalid cwd config (non-string and empty)",
+    filename: "./electron/utils/test-files/invalid-cwd-config.yml",
+    expectedErrors: [
+      {
+        message: "cwd must be a non-empty string",
+        path: "processes[0]",
+      },
+      {
+        message: "cwd must be a non-empty string",
+        path: "processes[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "valid env config (with vars, without vars, empty object)",
+    filename: "./electron/utils/test-files/valid-env-config.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
+  {
+    name: "invalid env config (array, non-string values)",
+    filename: "./electron/utils/test-files/invalid-env-config.yml",
+    expectedErrors: [
+      {
+        message: "env must be an object",
+        path: "processes[0].env",
+      },
+      {
+        message: "env.PORT must be a string",
+        path: "processes[1].env",
+      },
+      {
+        message: "env.ENABLED must be a string",
+        path: "processes[2].env",
+      },
+      {
+        message: "env.NULL_VAR must be a string",
+        path: "processes[3].env",
+      },
+    ],
+    shouldBeValid: false,
+  },
 ];
 
 describe.concurrent("extractYamlConfig", async () => {

@@ -217,6 +217,15 @@ export const startProcess = async (
   restartConfig?: RestartConfig,
 ): Promise<ProcessStartResult> => {
   try {
+    // Verify working directory exists
+    const { existsSync } = await import("node:fs");
+    if (!existsSync(cwd)) {
+      return {
+        success: false,
+        error: `Working directory not found: ${cwd}`,
+      };
+    }
+
     const processId = randomUUID();
     spawnProcess(processId, cwd, command, restartConfig, 0);
     return { success: true, processId };

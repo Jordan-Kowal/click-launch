@@ -25,6 +25,8 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
+    cwd?: string;
+    env?: Record<string, string>;
     restart?: RestartConfig;
     args?: {
       type: ArgType;
@@ -116,6 +118,17 @@ const validateProcess = (
     path: basePath,
     errors,
   });
+  if (process.cwd !== undefined) {
+    validateString({
+      fieldName: "cwd",
+      value: process.cwd,
+      path: basePath,
+      errors,
+    });
+  }
+  if (process.env !== undefined) {
+    validateEnvConfig(process.env, `${basePath}.env`, errors);
+  }
   if (process.restart) {
     validateRestartConfig(process.restart, `${basePath}.restart`, errors);
   }
@@ -131,6 +144,28 @@ const validateProcess = (
     process.args.forEach((arg: any, argIndex: number) => {
       validateArg(arg, `${basePath}.args[${argIndex}]`, errors);
     });
+  }
+};
+
+const validateEnvConfig = (
+  env: any,
+  path: string,
+  errors: ValidationError[],
+): void => {
+  if (typeof env !== "object" || env === null || Array.isArray(env)) {
+    errors.push({ message: "env must be an object", path });
+    return;
+  }
+  for (const [key, value] of Object.entries(env)) {
+    if (typeof key !== "string" || key === "") {
+      errors.push({ message: "env key must be a non-empty string", path });
+    }
+    if (typeof value !== "string") {
+      errors.push({
+        message: `env.${key} must be a string`,
+        path,
+      });
+    }
   }
 };
 

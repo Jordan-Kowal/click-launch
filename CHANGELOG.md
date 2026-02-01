@@ -10,12 +10,14 @@
 
 ## TBD
 
+- 🚀 Added **environment variables support**: new optional `env` field per process to define custom environment variables.
 - 🚀 Added **process auto-restart** feature:
   - New `restart` YAML configuration option to configure auto-restart behavior.
   - Visual indicators for restarting processes showing retry progress (e.g., "Restarting (1/3)").
   - Ability to cancel auto-restart by manually stopping a restarting process.
   - See [README.md](README.md) for more information.
 - 🚀 Added **crashed status** to distinguish between manually stopped and crashed processes.
+- 🚀 Added **working directory override**: new optional `cwd` field per process to run commands from a custom directory.
 - ✨ Added toast notifications when a process crashes.
 
 ## 1.5.0 - 2026-01-24

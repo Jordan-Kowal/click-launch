@@ -31,5 +31,12 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test:*)",
+      "Bash(pnpm biome:check:*)",
+      "Bash(pnpm tsc:*)"
+    ]
   }
 }

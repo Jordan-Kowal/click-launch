@@ -3,6 +3,10 @@ project_name: "Development Services"
 processes:
   - name: "Web Server"
     base_command: "bash ./resources/web-server.sh"
+    env:
+      NODE_ENV: development
+      DEBUG: "server:*"
+      API_URL: "http://localhost:8000"
     args:
       - type: "toggle"
         name: "Watch Mode"
@@ -97,3 +101,7 @@ processes:
 
   - name: "Crashing Process (No Restart)"
     base_command: "bash ./resources/crashing-process.sh 2 1"
+
+  - name: "Show Working Directory"
+    base_command: "bash show-cwd.sh"
+    cwd: "./resources"

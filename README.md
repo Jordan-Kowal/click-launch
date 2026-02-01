@@ -27,6 +27,7 @@
   - [⚙️ Configuration](#️-configuration)
     - [Root Configuration](#root-configuration)
     - [Process Configuration](#process-configuration)
+    - [Environment Variables Configuration](#environment-variables-configuration)
     - [Restart Configuration](#restart-configuration)
     - [Argument Configuration (All Types)](#argument-configuration-all-types)
     - [Toggle-Specific Configuration](#toggle-specific-configuration)
@@ -101,8 +102,31 @@ Create a `config.yml` file in your project directory to define your development 
 |-----------|------|----------|-------------|---------|
 | `processes[].name` | `string` | ✅ | Display name for the process | `"Web Server"` |
 | `processes[].base_command` | `string` | ✅ | Base command to execute | `"npm start"` |
+| `processes[].cwd` | `string` | ❌ | Working directory for the process (relative to config file or absolute) | `"./packages/api"` |
+| `processes[].env` | `object` | ❌ | Custom environment variables | See env config below |
 | `processes[].restart` | `object` | ❌ | Auto-restart configuration | See restart config below |
 | `processes[].args` | `array` | ❌ | List of configurable arguments | See argument types below |
+
+### Environment Variables Configuration
+
+Define custom environment variables for each process. These are merged with the system environment, with your custom values taking precedence.
+
+```yaml
+processes:
+  - name: "API Server"
+    base_command: "pnpm start"
+    env:
+      NODE_ENV: development
+      DEBUG: "api:*"
+      DATABASE_URL: "postgres://localhost:5432/mydb"
+```
+
+**Rules:**
+
+- `env` field is optional
+- If present, must be an object with string keys and string values
+- Empty string values are allowed (useful for declaring a variable exists)
+- Values override any existing system environment variables with the same name
 
 ### Restart Configuration
 
