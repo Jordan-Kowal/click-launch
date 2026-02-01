@@ -8,12 +8,11 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 1. [Environment Variables Support](#1-environment-variables-support)
 2. [Log Export/Save](#2-log-exportsave)
-3. [Keyboard Shortcuts Reference](#4-keyboard-shortcuts-reference)
-4. [Process Grouping/Tags](#5-process-groupingtags)
-5. [Settings/Preferences Panel](#6-settingspreferences-panel)
-6. [Resource Monitoring](#7-resource-monitoring)
-7. [Working Directory Override](#8-working-directory-override)
-8. [Copy Log Line](#9-copy-log-line)
+3. [Keyboard Shortcuts Reference](#3-keyboard-shortcuts-reference)
+4. [Process Grouping/Tags](#4-process-groupingtags)
+5. [Settings/Preferences Panel](#5-settingspreferences-panel)
+6. [Resource Monitoring](#6-resource-monitoring)
+7. [Copy Log Line](#7-copy-log-line)
 
 ---
 
@@ -579,93 +578,7 @@ const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> 
 
 ---
 
-## 7. Working Directory Override
-
-**Priority:** Medium
-**Complexity:** Low
-**Feature:** Allow per-process working directory configuration
-
-### User Story
-
-As a developer with a monorepo, I want to set different working directories for each process so that I can run commands from the correct package folder.
-
-### Configuration Schema
-
-```yaml
-processes:
-  - name: "API Server"
-    base_command: "pnpm dev"
-    cwd: "./packages/api"  # Relative to config file location
-
-  - name: "Web App"
-    base_command: "pnpm dev"
-    cwd: "./packages/web"
-
-  - name: "Root Process"
-    base_command: "pnpm lint"
-    # No cwd - uses config file directory (current behavior)
-```
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/utils/extractYamlConfig.ts`**
-   - Add optional `cwd: string` field to `ProcessConfig`
-   - Validate cwd is a valid relative or absolute path
-   - No validation that path exists (validated at runtime)
-
-2. **`electron/main.ts`** (IPC handler for `process:start`)
-   - Resolve `cwd` relative to config file directory
-   - Pass resolved `cwd` to process manager
-   - If path doesn't exist, return error before starting
-
-3. **`electron/utils/processManager.ts`**
-   - Update `start()` to accept `cwd` parameter
-   - Pass to `spawn()` options: `{ cwd: resolvedCwd }`
-
-4. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Store `cwd` in process state
-   - Pass to IPC when starting
-
-5. **`src/features/dashboard/components/ProcessRow.tsx`** (optional)
-   - Show cwd in tooltip or expanded view
-
-#### Path Resolution
-
-```typescript
-import path from 'path';
-
-const resolveProcessCwd = (
-  configDir: string,
-  processCwd: string | undefined
-): string => {
-  if (!processCwd) return configDir;
-  if (path.isAbsolute(processCwd)) return processCwd;
-  return path.resolve(configDir, processCwd);
-};
-```
-
-#### Error Handling
-
-- If `cwd` directory doesn't exist at start time:
-  - Return error: `"Working directory not found: ./packages/api"`
-  - Don't start the process
-  - Show error in UI
-
-#### Test Cases
-
-```typescript
-// In extractYamlConfig.test.ts
-- Config with relative cwd
-- Config with absolute cwd
-- Config without cwd (should be valid)
-- Config with cwd containing ".." (should be valid)
-```
-
----
-
-## 8. Copy Log Line
+## 7. Copy Log Line
 
 **Priority:** Low
 **Complexity:** Low

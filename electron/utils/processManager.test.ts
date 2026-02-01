@@ -29,6 +29,10 @@ vi.mock("electron", () => ({
   },
 }));
 
+vi.mock("node:fs", () => ({
+  existsSync: vi.fn(() => true),
+}));
+
 describe("processManager", () => {
   beforeEach(() => {
     vi.clearAllMocks();

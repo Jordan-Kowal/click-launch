@@ -101,6 +101,7 @@ Create a `config.yml` file in your project directory to define your development 
 |-----------|------|----------|-------------|---------|
 | `processes[].name` | `string` | ✅ | Display name for the process | `"Web Server"` |
 | `processes[].base_command` | `string` | ✅ | Base command to execute | `"npm start"` |
+| `processes[].cwd` | `string` | ❌ | Working directory for the process (relative to config file or absolute) | `"./packages/api"` |
 | `processes[].restart` | `object` | ❌ | Auto-restart configuration | See restart config below |
 | `processes[].args` | `array` | ❌ | List of configurable arguments | See argument types below |
 

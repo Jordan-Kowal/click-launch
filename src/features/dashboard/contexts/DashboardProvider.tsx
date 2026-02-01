@@ -279,6 +279,23 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     setProcessesData(processName, "command", newCommand);
   };
 
+  // Resolve cwd: if process has custom cwd, resolve it relative to rootDirectory
+  const resolveProcessCwd = (
+    processConfig: NonNullable<ReturnType<typeof getProcessConfig>>,
+  ): string => {
+    const rootDir = yamlData.rootDirectory!;
+    if (!processConfig.cwd) return rootDir;
+    // Check if cwd is absolute (starts with /)
+    if (processConfig.cwd.startsWith("/")) return processConfig.cwd;
+    // Resolve relative path against rootDirectory
+    // Note: We can't use path.resolve in browser, so we do simple concatenation
+    // The main process will handle the actual path resolution
+    const relativeCwd = processConfig.cwd.startsWith("./")
+      ? processConfig.cwd.slice(2)
+      : processConfig.cwd;
+    return `${rootDir}/${relativeCwd}`;
+  };
+
   const startProcess = async (processName: string) => {
     const processConfig = getProcessConfig(processName);
     if (!processConfig) return;
@@ -289,8 +306,9 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     const restartConfig = processConfig.restart
       ? { ...processConfig.restart }
       : undefined;
+    const cwd = resolveProcessCwd(processConfig);
     const result = await window.electronAPI.startProcess(
-      yamlData.rootDirectory!,
+      cwd,
       command,
       restartConfig,
     );

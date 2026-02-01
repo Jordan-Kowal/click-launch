@@ -25,6 +25,7 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
+    cwd?: string;
     restart?: RestartConfig;
     args?: {
       type: ArgType;
@@ -116,6 +117,14 @@ const validateProcess = (
     path: basePath,
     errors,
   });
+  if (process.cwd !== undefined) {
+    validateString({
+      fieldName: "cwd",
+      value: process.cwd,
+      path: basePath,
+      errors,
+    });
+  }
   if (process.restart) {
     validateRestartConfig(process.restart, `${basePath}.restart`, errors);
   }

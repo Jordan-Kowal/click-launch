@@ -156,6 +156,27 @@ const testCases: TestCase[] = [
     expectedErrors: [],
     shouldBeValid: true,
   },
+  {
+    name: "valid cwd config (relative and absolute paths)",
+    filename: "./electron/utils/test-files/valid-cwd-config.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
+  {
+    name: "invalid cwd config (non-string and empty)",
+    filename: "./electron/utils/test-files/invalid-cwd-config.yml",
+    expectedErrors: [
+      {
+        message: "cwd must be a non-empty string",
+        path: "processes[0]",
+      },
+      {
+        message: "cwd must be a non-empty string",
+        path: "processes[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
 ];
 
 describe.concurrent("extractYamlConfig", async () => {

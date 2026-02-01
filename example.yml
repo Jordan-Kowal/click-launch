@@ -97,3 +97,7 @@ processes:
 
   - name: "Crashing Process (No Restart)"
     base_command: "bash ./resources/crashing-process.sh 2 1"
+
+  - name: "Show Working Directory"
+    base_command: "bash show-cwd.sh"
+    cwd: "./resources"
