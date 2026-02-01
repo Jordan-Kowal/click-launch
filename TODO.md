@@ -706,5 +706,23 @@ When implementing a feature:
 1. Create a feature branch: `feature/{feature-name}`
 2. Follow existing code patterns (see `CLAUDE.md`)
 3. Add tests for new functionality
-4. Update this TODO to mark the feature as complete
-5. Submit a PR with screenshots/recordings if UI changes
+
+### Post-Implementation Checklist
+
+After completing a feature from this list, you **must** update the following files:
+
+1. **This TODO.md file**
+   - Remove the completed feature section entirely
+   - Update the Table of Contents to reflect the removal
+   - Renumber remaining sections if necessary
+   - Update the "Implementation Priority" section accordingly
+
+2. **README.md** (Documentation)
+   - Document the new feature in the appropriate section
+   - Add configuration examples if the feature affects `config.yml`
+   - Update screenshots if UI has changed significantly
+
+3. **CHANGELOG.md**
+   - Add an entry under the appropriate version section
+   - Follow the existing format: `- feat: description of the new feature`
+   - If CHANGELOG.md doesn't exist, create it following [Keep a Changelog](https://keepachangelog.com/) format
