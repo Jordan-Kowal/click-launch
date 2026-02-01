@@ -6,16 +6,60 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 ## Table of Contents
 
-1. [Log Export/Save](#1-log-exportsave)
-2. [Keyboard Shortcuts Reference](#2-keyboard-shortcuts-reference)
-3. [Process Grouping/Tags](#3-process-groupingtags)
-4. [Settings/Preferences Panel](#4-settingspreferences-panel)
-5. [Resource Monitoring](#5-resource-monitoring)
-6. [Copy Log Line](#6-copy-log-line)
+1. [Environment Variables UI](#1-environment-variables-ui)
+2. [Log Export/Save](#2-log-exportsave)
+3. [Keyboard Shortcuts Reference](#3-keyboard-shortcuts-reference)
+4. [Process Grouping/Tags](#4-process-groupingtags)
+5. [Settings/Preferences Panel](#5-settingspreferences-panel)
+6. [Resource Monitoring](#6-resource-monitoring)
+7. [Copy Log Line](#7-copy-log-line)
 
 ---
 
-## 1. Log Export/Save
+## 1. Environment Variables UI
+
+**Priority:** Medium
+**Complexity:** Medium
+**Feature:** Display and manage environment variables in the UI
+
+### User Story
+
+As a developer, I want to see which environment variables are configured for each process and optionally add custom ones at runtime.
+
+### Current State
+
+Environment variables can be defined per process in `config.yml` via the `env` field. These are passed to the spawned process but are not visible in the UI.
+
+### Proposed Enhancements
+
+#### 1. Display configured env vars
+
+- Show an indicator on `ProcessRow` when a process has custom env vars
+- Add a tooltip or expandable section showing variable names (values hidden for security)
+- Example: "3 env vars configured: NODE_ENV, DEBUG, API_URL"
+
+#### 2. Runtime env var input (optional)
+
+- Add a new argument type `env` that allows users to pass additional env vars at runtime
+- These would be merged with the configured env vars (runtime takes precedence)
+- UI: Key-value input field in the process arguments section
+
+### Files to Modify
+
+1. **`src/features/dashboard/components/ProcessRow.tsx`**
+   - Add visual indicator for processes with env vars
+   - Tooltip showing configured variable names
+
+2. **`src/features/dashboard/components/ProcessEnvDisplay.tsx`** (new)
+   - Component to display env var names in a tooltip or expandable section
+
+3. **`electron/utils/extractYamlConfig.ts`** (if adding new arg type)
+   - Add `ENV` to `ArgType` enum
+   - Add validation for env arg type
+
+---
+
+## 2. Log Export/Save
 
 **Priority:** High
 **Complexity:** Low
@@ -102,7 +146,7 @@ export const stripAnsiCodes = (text: string): string => { ... }
 
 ---
 
-## 2. Keyboard Shortcuts Reference
+## 3. Keyboard Shortcuts Reference
 
 **Priority:** Medium
 **Complexity:** Low
@@ -196,7 +240,7 @@ export const KEYBOARD_SHORTCUTS = {
 
 ---
 
-## 3. Process Grouping/Tags
+## 4. Process Grouping/Tags
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -294,7 +338,7 @@ const groupProcesses = (processes: ProcessConfig[]): GroupedProcesses => {
 
 ---
 
-## 4. Settings/Preferences Panel
+## 5. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -400,7 +444,7 @@ type Settings = {
 
 ---
 
-## 5. Resource Monitoring
+## 6. Resource Monitoring
 
 **Priority:** Medium
 **Complexity:** High
@@ -503,7 +547,7 @@ const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> 
 
 ---
 
-## 6. Copy Log Line
+## 7. Copy Log Line
 
 **Priority:** Low
 **Complexity:** Low
@@ -613,12 +657,13 @@ Use existing `solid-toast` integration.
 
 Suggested implementation order based on value and dependencies:
 
-1. **Log Export** - Low effort, frequently requested
-2. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
-3. **Copy Log Line** - Low effort, quality of life
-4. **Settings Panel** - Medium effort, enables other features
-5. **Process Grouping** - Medium effort, helps larger projects
-6. **Resource Monitoring** - High effort, nice to have
+1. **Environment Variables UI** - Medium effort, completes env vars feature
+2. **Log Export** - Low effort, frequently requested
+3. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
+4. **Copy Log Line** - Low effort, quality of life
+5. **Settings Panel** - Medium effort, enables other features
+6. **Process Grouping** - Medium effort, helps larger projects
+7. **Resource Monitoring** - High effort, nice to have
 
 ---
 
