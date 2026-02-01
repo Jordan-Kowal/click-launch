@@ -13,6 +13,8 @@ export type ProcessData = {
   processId: ProcessId | null;
   startTime: Date | null;
   command: string;
+  retryCount: number;
+  maxRetries: number;
 };
 
 export type DashboardContextType = {

@@ -123,6 +123,39 @@ const testCases: TestCase[] = [
     expectedErrors: [],
     shouldBeValid: true,
   },
+  {
+    name: "invalid restart config (missing enabled, invalid types)",
+    filename: "./electron/utils/test-files/invalid-restart-config.yml",
+    expectedErrors: [
+      {
+        message: "restart.enabled must be a boolean",
+        path: "processes[0].restart",
+      },
+      {
+        message: "restart.enabled must be a boolean",
+        path: "processes[1].restart",
+      },
+      {
+        message: "restart.max_retries must be a positive number",
+        path: "processes[2].restart",
+      },
+      {
+        message: "restart.delay_ms must be a non-negative number",
+        path: "processes[3].restart",
+      },
+      {
+        message: "restart.reset_after_ms must be a non-negative number",
+        path: "processes[4].restart",
+      },
+    ],
+    shouldBeValid: false,
+  },
+  {
+    name: "valid restart config",
+    filename: "./electron/utils/test-files/valid-restart-config.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
 ];
 
 describe.concurrent("extractYamlConfig", async () => {

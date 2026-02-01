@@ -27,6 +27,7 @@
   - [⚙️ Configuration](#️-configuration)
     - [Root Configuration](#root-configuration)
     - [Process Configuration](#process-configuration)
+    - [Restart Configuration](#restart-configuration)
     - [Argument Configuration (All Types)](#argument-configuration-all-types)
     - [Toggle-Specific Configuration](#toggle-specific-configuration)
     - [Select-Specific Configuration](#select-specific-configuration)
@@ -50,6 +51,7 @@
 - **Flexible configuration**: YAML-based setup with customizable arguments
 - **Process monitoring**: Real-time status, logs, and runtime tracking
 - **Argument types**: Toggle switches, dropdowns, and text inputs
+- **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 
 | Homepage | Dashboard | Log Drawer |
 | --- | --- | --- |
@@ -99,7 +101,26 @@ Create a `config.yml` file in your project directory to define your development 
 |-----------|------|----------|-------------|---------|
 | `processes[].name` | `string` | ✅ | Display name for the process | `"Web Server"` |
 | `processes[].base_command` | `string` | ✅ | Base command to execute | `"npm start"` |
+| `processes[].restart` | `object` | ❌ | Auto-restart configuration | See restart config below |
 | `processes[].args` | `array` | ❌ | List of configurable arguments | See argument types below |
+
+### Restart Configuration
+
+Configure automatic restart behavior for processes that crash unexpectedly.
+
+| YAML Path | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `restart.enabled` | `boolean` | ✅ | - | Enable/disable auto-restart |
+| `restart.max_retries` | `number` | ❌ | `3` | Max consecutive restart attempts before giving up |
+| `restart.delay_ms` | `number` | ❌ | `1000` | Delay in milliseconds before restarting |
+| `restart.reset_after_ms` | `number` | ❌ | `30000` | Reset retry counter if process runs longer than this |
+
+**Behavior:**
+
+- Processes that exit with code `0` (clean exit) are not restarted
+- Manually stopped processes are not restarted
+- The retry counter resets if the process runs successfully for longer than `reset_after_ms`
+- When max retries are exceeded, the process shows a "Crashed" status
 
 ### Argument Configuration (All Types)
 
@@ -139,6 +160,11 @@ project_name: "Development Services"
 processes:
   - name: "Web Server"
     base_command: "pnpm start"
+    restart:
+      enabled: true
+      max_retries: 3
+      delay_ms: 1000
+      reset_after_ms: 30000
     args:
       - type: "toggle"
         name: "Arg1"
@@ -171,7 +197,10 @@ processes:
         output_prefix: ""
 ```
 
-**Note**: For input arguments, set `output_prefix: ""` if you want the raw value without any prefix.
+**Notes**:
+
+- For input arguments, set `output_prefix: ""` if you want the raw value without any prefix.
+- The `restart` configuration is optional. Processes without it will show "Crashed" status on non-zero exit.
 
 ## 🚀 Usage
 

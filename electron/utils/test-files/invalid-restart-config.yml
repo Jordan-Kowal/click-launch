@@ -1,0 +1,30 @@
+project_name: "Invalid Restart Config"
+
+processes:
+  - name: "Missing enabled"
+    base_command: "echo test"
+    restart:
+      max_retries: 3
+
+  - name: "Invalid enabled type"
+    base_command: "echo test"
+    restart:
+      enabled: "yes"
+
+  - name: "Invalid max_retries"
+    base_command: "echo test"
+    restart:
+      enabled: true
+      max_retries: -1
+
+  - name: "Invalid delay_ms"
+    base_command: "echo test"
+    restart:
+      enabled: true
+      delay_ms: -100
+
+  - name: "Invalid reset_after_ms"
+    base_command: "echo test"
+    restart:
+      enabled: true
+      reset_after_ms: "30000"

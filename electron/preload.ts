@@ -14,8 +14,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   validatePaths: (filePaths: string[]): Promise<[string[], string[]]> =>
     ipcRenderer.invoke("paths:validate", filePaths),
   // Process management
-  startProcess: (cwd: string, command: string) =>
-    ipcRenderer.invoke("process:start", cwd, command),
+  startProcess: (cwd: string, command: string, restartConfig?: any) =>
+    ipcRenderer.invoke("process:start", cwd, command, restartConfig),
   stopProcess: (processId: string) =>
     ipcRenderer.invoke("process:stop", processId),
   getProcessStatus: (processId: string) =>
@@ -29,6 +29,19 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   removeProcessLogListener: () => {
     ipcRenderer.removeAllListeners("process-log");
+  },
+  // Process restart events
+  onProcessRestart: (callback: (data: any) => void) => {
+    ipcRenderer.on("process-restart", (_: any, data: any) => callback(data));
+  },
+  removeProcessRestartListener: () => {
+    ipcRenderer.removeAllListeners("process-restart");
+  },
+  onProcessCrash: (callback: (data: any) => void) => {
+    ipcRenderer.on("process-crash", (_: any, data: any) => callback(data));
+  },
+  removeProcessCrashListener: () => {
+    ipcRenderer.removeAllListeners("process-crash");
   },
   // Update management
   installUpdate: () => ipcRenderer.invoke("app:installUpdate"),

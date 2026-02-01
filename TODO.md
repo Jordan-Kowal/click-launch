@@ -8,14 +8,12 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 1. [Environment Variables Support](#1-environment-variables-support)
 2. [Log Export/Save](#2-log-exportsave)
-3. [Process Auto-Restart](#3-process-auto-restart)
-4. [Keyboard Shortcuts Reference](#4-keyboard-shortcuts-reference)
-5. [Process Grouping/Tags](#5-process-groupingtags)
-6. [Settings/Preferences Panel](#6-settingspreferences-panel)
-7. [Resource Monitoring](#7-resource-monitoring)
-8. [Working Directory Override](#8-working-directory-override)
-9. [Notification on Process Exit](#9-notification-on-process-exit)
-10. [Copy Log Line](#10-copy-log-line)
+3. [Keyboard Shortcuts Reference](#4-keyboard-shortcuts-reference)
+4. [Process Grouping/Tags](#5-process-groupingtags)
+5. [Settings/Preferences Panel](#6-settingspreferences-panel)
+6. [Resource Monitoring](#7-resource-monitoring)
+7. [Working Directory Override](#8-working-directory-override)
+8. [Copy Log Line](#9-copy-log-line)
 
 ---
 
@@ -112,6 +110,7 @@ Add an export button to the `ProcessLogDrawer` header, next to existing controls
 ```
 
 Export options (via dropdown or modal):
+
 - Export as `.txt` (plain text, ANSI codes stripped)
 - Export as `.json` (structured with timestamps and log types)
 
@@ -139,6 +138,7 @@ Export options (via dropdown or modal):
 #### Export Formats
 
 **Plain Text (.txt):**
+
 ```
 [2024-01-15 10:23:45] [stdout] Server starting on port 3000
 [2024-01-15 10:23:46] [stdout] Database connected
@@ -146,6 +146,7 @@ Export options (via dropdown or modal):
 ```
 
 **JSON (.json):**
+
 ```json
 {
   "processName": "API Server",
@@ -177,96 +178,7 @@ export const stripAnsiCodes = (text: string): string => { ... }
 
 ---
 
-## 3. Process Auto-Restart
-
-**Priority:** High
-**Complexity:** Medium
-**Feature:** Automatically restart processes that crash unexpectedly
-
-### User Story
-
-As a developer, I want my processes to automatically restart when they crash so that I don't have to manually monitor and restart them during development.
-
-### Configuration Schema
-
-```yaml
-processes:
-  - name: "Web Server"
-    base_command: "pnpm dev"
-    restart:
-      enabled: true
-      max_retries: 3        # Max consecutive restart attempts (default: 3)
-      delay_ms: 1000        # Delay before restart in ms (default: 1000)
-      reset_after_ms: 30000 # Reset retry counter after successful run (default: 30000)
-```
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/utils/extractYamlConfig.ts`**
-   - Add `RestartConfig` type
-   - Add optional `restart` field to `ProcessConfig`
-   - Validate restart configuration values
-
-2. **`electron/utils/processManager.ts`**
-   - Track restart state per process: `{ retryCount, lastExitTime, isRestarting }`
-   - On process exit with non-zero code:
-     - Check if restart is enabled and retries remaining
-     - Schedule restart after `delay_ms`
-     - Increment retry counter
-   - Reset retry counter if process runs longer than `reset_after_ms`
-   - Emit restart events to renderer
-
-3. **`src/electron/enums.ts`**
-   - Add `PROCESS_RESTART = "process-restart"` channel
-
-4. **`electron/main.ts`**
-   - Handle restart logic and emit events to renderer
-   - Pass restart config to process manager
-
-5. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Track restart state in process store
-   - Listen for restart events
-   - Update UI to show "Restarting..." status
-
-6. **`src/features/dashboard/components/ProcessRow.tsx`**
-   - Show restart indicator/badge when auto-restart is enabled
-   - Display retry count (e.g., "Restarting (2/3)")
-
-7. **`src/features/dashboard/enums.ts`**
-   - Add `RESTARTING` to `ProcessStatus` enum
-
-#### Restart Logic
-
-```typescript
-const handleProcessExit = (processId: string, exitCode: number) => {
-  const config = getRestartConfig(processId);
-  const state = restartState.get(processId);
-
-  if (!config?.enabled || exitCode === 0) return; // Don't restart clean exits
-  if (state.retryCount >= config.max_retries) {
-    emit('restart-failed', { processId, reason: 'max_retries_exceeded' });
-    return;
-  }
-
-  state.retryCount++;
-  setTimeout(() => {
-    restartProcess(processId);
-  }, config.delay_ms);
-};
-```
-
-#### Edge Cases
-
-- User manually stops process → don't auto-restart
-- Process exits with code 0 → don't auto-restart (clean exit)
-- App quit requested → don't restart, stop all gracefully
-- Config reload while restarting → cancel pending restart
-
----
-
-## 4. Keyboard Shortcuts Reference
+## 3. Keyboard Shortcuts Reference
 
 **Priority:** Medium
 **Complexity:** Low
@@ -360,7 +272,7 @@ export const KEYBOARD_SHORTCUTS = {
 
 ---
 
-## 5. Process Grouping/Tags
+## 4. Process Grouping/Tags
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -458,7 +370,7 @@ const groupProcesses = (processes: ProcessConfig[]): GroupedProcesses => {
 
 ---
 
-## 6. Settings/Preferences Panel
+## 5. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -564,7 +476,7 @@ type Settings = {
 
 ---
 
-## 7. Resource Monitoring
+## 6. Resource Monitoring
 
 **Priority:** Medium
 **Complexity:** High
@@ -598,6 +510,7 @@ Database      Running   1%     512 MB    00:15:28   [■] [📋]
 #### Platform-Specific Resource Collection
 
 **macOS/Linux:**
+
 ```typescript
 import { exec } from 'child_process';
 
@@ -666,7 +579,7 @@ const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> 
 
 ---
 
-## 8. Working Directory Override
+## 7. Working Directory Override
 
 **Priority:** Medium
 **Complexity:** Low
@@ -752,93 +665,7 @@ const resolveProcessCwd = (
 
 ---
 
-## 9. Notification on Process Exit
-
-**Priority:** Low
-**Complexity:** Low
-**Feature:** Show desktop notification when a process exits unexpectedly
-
-### User Story
-
-As a developer, I want to be notified when a process crashes so that I can quickly address the issue, even if Click-Launch is minimized.
-
-### Notification Types
-
-| Event | Notification |
-|-------|--------------|
-| Process crashed (non-zero exit) | "API Server crashed with exit code 1" |
-| Process killed by signal | "API Server was killed (SIGKILL)" |
-| Process started (optional) | "API Server started" |
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/main.ts`**
-   - Import `Notification` from Electron
-   - On process exit event, show notification if enabled
-   - Check if app is focused; only notify if in background
-
-2. **`electron/utils/processManager.ts`**
-   - Emit detailed exit event with code and signal
-   - Include process name in event
-
-3. **`src/contexts/SettingsContext.ts`** (if settings panel implemented)
-   - Add `showNotifications` setting
-   - Add `notifyOnStart` setting (optional)
-
-#### Notification Implementation
-
-```typescript
-import { Notification, BrowserWindow } from 'electron';
-
-const showProcessNotification = (
-  processName: string,
-  exitCode: number | null,
-  signal: string | null
-) => {
-  // Don't notify if window is focused
-  const mainWindow = BrowserWindow.getAllWindows()[0];
-  if (mainWindow?.isFocused()) return;
-
-  // Don't notify for clean exits
-  if (exitCode === 0) return;
-
-  let body: string;
-  if (signal) {
-    body = `${processName} was killed (${signal})`;
-  } else {
-    body = `${processName} crashed with exit code ${exitCode}`;
-  }
-
-  const notification = new Notification({
-    title: 'Process Exited',
-    body,
-    icon: getResourcePath('logo.png'),
-  });
-
-  notification.on('click', () => {
-    mainWindow?.show();
-    mainWindow?.focus();
-  });
-
-  notification.show();
-};
-```
-
-#### Notification Click Behavior
-
-- Click notification → bring Click-Launch to foreground
-- Click notification → optionally open log drawer for that process
-
-#### macOS Considerations
-
-- Notifications require app to be signed or have proper entitlements
-- Test notification permissions in development
-
----
-
-## 10. Copy Log Line
+## 8. Copy Log Line
 
 **Priority:** Low
 **Complexity:** Low
@@ -851,15 +678,19 @@ As a developer, I want to quickly copy log lines or the process command so that 
 ### UI Design
 
 #### Option A: Right-click context menu
+
 Right-click on a log line shows:
+
 - "Copy line"
 - "Copy line (without timestamp)"
 - "Copy all visible logs"
 
 #### Option B: Hover action button
+
 On hover, show a small copy icon on the right side of each log line.
 
 #### Command Copy
+
 Add copy button next to the command display in the log drawer header.
 
 ### Implementation Details
@@ -932,6 +763,7 @@ const LogLine = (props: { log: ProcessLog; onCopy: () => void }) => {
 #### Toast Feedback
 
 Show brief toast notification on successful copy:
+
 - "Copied to clipboard"
 - "Command copied"
 
@@ -948,11 +780,9 @@ Suggested implementation order based on value and dependencies:
 3. **Log Export** - Low effort, frequently requested
 4. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
 5. **Copy Log Line** - Low effort, quality of life
-6. **Notification on Process Exit** - Low effort, useful for background monitoring
-7. **Settings Panel** - Medium effort, enables other features
-8. **Process Grouping** - Medium effort, helps larger projects
-9. **Process Auto-Restart** - Medium effort, power user feature
-10. **Resource Monitoring** - High effort, nice to have
+6. **Settings Panel** - Medium effort, enables other features
+7. **Process Grouping** - Medium effort, helps larger projects
+8. **Resource Monitoring** - High effort, nice to have
 
 ---
 

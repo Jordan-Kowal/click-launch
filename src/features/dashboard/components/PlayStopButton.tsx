@@ -13,7 +13,12 @@ export const PlayStopButton = (props: PlayStopButtonProps) => {
 
   return (
     <Switch>
-      <Match when={status() === ProcessStatus.STOPPED}>
+      <Match
+        when={
+          status() === ProcessStatus.STOPPED ||
+          status() === ProcessStatus.CRASHED
+        }
+      >
         <button
           type="button"
           class="btn btn-primary btn-circle btn-sm"
@@ -38,6 +43,17 @@ export const PlayStopButton = (props: PlayStopButtonProps) => {
           type="button"
           class="btn btn-error btn-circle btn-sm"
           onClick={() => stopProcess(props.processName)}
+        >
+          <Square size={16} />
+        </button>
+      </Match>
+
+      <Match when={status() === ProcessStatus.RESTARTING}>
+        <button
+          type="button"
+          class="btn btn-warning btn-circle btn-sm"
+          onClick={() => stopProcess(props.processName)}
+          title="Cancel restart"
         >
           <Square size={16} />
         </button>

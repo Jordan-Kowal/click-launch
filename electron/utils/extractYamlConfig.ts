@@ -1,4 +1,5 @@
 import yaml from "js-yaml";
+import type { RestartConfig } from "@/electron/types";
 
 export enum ArgType {
   TOGGLE = "toggle",
@@ -24,6 +25,7 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
+    restart?: RestartConfig;
     args?: {
       type: ArgType;
       name: string;
@@ -114,6 +116,9 @@ const validateProcess = (
     path: basePath,
     errors,
   });
+  if (process.restart) {
+    validateRestartConfig(process.restart, `${basePath}.restart`, errors);
+  }
   if (process.args) {
     validateArray({
       fieldName: "args",
@@ -125,6 +130,49 @@ const validateProcess = (
     });
     process.args.forEach((arg: any, argIndex: number) => {
       validateArg(arg, `${basePath}.args[${argIndex}]`, errors);
+    });
+  }
+};
+
+const validateRestartConfig = (
+  restart: any,
+  path: string,
+  errors: ValidationError[],
+): void => {
+  if (typeof restart !== "object" || restart === null) {
+    errors.push({ message: "restart must be an object", path });
+    return;
+  }
+  // enabled is required and must be a boolean
+  if (typeof restart.enabled !== "boolean") {
+    errors.push({ message: "restart.enabled must be a boolean", path });
+  }
+  // Optional fields validation
+  if (
+    restart.max_retries !== undefined &&
+    (typeof restart.max_retries !== "number" || restart.max_retries < 1)
+  ) {
+    errors.push({
+      message: "restart.max_retries must be a positive number",
+      path,
+    });
+  }
+  if (
+    restart.delay_ms !== undefined &&
+    (typeof restart.delay_ms !== "number" || restart.delay_ms < 0)
+  ) {
+    errors.push({
+      message: "restart.delay_ms must be a non-negative number",
+      path,
+    });
+  }
+  if (
+    restart.reset_after_ms !== undefined &&
+    (typeof restart.reset_after_ms !== "number" || restart.reset_after_ms < 0)
+  ) {
+    errors.push({
+      message: "restart.reset_after_ms must be a non-negative number",
+      path,
     });
   }
 };

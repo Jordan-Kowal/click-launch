@@ -1,0 +1,18 @@
+project_name: "Valid Restart Config"
+
+processes:
+  - name: "Full Restart Config"
+    base_command: "echo test"
+    restart:
+      enabled: true
+      max_retries: 5
+      delay_ms: 2000
+      reset_after_ms: 60000
+
+  - name: "Minimal Restart Config"
+    base_command: "echo test"
+    restart:
+      enabled: false
+
+  - name: "No Restart Config"
+    base_command: "echo test"

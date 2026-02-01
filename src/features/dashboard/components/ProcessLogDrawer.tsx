@@ -8,7 +8,16 @@ import {
   Trash2,
   X,
 } from "lucide-solid";
-import { createEffect, createSignal, For, on, onCleanup, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  Match,
+  on,
+  onCleanup,
+  Show,
+  Switch,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
@@ -33,9 +42,10 @@ const SEARCH_DELAY_MS = 500;
 const SCROLL_TO_BOTTOM_THRESHOLD = 200;
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
-  const { yamlConfig, getProcessId, getProcessStatus } = useDashboardContext();
+  const { yamlConfig, getProcessId, getProcessStatus, getProcessData } =
+    useDashboardContext();
   const processStatus = () => getProcessStatus(props.processName);
-  const isRunning = () => processStatus() === ProcessStatus.RUNNING;
+  const processData = () => getProcessData(props.processName);
 
   const [uiState, setUiState] = createStore({
     autoScroll: true,
@@ -414,12 +424,23 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
             </button>
             <h3 class="font-bold m-0!">Logs - {props.processName}</h3>
             <PlayStopButton processName={props.processName} />
-            <Show
-              when={isRunning()}
-              fallback={<div class="badge badge-neutral">Idle</div>}
-            >
-              <div class="badge badge-primary">Running</div>
-            </Show>
+            <Switch>
+              <Match when={processStatus() === ProcessStatus.RUNNING}>
+                <div class="badge badge-primary">Running</div>
+              </Match>
+              <Match when={processStatus() === ProcessStatus.RESTARTING}>
+                <div class="badge badge-warning">
+                  Restart ({processData()?.retryCount ?? 0}/
+                  {processData()?.maxRetries ?? 3})
+                </div>
+              </Match>
+              <Match when={processStatus() === ProcessStatus.CRASHED}>
+                <div class="badge badge-error">Crashed</div>
+              </Match>
+              <Match when={true}>
+                <div class="badge badge-neutral">Idle</div>
+              </Match>
+            </Switch>
           </div>
           <button
             type="button"

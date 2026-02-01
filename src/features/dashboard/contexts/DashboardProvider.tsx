@@ -9,7 +9,13 @@ import {
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { useAppStorageContext } from "@/contexts";
-import type { ProcessId, ValidationResult, YamlConfig } from "@/electron/types";
+import type {
+  ProcessCrashData,
+  ProcessId,
+  ProcessRestartData,
+  ValidationResult,
+  YamlConfig,
+} from "@/electron/types";
 import { ProcessStatus } from "../enums";
 import {
   DashboardContext,
@@ -57,7 +63,9 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   const hasRunningProcesses = createMemo(() => {
     return (
       Object.values(processesData).filter(
-        (p) => p.status === ProcessStatus.RUNNING,
+        (p) =>
+          p.status === ProcessStatus.RUNNING ||
+          p.status === ProcessStatus.RESTARTING,
       ).length > 0
     );
   });
@@ -84,6 +92,8 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
             processId: null,
             startTime: null,
             command: process.base_command,
+            retryCount: 0,
+            maxRetries: process.restart?.max_retries ?? 3,
           };
         });
         setProcessesData(initialProcessesData);
@@ -111,6 +121,57 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
       clearInterval(pollInterval);
       pollInterval = null;
     }
+  });
+
+  // Helper to find process name by processId
+  const findProcessNameById = (processId: ProcessId): string | undefined => {
+    return Object.entries(processesData).find(
+      ([_, data]) => data.processId === processId,
+    )?.[0];
+  };
+
+  // Handle process crash events
+  const handleProcessCrash = (data: ProcessCrashData) => {
+    const processName = findProcessNameById(data.processId);
+    if (!processName) return;
+
+    if (data.willRestart) {
+      // Process will be restarted - set to RESTARTING
+      setProcessesData(processName, "status", ProcessStatus.RESTARTING);
+      toast.error(`${processName} crashed, restarting...`);
+    } else {
+      // Process crashed and won't restart - set to CRASHED
+      setProcessesData(processName, {
+        status: ProcessStatus.CRASHED,
+        startTime: null,
+      });
+      toast.error(`${processName} crashed`);
+    }
+  };
+
+  // Handle process restart events
+  const handleProcessRestart = (data: ProcessRestartData) => {
+    const processName = findProcessNameById(data.processId);
+    if (!processName) return;
+
+    // Update retry count and set back to RUNNING
+    setProcessesData(processName, {
+      status: ProcessStatus.RUNNING,
+      startTime: new Date(),
+      retryCount: data.retryCount,
+      maxRetries: data.maxRetries,
+    });
+  };
+
+  // Set up crash and restart event listeners
+  createEffect(() => {
+    window.electronAPI.onProcessCrash(handleProcessCrash);
+    window.electronAPI.onProcessRestart(handleProcessRestart);
+
+    onCleanup(() => {
+      window.electronAPI.removeProcessCrashListener();
+      window.electronAPI.removeProcessRestartListener();
+    });
   });
 
   // Helper to get process config
@@ -141,10 +202,14 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     }
 
     pollInterval = setInterval(async () => {
-      // Collect all active process IDs
+      // Collect all active process IDs (including RESTARTING which keeps the same processId)
       const activeProcesses: Array<{ name: string; pid: ProcessId }> = [];
       Object.entries(processesData).forEach(([name, data]) => {
-        if (data.processId && data.status !== ProcessStatus.STOPPED) {
+        if (
+          data.processId &&
+          data.status !== ProcessStatus.STOPPED &&
+          data.status !== ProcessStatus.CRASHED
+        ) {
           activeProcesses.push({ name, pid: data.processId });
         }
       });
@@ -163,13 +228,17 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
       const statusMap =
         await window.electronAPI.getBulkProcessStatus(processIds);
 
-      // Update all process statuses
+      // Update all process statuses (but don't override RESTARTING status)
       activeProcesses.forEach(({ name, pid }) => {
+        const currentStatus = processesData[name]?.status;
+        // Don't update status if it's RESTARTING (managed by restart events)
+        if (currentStatus === ProcessStatus.RESTARTING) return;
+
         const isRunning = statusMap[pid];
-        const newStatus = isRunning
-          ? ProcessStatus.RUNNING
-          : ProcessStatus.STOPPED;
-        setProcessesData(name, "status", newStatus);
+        if (isRunning) {
+          setProcessesData(name, "status", ProcessStatus.RUNNING);
+        }
+        // Don't set to STOPPED here - let crash/exit events handle that
       });
     }, POLL_STATUS_INTERVAL_MS);
   };
@@ -216,9 +285,14 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
 
     setProcessesData(processName, "status", ProcessStatus.STARTING);
     const command = computeCommand(processName);
+    // Spread restart config to create a plain object (SolidJS store proxies can't be cloned for IPC)
+    const restartConfig = processConfig.restart
+      ? { ...processConfig.restart }
+      : undefined;
     const result = await window.electronAPI.startProcess(
       yamlData.rootDirectory!,
       command,
+      restartConfig,
     );
 
     if (result.success && result.processId) {
@@ -226,6 +300,8 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         processId: result.processId,
         startTime: new Date(),
         status: ProcessStatus.RUNNING,
+        retryCount: 0,
+        maxRetries: processConfig.restart?.max_retries ?? 3,
       });
       startPolling();
     } else {
