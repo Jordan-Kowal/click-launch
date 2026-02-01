@@ -237,8 +237,13 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         const isRunning = statusMap[pid];
         if (isRunning) {
           setProcessesData(name, "status", ProcessStatus.RUNNING);
+        } else if (currentStatus === ProcessStatus.RUNNING) {
+          // Process was running but is no longer active (clean exit with code 0)
+          setProcessesData(name, {
+            status: ProcessStatus.STOPPED,
+            startTime: null,
+          });
         }
-        // Don't set to STOPPED here - let crash/exit events handle that
       });
     }, POLL_STATUS_INTERVAL_MS);
   };
