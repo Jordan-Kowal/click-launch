@@ -10,6 +10,7 @@
 
 ## TBD
 
+- 🚀 Added **keyboard shortcuts reference** in the log drawer. Press `⌘ + /` to view them.
 - 🚀 Added **environment variables support**: new optional `env` field per process to define custom environment variables.
 - 🚀 Added **process auto-restart** feature:
   - New `restart` YAML configuration option to configure auto-restart behavior.

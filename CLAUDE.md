@@ -73,6 +73,24 @@ Use `index.ts` at every level **except** `src/components/`:
 - Named exports only (no default exports, except for page components)
 - No SSR/server components—this is a static frontend
 
+### Styling (DaisyUI + Tailwind)
+
+**DaisyUI First:**
+
+- ✅ Use DaisyUI components for UI elements: `btn`, `modal`, `card`, `menu`, `kbd`, `badge`, etc.
+- ✅ Use DaisyUI semantic colors: `bg-base-100`, `text-base-content`, `btn-primary`, etc.
+- ✅ Use DaisyUI modifiers: `btn-sm`, `btn-ghost`, `modal-open`, `rounded-box`, etc.
+- ✅ Refer to the DaisyUI documentation for available modifiers and components.
+- ❌ Avoid raw Tailwind for things DaisyUI handles (buttons, modals, cards, menus, etc.)
+
+**Tailwind for Fine-Tuning:**
+
+- ✅ Use Tailwind for layout: `flex`, `grid`, `gap-*`, `space-y-*`
+- ✅ Use Tailwind for positioning: `absolute`, `relative`, `inset-0`
+- ✅ Use Tailwind for spacing adjustments: `mt-4`, `px-2`, `py-1.5`
+- ✅ Use Tailwind for transitions: `transition-opacity`, `duration-200`
+- ✅ Use Tailwind for custom sizing when DaisyUI sizes don't fit
+
 ### SolidJS Patterns
 
 **Control Flow (Critical):**

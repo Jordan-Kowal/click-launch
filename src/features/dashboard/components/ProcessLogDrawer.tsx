@@ -24,6 +24,7 @@ import type { ProcessLogData } from "@/electron/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 import { useDashboardContext } from "../contexts";
 import { ProcessStatus } from "../enums";
+import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessLogRow } from "./ProcessLogRow";
 
@@ -53,6 +54,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   });
   const [isAtBottom, setIsAtBottom] = createSignal(true);
   const [selectedLogId, setSelectedLogId] = createSignal<string | null>(null);
+  const [showShortcuts, setShowShortcuts] = createSignal(false);
 
   let searchTimer: number | null = null;
   const [searchValue, setSearchValue] = createSignal<string | undefined>("");
@@ -265,6 +267,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   /* Exits the drawer on "Escape" key if the drawer is open and the search input is not focused */
   const handleEscape = (e: KeyboardEvent) => {
     if (e.key !== "Escape" || !props.isOpen) return;
+    if (showShortcuts()) {
+      setShowShortcuts(false);
+      return;
+    }
     const activeElement = document.activeElement;
     if (activeElement === searchInputRef) return;
     props.onClose();
@@ -279,9 +285,17 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     searchInputRef.focus();
   };
 
+  /* Toggles the keyboard shortcuts modal on CMD/Ctrl + / */
+  const handleShortcutsToggle = (e: KeyboardEvent) => {
+    if (e.key !== "/" || !(e.metaKey || e.ctrlKey) || !props.isOpen) return;
+    e.preventDefault();
+    setShowShortcuts((prev) => !prev);
+  };
+
   const handleKeyDown = (e: KeyboardEvent) => {
     handleEscape(e);
     handleCmdF(e);
+    handleShortcutsToggle(e);
   };
 
   // Auto-scroll to bottom when logs are rendered
@@ -411,7 +425,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         onClick={props.onClose}
         aria-label="Close drawer"
       />
-      <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6">
+      <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6 relative">
         {/* Header */}
         <div class="px-4 py-2 border-b border-base-300">
           <div class="flex flex-row items-center gap-2">
@@ -635,6 +649,25 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
             </button>
           </Show>
         </div>
+
+        {/* Keyboard shortcuts hint */}
+        <div class="border-t border-base-300 flex justify-end px-1">
+          <button
+            type="button"
+            class="btn btn-ghost btn-xs text-base-content/50"
+            onClick={() => setShowShortcuts(true)}
+          >
+            <kbd class="kbd kbd-xs">⌘</kbd>
+            <kbd class="kbd kbd-xs">/</kbd>
+            <span>Shortcuts</span>
+          </button>
+        </div>
+
+        {/* Keyboard shortcuts modal overlay */}
+        <KeyboardShortcutsModal
+          isOpen={showShortcuts()}
+          onClose={() => setShowShortcuts(false)}
+        />
       </div>
     </div>
   );

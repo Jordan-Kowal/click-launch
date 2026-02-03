@@ -8,10 +8,9 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 1. [Environment Variables UI](#1-environment-variables-ui)
 2. [Log Export/Save](#2-log-exportsave)
-3. [Keyboard Shortcuts Reference](#3-keyboard-shortcuts-reference)
-4. [Process Grouping/Tags](#4-process-groupingtags)
-5. [Settings/Preferences Panel](#5-settingspreferences-panel)
-6. [Resource Monitoring](#6-resource-monitoring)
+3. [Process Grouping/Tags](#3-process-groupingtags)
+4. [Settings/Preferences Panel](#4-settingspreferences-panel)
+5. [Resource Monitoring](#5-resource-monitoring)
 
 ---
 
@@ -145,101 +144,7 @@ export const stripAnsiCodes = (text: string): string => { ... }
 
 ---
 
-## 3. Keyboard Shortcuts Reference
-
-**Priority:** Medium
-**Complexity:** Low
-**Feature:** Display a modal showing all available keyboard shortcuts
-
-### User Story
-
-As a user, I want to see all available keyboard shortcuts so that I can work more efficiently without using the mouse.
-
-### Current Shortcuts (to document)
-
-- `Cmd/Ctrl + F` - Focus search in log drawer
-- `Escape` - Close log drawer / Close modal
-- `Enter` - Next search result (in log drawer)
-- `Shift + Enter` - Previous search result (in log drawer)
-
-### UI Design
-
-- Trigger: `Cmd/Ctrl + ?` or `Cmd/Ctrl + /`
-- Alternative: Help menu item "Keyboard Shortcuts"
-- Modal with grouped shortcuts in a clean table format
-
-### Implementation Details
-
-#### Files to Create
-
-1. **`src/components/ui/KeyboardShortcutsModal.tsx`**
-   - Modal component displaying shortcuts in grouped sections
-   - Sections: "General", "Log Drawer", "Navigation"
-   - Render keyboard keys with styled `<kbd>` elements
-
-#### Files to Modify
-
-1. **`src/components/layout/BaseLayout.tsx`** or **`src/App.tsx`**
-   - Add global keyboard listener for `Cmd/Ctrl + ?`
-   - Manage modal open state
-
-2. **`src/components/layout/NavBar.tsx`** (optional)
-   - Add help icon button that opens the modal
-
-3. **`src/index.css`** (if needed)
-   - Style `<kbd>` elements to look like keyboard keys
-
-#### Shortcuts Data Structure
-
-```typescript
-// src/constants/keyboardShortcuts.ts
-export const KEYBOARD_SHORTCUTS = {
-  general: [
-    { keys: ['Cmd', '?'], description: 'Show keyboard shortcuts' },
-    { keys: ['Cmd', 'O'], description: 'Open config file' },
-  ],
-  logDrawer: [
-    { keys: ['Cmd', 'F'], description: 'Focus search' },
-    { keys: ['Escape'], description: 'Close drawer' },
-    { keys: ['Enter'], description: 'Next search result' },
-    { keys: ['Shift', 'Enter'], description: 'Previous search result' },
-  ],
-  dashboard: [
-    { keys: ['Cmd', 'Shift', 'S'], description: 'Stop all processes' },
-  ],
-};
-```
-
-#### Component Structure
-
-```tsx
-<Modal open={showShortcuts()} onClose={() => setShowShortcuts(false)}>
-  <h2>Keyboard Shortcuts</h2>
-  <For each={Object.entries(KEYBOARD_SHORTCUTS)}>
-    {([section, shortcuts]) => (
-      <section>
-        <h3>{formatSectionName(section)}</h3>
-        <For each={shortcuts}>
-          {(shortcut) => (
-            <div class="shortcut-row">
-              <span class="keys">
-                <For each={shortcut.keys}>
-                  {(key) => <kbd>{key}</kbd>}
-                </For>
-              </span>
-              <span class="description">{shortcut.description}</span>
-            </div>
-          )}
-        </For>
-      </section>
-    )}
-  </For>
-</Modal>
-```
-
----
-
-## 4. Process Grouping/Tags
+## 3. Process Grouping/Tags
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -337,7 +242,7 @@ const groupProcesses = (processes: ProcessConfig[]): GroupedProcesses => {
 
 ---
 
-## 5. Settings/Preferences Panel
+## 4. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -443,7 +348,7 @@ type Settings = {
 
 ---
 
-## 6. Resource Monitoring
+## 5. Resource Monitoring
 
 **Priority:** Medium
 **Complexity:** High
@@ -552,10 +457,9 @@ Suggested implementation order based on value and dependencies:
 
 1. **Environment Variables UI** - Medium effort, completes env vars feature
 2. **Log Export** - Low effort, frequently requested
-3. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
-4. **Settings Panel** - Medium effort, enables other features
-5. **Process Grouping** - Medium effort, helps larger projects
-6. **Resource Monitoring** - High effort, nice to have
+3. **Settings Panel** - Medium effort, enables other features
+4. **Process Grouping** - Medium effort, helps larger projects
+5. **Resource Monitoring** - High effort, nice to have
 
 ---
 

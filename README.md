@@ -35,6 +35,7 @@
     - [Input-Specific Configuration](#input-specific-configuration)
     - [Example Configuration](#example-configuration)
   - [🚀 Usage](#-usage)
+  - [⌨️ Keyboard Shortcuts](#️-keyboard-shortcuts)
   - [🤝 Contributing](#-contributing)
   - [📄 License](#-license)
   - [💬 Support](#-support)
@@ -234,6 +235,18 @@ processes:
 4. **Launch processes**: Click the play button next to each service
 5. **Monitor**: View real-time logs and runtime information
 6. **Stop when done**: Use stop buttons or close the app
+
+## ⌨️ Keyboard Shortcuts
+
+Press `⌘ + /` while the log drawer is open to display the keyboard shortcuts reference.
+
+| Shortcut | Description |
+|----------|-------------|
+| `⌘ + /` | Show keyboard shortcuts |
+| `⌘ + F` | Focus search input |
+| `Escape` | Close shortcuts modal or drawer |
+| `Enter` | Next search result |
+| `Shift + Enter` | Previous search result |
 
 ## 🤝 Contributing
 
