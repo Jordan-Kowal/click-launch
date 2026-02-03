@@ -51,7 +51,6 @@
 - **Visual interface**: GUI for starting, stopping, and monitoring processes
 - **Flexible configuration**: YAML-based setup with customizable arguments
 - **Process monitoring**: Real-time status, logs, and runtime tracking
-- **Copy log lines**: Hover over any log line to quickly copy it to clipboard
 - **Argument types**: Toggle switches, dropdowns, and text inputs
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 

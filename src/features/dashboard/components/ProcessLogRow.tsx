@@ -83,7 +83,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
     >
       <button
         type="button"
-        class="absolute -left-5 top-0.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-gray-400 hover:text-white p-0.5"
+        class="btn btn-ghost btn-xs absolute -left-5 top-0 opacity-0 group-hover:opacity-100 transition-opacity min-h-0 h-auto p-0.5"
         onClick={() => copyLogLine(logOutput())}
         title="Copy log line"
       >
