@@ -12,7 +12,6 @@ This document outlines planned improvements for Click-Launch. Each section conta
 4. [Process Grouping/Tags](#4-process-groupingtags)
 5. [Settings/Preferences Panel](#5-settingspreferences-panel)
 6. [Resource Monitoring](#6-resource-monitoring)
-7. [Copy Log Line](#7-copy-log-line)
 
 ---
 
@@ -547,112 +546,6 @@ const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> 
 
 ---
 
-## 7. Copy Log Line
-
-**Priority:** Low
-**Complexity:** Low
-**Feature:** Allow copying individual log lines or the full command
-
-### User Story
-
-As a developer, I want to quickly copy log lines or the process command so that I can share them or use them in other contexts.
-
-### UI Design
-
-#### Option A: Right-click context menu
-
-Right-click on a log line shows:
-
-- "Copy line"
-- "Copy line (without timestamp)"
-- "Copy all visible logs"
-
-#### Option B: Hover action button
-
-On hover, show a small copy icon on the right side of each log line.
-
-#### Command Copy
-
-Add copy button next to the command display in the log drawer header.
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`src/features/dashboard/components/ProcessLogDrawer.tsx`**
-   - Add copy button next to command display
-   - Implement copy to clipboard functionality
-
-2. **`src/features/dashboard/components/LogLine.tsx`** (may need to create)
-   - Extract log line into separate component
-   - Add hover state with copy button
-   - Or add right-click context menu
-
-3. **`src/utils/clipboard.ts`** (new)
-   - Utility for clipboard operations
-   - Handle copy with fallback for older browsers
-
-#### Clipboard Implementation
-
-```typescript
-export const copyToClipboard = async (text: string): Promise<boolean> => {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    // Fallback for older browsers
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    const success = document.execCommand('copy');
-    document.body.removeChild(textArea);
-    return success;
-  }
-};
-```
-
-#### Log Line Component
-
-```tsx
-const LogLine = (props: { log: ProcessLog; onCopy: () => void }) => {
-  const [showCopy, setShowCopy] = createSignal(false);
-
-  return (
-    <div
-      class="log-line"
-      onMouseEnter={() => setShowCopy(true)}
-      onMouseLeave={() => setShowCopy(false)}
-    >
-      <span class="timestamp">{formatTimestamp(props.log.timestamp)}</span>
-      <span class="message" innerHTML={parseAnsi(props.log.message)} />
-      <Show when={showCopy()}>
-        <button
-          class="copy-btn"
-          onClick={() => {
-            copyToClipboard(props.log.message);
-            toast.success('Copied to clipboard');
-          }}
-        >
-          <Copy size={14} />
-        </button>
-      </Show>
-    </div>
-  );
-};
-```
-
-#### Toast Feedback
-
-Show brief toast notification on successful copy:
-
-- "Copied to clipboard"
-- "Command copied"
-
-Use existing `solid-toast` integration.
-
----
-
 ## Implementation Priority
 
 Suggested implementation order based on value and dependencies:
@@ -660,10 +553,9 @@ Suggested implementation order based on value and dependencies:
 1. **Environment Variables UI** - Medium effort, completes env vars feature
 2. **Log Export** - Low effort, frequently requested
 3. **Keyboard Shortcuts Reference** - Low effort, improves discoverability
-4. **Copy Log Line** - Low effort, quality of life
-5. **Settings Panel** - Medium effort, enables other features
-6. **Process Grouping** - Medium effort, helps larger projects
-7. **Resource Monitoring** - High effort, nice to have
+4. **Settings Panel** - Medium effort, enables other features
+5. **Process Grouping** - Medium effort, helps larger projects
+6. **Resource Monitoring** - High effort, nice to have
 
 ---
 

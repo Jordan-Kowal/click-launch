@@ -1,4 +1,6 @@
+import { Copy } from "lucide-solid";
 import { createMemo, For, type JSX } from "solid-js";
+import toast from "solid-toast";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
@@ -33,6 +35,13 @@ const highlightSearchTerm = (
   );
 };
 
+const copyLogLine = (text: string) => {
+  navigator.clipboard.writeText(text).then(
+    () => toast.success("Copied to clipboard"),
+    () => toast.error("Failed to copy"),
+  );
+};
+
 export const ProcessLogRow = (props: ProcessLogRowProps) => {
   if (props.log.type === LogType.EXIT) {
     return (
@@ -44,10 +53,12 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
     );
   }
 
+  const logOutput = () =>
+    props.log.type === LogType.EXIT ? "" : props.log.output;
+
   // Memoize expensive ANSI parsing - only recompute when log output changes
   const segments = createMemo(() => {
-    const output = props.log.type === LogType.EXIT ? "" : props.log.output;
-    return parseAnsiToSegments(output || "");
+    return parseAnsiToSegments(logOutput() || "");
   });
 
   // Memoize search regex - only recreate when search term changes
@@ -66,10 +77,18 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   return (
     <div
       ref={props.ref}
-      class={`${
+      class={`group relative ${
         props.isCurrentMatch ? "bg-gray-700 rounded" : ""
       } whitespace-pre-wrap wrap-break-word`}
     >
+      <button
+        type="button"
+        class="btn btn-ghost btn-xs absolute -left-5 top-0 opacity-0 group-hover:opacity-100 transition-opacity min-h-0 h-auto p-0.5"
+        onClick={() => copyLogLine(logOutput())}
+        title="Copy log line"
+      >
+        <Copy size={14} />
+      </button>
       <span class="text-gray-400 italic">[{props.log.timestamp}] </span>
       <For each={segments()}>
         {(segment) => (

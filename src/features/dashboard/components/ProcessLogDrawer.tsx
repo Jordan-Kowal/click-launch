@@ -599,7 +599,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 </div>
               }
             >
-              <div class={`font-mono text-sm space-y-1`}>
+              <div class={`font-mono text-sm space-y-1 pl-1`}>
                 <For each={displayedLogs()}>
                   {(log) => {
                     const isCurrentMatch = () => selectedLogId() === log.id;
