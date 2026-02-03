@@ -651,10 +651,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         </div>
 
         {/* Keyboard shortcuts hint */}
-        <div class="px-4 py-1.5 border-t border-base-300 flex justify-end">
+        <div class="border-t border-base-300 flex justify-end px-1">
           <button
             type="button"
-            class="flex items-center gap-1.5 text-xs text-base-content/50 hover:text-base-content/80 transition-colors cursor-pointer"
+            class="btn btn-ghost btn-xs text-base-content/50"
             onClick={() => setShowShortcuts(true)}
           >
             <kbd class="kbd kbd-xs">⌘</kbd>

@@ -238,16 +238,15 @@ processes:
 
 ## ⌨️ Keyboard Shortcuts
 
-Press `Cmd/Ctrl + /` while the log drawer is open to display the full keyboard shortcuts reference. You can also click the shortcut hint at the bottom-right of the log drawer.
+Press `⌘ + /` while the log drawer is open to display the keyboard shortcuts reference.
 
-| Shortcut | Context | Description |
-|----------|---------|-------------|
-| `Cmd/Ctrl + /` | Log Drawer | Show keyboard shortcuts |
-| `Cmd/Ctrl + F` | Log Drawer | Focus search input |
-| `Escape` | Log Drawer | Close shortcuts modal or drawer |
-| `Enter` | Log Drawer (search) | Next search result |
-| `Shift + Enter` | Log Drawer (search) | Previous search result |
-| `F5` / `Cmd/Ctrl + R` | Dashboard | Reload configuration |
+| Shortcut | Description |
+|----------|-------------|
+| `⌘ + /` | Show keyboard shortcuts |
+| `⌘ + F` | Focus search input |
+| `Escape` | Close shortcuts modal or drawer |
+| `Enter` | Next search result |
+| `Shift + Enter` | Previous search result |
 
 ## 🤝 Contributing
 
