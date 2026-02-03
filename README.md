@@ -35,6 +35,7 @@
     - [Input-Specific Configuration](#input-specific-configuration)
     - [Example Configuration](#example-configuration)
   - [🚀 Usage](#-usage)
+  - [⌨️ Keyboard Shortcuts](#️-keyboard-shortcuts)
   - [🤝 Contributing](#-contributing)
   - [📄 License](#-license)
   - [💬 Support](#-support)
@@ -234,6 +235,19 @@ processes:
 4. **Launch processes**: Click the play button next to each service
 5. **Monitor**: View real-time logs and runtime information
 6. **Stop when done**: Use stop buttons or close the app
+
+## ⌨️ Keyboard Shortcuts
+
+Press `Cmd/Ctrl + /` while the log drawer is open to display the full keyboard shortcuts reference. You can also click the shortcut hint at the bottom-right of the log drawer.
+
+| Shortcut | Context | Description |
+|----------|---------|-------------|
+| `Cmd/Ctrl + /` | Log Drawer | Show keyboard shortcuts |
+| `Cmd/Ctrl + F` | Log Drawer | Focus search input |
+| `Escape` | Log Drawer | Close shortcuts modal or drawer |
+| `Enter` | Log Drawer (search) | Next search result |
+| `Shift + Enter` | Log Drawer (search) | Previous search result |
+| `F5` / `Cmd/Ctrl + R` | Dashboard | Reload configuration |
 
 ## 🤝 Contributing
 
