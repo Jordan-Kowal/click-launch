@@ -9,7 +9,6 @@ This document outlines planned improvements for Click-Launch. Each section conta
 1. [Environment Variables UI](#1-environment-variables-ui)
 2. [Log Export/Save](#2-log-exportsave)
 3. [Settings/Preferences Panel](#3-settingspreferences-panel)
-4. [Resource Monitoring](#4-resource-monitoring)
 
 ---
 
@@ -249,109 +248,6 @@ type Settings = {
 
 ---
 
-## 4. Resource Monitoring
-
-**Priority:** Medium
-**Complexity:** High
-**Feature:** Display CPU and memory usage for each running process
-
-### User Story
-
-As a developer, I want to see resource usage for my processes so that I can identify memory leaks or CPU-intensive operations.
-
-### UI Design
-
-Add resource columns to the process table:
-
-```
-Name          Status    CPU    Memory    Runtime    Actions
-─────────────────────────────────────────────────────────────
-API Server    Running   12%    156 MB    00:15:32   [■] [📋]
-Web App       Running   3%     89 MB     00:15:30   [■] [📋]
-Database      Running   1%     512 MB    00:15:28   [■] [📋]
-```
-
-### Implementation Details
-
-#### Files to Create
-
-1. **`electron/utils/resourceMonitor.ts`**
-   - Function to get CPU/memory for a process by PID
-   - Use `process.cpuUsage()` for Electron process
-   - For child processes: platform-specific approach
-
-#### Platform-Specific Resource Collection
-
-**macOS/Linux:**
-
-```typescript
-import { exec } from 'child_process';
-
-const getProcessStats = (pid: number): Promise<{ cpu: number; memory: number }> => {
-  return new Promise((resolve) => {
-    // ps command returns CPU% and RSS (memory in KB)
-    exec(`ps -p ${pid} -o %cpu,rss`, (error, stdout) => {
-      if (error) {
-        resolve({ cpu: 0, memory: 0 });
-        return;
-      }
-      const lines = stdout.trim().split('\n');
-      if (lines.length < 2) {
-        resolve({ cpu: 0, memory: 0 });
-        return;
-      }
-      const [cpu, rss] = lines[1].trim().split(/\s+/);
-      resolve({
-        cpu: parseFloat(cpu) || 0,
-        memory: (parseInt(rss, 10) || 0) * 1024, // Convert KB to bytes
-      });
-    });
-  });
-};
-```
-
-#### Files to Modify
-
-1. **`src/electron/enums.ts`**
-   - Add `PROCESS_RESOURCES = "process:resources"` channel
-
-2. **`electron/main.ts`**
-   - Add IPC handler for resource queries
-   - Batch resource queries for efficiency
-
-3. **`electron/preload.ts`**
-   - Expose `getProcessResources(pids: number[])` method
-
-4. **`src/electron/types.ts`**
-   - Add `ProcessResources` type: `{ cpu: number; memoryBytes: number }`
-
-5. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Poll resources alongside status (or at slower interval)
-   - Store resources in process state
-
-6. **`src/features/dashboard/components/ProcessRow.tsx`**
-   - Display CPU and memory columns
-   - Format memory as human-readable (MB/GB)
-   - Color-code high values (e.g., red if CPU > 80%)
-
-7. **`src/utils/formatters.ts`** (new or extend existing)
-   - `formatBytes(bytes: number): string` → "156 MB"
-   - `formatCpu(percent: number): string` → "12%"
-
-#### Polling Strategy
-
-- Poll resources every 2-3 seconds (configurable in settings)
-- Batch all running process PIDs in single query
-- Only poll when dashboard is visible (pause when minimized)
-
-#### Performance Considerations
-
-- Resource monitoring adds overhead; make it toggleable
-- Consider showing resources only on hover or in expanded view
-- Cache values between polls to avoid flicker
-
----
-
 ## Implementation Priority
 
 Suggested implementation order based on value and dependencies:
@@ -359,7 +255,6 @@ Suggested implementation order based on value and dependencies:
 1. **Environment Variables UI** - Medium effort, completes env vars feature
 2. **Log Export** - Low effort, frequently requested
 3. **Settings Panel** - Medium effort, enables other features
-4. **Resource Monitoring** - High effort, nice to have
 
 ---
 

@@ -332,3 +332,16 @@ export const getBulkProcessStatus = async (
   }
   return statusMap;
 };
+
+export const getRunningProcessPids = (
+  processIds: string[],
+): Record<string, number> => {
+  const pidMap: Record<string, number> = {};
+  for (const processId of processIds) {
+    const state = runningProcesses.get(processId);
+    if (state?.childProcess.pid && !state.childProcess.killed) {
+      pidMap[processId] = state.childProcess.pid;
+    }
+  }
+  return pidMap;
+};
