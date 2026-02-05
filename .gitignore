@@ -23,7 +23,7 @@ bundle-stats.html
 .tsbuildinfo
 
 # IDE/Editor
-.zed/
+.zed/settings.local.json
 
 # Claude Code
 .claude/settings.local.json
