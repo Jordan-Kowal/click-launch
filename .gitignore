@@ -22,6 +22,12 @@ bundle-stats.html
 # TypeScript
 .tsbuildinfo
 
+# IDE/Editor
+.zed/
+
+# Claude Code
+.claude/settings.local.json
+
 # macOS
 **/.DS_Store
 
