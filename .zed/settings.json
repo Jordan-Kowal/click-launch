@@ -1,0 +1,90 @@
+{
+  "languages": {
+    "TypeScript": {
+      "language_servers": [
+        "vtsls",
+        "biome",
+        "!typescript-language-server",
+        "!oxfmt",
+        "!oxlint",
+        "!eslint",
+      ],
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true,
+      },
+    },
+
+    "TSX": {
+      "language_servers": [
+        "vtsls",
+        "biome",
+        "!typescript-language-server",
+        "!oxfmt",
+        "!oxlint",
+        "!eslint",
+      ],
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true,
+      },
+    },
+
+    "JavaScript": {
+      "language_servers": [
+        "vtsls",
+        "biome",
+        "!typescript-language-server",
+        "!oxfmt",
+        "!oxlint",
+        "!eslint",
+      ],
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
+        "source.removeUnusedImports.ts": true,
+      },
+    },
+
+    "JSON": {
+      "language_servers": ["json-language-server", "biome"],
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+    },
+
+    "Python": {
+      "language_servers": ["!pylsp", "pyright", "ruff", "ty"],
+      "format_on_save": "on",
+      "formatter": {
+        "language_server": {
+          "name": "ruff",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.ruff": true,
+        "source.organizeImports.ruff": true,
+        "source.removeUnusedImports.python": true,
+      },
+    },
+  },
+}
