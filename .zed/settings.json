@@ -4,10 +4,11 @@
       "language_servers": [
         "vtsls",
         "biome",
-        "!typescript-language-server",
-        "!oxfmt",
-        "!oxlint",
         "!eslint",
+        "!typescript-language-server",
+        "!oxlint",
+        "!oxfmt",
+        "...",
       ],
       "formatter": {
         "language_server": {
@@ -25,10 +26,11 @@
       "language_servers": [
         "vtsls",
         "biome",
-        "!typescript-language-server",
-        "!oxfmt",
-        "!oxlint",
         "!eslint",
+        "!typescript-language-server",
+        "!oxlint",
+        "!oxfmt",
+        "...",
       ],
       "formatter": {
         "language_server": {
@@ -46,10 +48,11 @@
       "language_servers": [
         "vtsls",
         "biome",
-        "!typescript-language-server",
-        "!oxfmt",
-        "!oxlint",
         "!eslint",
+        "!typescript-language-server",
+        "!oxlint",
+        "!oxfmt",
+        "...",
       ],
       "formatter": {
         "language_server": {
@@ -69,21 +72,6 @@
         "language_server": {
           "name": "biome",
         },
-      },
-    },
-
-    "Python": {
-      "language_servers": ["!pylsp", "pyright", "ruff", "ty"],
-      "format_on_save": "on",
-      "formatter": {
-        "language_server": {
-          "name": "ruff",
-        },
-      },
-      "code_actions_on_format": {
-        "source.fixAll.ruff": true,
-        "source.organizeImports.ruff": true,
-        "source.removeUnusedImports.python": true,
       },
     },
   },
