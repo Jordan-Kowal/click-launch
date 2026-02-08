@@ -82,6 +82,13 @@ export type ProcessLogData = {
 
 export type BulkProcessStatusResult = Record<ProcessId, boolean>;
 
+export type ProcessResourceData = {
+  cpu: number;
+  memoryBytes: number;
+};
+
+export type BulkProcessResourcesResult = Record<ProcessId, ProcessResourceData>;
+
 export type ProcessRestartData = {
   processId: ProcessId;
   retryCount: number;
@@ -119,6 +126,9 @@ export interface ElectronAPI {
     processIds: ProcessId[],
   ) => Promise<BulkProcessStatusResult>;
   stopAllProcesses: () => Promise<{ success: boolean }>;
+  getProcessResources: (
+    processIds: ProcessId[],
+  ) => Promise<BulkProcessResourcesResult>;
   // Process log streaming
   onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
   removeProcessLogListener: () => void;

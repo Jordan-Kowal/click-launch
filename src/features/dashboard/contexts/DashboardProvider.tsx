@@ -12,6 +12,7 @@ import { useAppStorageContext } from "@/contexts";
 import type {
   ProcessCrashData,
   ProcessId,
+  ProcessResourceData,
   ProcessRestartData,
   ValidationResult,
   YamlConfig,
@@ -25,6 +26,7 @@ import {
 } from "./DashboardContext";
 
 const POLL_STATUS_INTERVAL_MS = 1000;
+const POLL_RESOURCES_INTERVAL_MS = 3000;
 
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
@@ -62,8 +64,13 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   const [collapsedGroups, setCollapsedGroups] = createStore<
     Record<string, boolean>
   >({});
+  // Resource usage data, keyed by process name
+  const [resourcesData, setResourcesData] = createStore<
+    Record<string, ProcessResourceData>
+  >({});
   // Single polling interval for all processes
   let pollInterval: ReturnType<typeof setInterval> | null = null;
+  let resourcePollInterval: ReturnType<typeof setInterval> | null = null;
 
   const hasRunningProcesses = createMemo(() => {
     return (
@@ -120,11 +127,15 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     }
   });
 
-  // Cleanup polling interval on unmount
+  // Cleanup polling intervals on unmount
   onCleanup(() => {
     if (pollInterval) {
       clearInterval(pollInterval);
       pollInterval = null;
+    }
+    if (resourcePollInterval) {
+      clearInterval(resourcePollInterval);
+      resourcePollInterval = null;
     }
   });
 
@@ -253,6 +264,45 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     }, POLL_STATUS_INTERVAL_MS);
   };
 
+  // Start or restart resource polling for all processes
+  const startResourcePolling = () => {
+    if (resourcePollInterval) {
+      clearInterval(resourcePollInterval);
+    }
+
+    resourcePollInterval = setInterval(async () => {
+      const activeProcesses: Array<{ name: string; pid: ProcessId }> = [];
+      Object.entries(processesData).forEach(([name, data]) => {
+        if (
+          data.processId &&
+          (data.status === ProcessStatus.RUNNING ||
+            data.status === ProcessStatus.RESTARTING)
+        ) {
+          activeProcesses.push({ name, pid: data.processId });
+        }
+      });
+
+      if (activeProcesses.length === 0) {
+        if (resourcePollInterval) {
+          clearInterval(resourcePollInterval);
+          resourcePollInterval = null;
+        }
+        return;
+      }
+
+      const processIds = activeProcesses.map((p) => p.pid);
+      const resources =
+        await window.electronAPI.getProcessResources(processIds);
+
+      activeProcesses.forEach(({ name, pid }) => {
+        const data = resources[pid];
+        if (data) {
+          setResourcesData(name, data);
+        }
+      });
+    }, POLL_RESOURCES_INTERVAL_MS);
+  };
+
   // Context API methods
   const getProcessData = (processName: string): ProcessData | undefined => {
     return processesData[processName];
@@ -276,6 +326,12 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
 
   const getProcessArgs = (processName: string) => {
     return getProcessConfig(processName)?.args;
+  };
+
+  const getProcessResources = (
+    processName: string,
+  ): ProcessResourceData | undefined => {
+    return resourcesData[processName];
   };
 
   const setArgValues = (
@@ -335,6 +391,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         maxRetries: processConfig.restart?.max_retries ?? 3,
       });
       startPolling();
+      startResourcePolling();
     } else {
       setProcessesData(processName, "status", ProcessStatus.STOPPED);
       toast.error(`Failed to start ${processName}`);
@@ -455,6 +512,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     getProcessStartTime,
     getProcessId,
     getProcessArgs,
+    getProcessResources,
     setArgValues,
     startProcess,
     stopProcess,

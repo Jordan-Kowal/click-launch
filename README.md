@@ -56,6 +56,7 @@
 - **Environment variables**: Set custom env vars per process, merged with system environment
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 - **Process grouping**: Organize processes into collapsible groups with per-group start/stop
+- **Resource monitoring**: Real-time CPU and memory usage per process
 
 | Homepage                              | Dashboard                               | Log Drawer                                |
 | ------------------------------------- | --------------------------------------- | ----------------------------------------- |

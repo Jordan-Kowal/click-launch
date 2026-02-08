@@ -3,6 +3,7 @@ import type {
   ArgConfig,
   ProcessConfig,
   ProcessId,
+  ProcessResourceData,
   ValidationResult,
   YamlConfig,
 } from "@/electron/types";
@@ -46,6 +47,7 @@ export type DashboardContextType = {
   getProcessId: (processName: string) => ProcessId | null;
   getProcessArgs: (processName: string) => ArgConfig[] | undefined;
   setArgValues: (processName: string, argName: string, value: string) => void;
+  getProcessResources: (processName: string) => ProcessResourceData | undefined;
   startProcess: (processName: string) => Promise<void>;
   stopProcess: (processName: string) => Promise<void>;
 };
