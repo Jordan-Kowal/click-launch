@@ -37,9 +37,9 @@ export const ProcessTable = () => {
             <thead>
               <tr>
                 <th class="w-auto min-w-0">Processes</th>
-                <th class="w-32 flex-shrink-0">Status</th>
-                <th class="w-32 flex-shrink-0">Resources</th>
-                <th class="w-32 flex-shrink-0">Actions</th>
+                <th class="w-32 shrink-0">Status</th>
+                <th class="w-32 shrink-0">Resources</th>
+                <th class="w-32 shrink-0">Actions</th>
               </tr>
             </thead>
             <tbody>

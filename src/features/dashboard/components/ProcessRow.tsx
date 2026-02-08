@@ -76,11 +76,11 @@ export const ProcessRow = (props: ProcessRowProps) => {
 
   return (
     <tr class={`${props.index % 2 !== 0 ? "bg-base-200" : ""}`}>
-      <td class="align-top w-auto min-w-0 !p-2">
+      <td class="align-top w-auto min-w-0 p-2!">
         <div class="flex flex-col gap-2 min-w-0">
           <div class="flex flex-col gap-0 min-w-0">
             <div class="truncate font-bold">{props.process.name}</div>
-            <div class="text-xs italic text-gray-400 whitespace-pre-wrap break-words">
+            <div class="text-xs italic text-gray-400 whitespace-pre-wrap wrap-break-word">
               {command()}
             </div>
             <Show when={hasOptions()}>{button()}</Show>
@@ -101,7 +101,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
           </Show>
         </div>
       </td>
-      <td class="align-top w-32 flex-shrink-0 !p-2">
+      <td class="align-top w-32 shrink-0 p-2!">
         <div class="flex flex-col items-start gap-1">
           <div class={`badge ${statusVariant()}`}>{statusText()}</div>
           <ProcessDuration
@@ -113,7 +113,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
           />
         </div>
       </td>
-      <td class="align-top w-32 flex-shrink-0 !p-2">
+      <td class="align-top w-32 shrink-0 p-2!">
         <ProcessResources
           resources={resources()}
           isRunning={
@@ -122,7 +122,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
           }
         />
       </td>
-      <td class="align-top w-32 flex-shrink-0 !p-2">
+      <td class="align-top w-32 shrink-0 p-2!">
         <div class="flex items-center gap-2">
           <PlayStopButton processName={props.process.name} />
           <button
