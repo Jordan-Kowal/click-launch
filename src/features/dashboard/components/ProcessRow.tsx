@@ -6,6 +6,7 @@ import { ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 import { ProcessDuration } from "./ProcessDuration";
+import { ProcessResources } from "./ProcessResources";
 
 type ProcessRowProps = {
   process: ProcessConfig;
@@ -21,12 +22,14 @@ export const ProcessRow = (props: ProcessRowProps) => {
     getProcessStatus,
     getProcessStartTime,
     getProcessData,
+    getProcessResources,
   } = useDashboardContext();
   const command = () => getProcessCommand(props.process.name);
   const args = () => getProcessArgs(props.process.name);
   const status = () => getProcessStatus(props.process.name);
   const startTime = () => getProcessStartTime(props.process.name);
   const processData = () => getProcessData(props.process.name);
+  const resources = () => getProcessResources(props.process.name);
   const [showOptions, setShowOptions] = createSignal(false);
 
   const toggleOptions = () => setShowOptions(!showOptions());
@@ -109,6 +112,15 @@ export const ProcessRow = (props: ProcessRowProps) => {
             }
           />
         </div>
+      </td>
+      <td class="align-top w-32 flex-shrink-0 !p-2">
+        <ProcessResources
+          resources={resources()}
+          isRunning={
+            status() === ProcessStatus.RUNNING ||
+            status() === ProcessStatus.RESTARTING
+          }
+        />
       </td>
       <td class="align-top w-32 flex-shrink-0 !p-2">
         <div class="flex items-center gap-2">

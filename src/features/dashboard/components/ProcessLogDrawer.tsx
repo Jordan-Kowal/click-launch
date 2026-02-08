@@ -27,6 +27,7 @@ import { ProcessStatus } from "../enums";
 import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessLogRow } from "./ProcessLogRow";
+import { ProcessResources } from "./ProcessResources";
 
 type ProcessLogDrawerProps = {
   processName: string;
@@ -43,10 +44,19 @@ const SEARCH_DELAY_MS = 500;
 const SCROLL_TO_BOTTOM_THRESHOLD = 200;
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
-  const { yamlConfig, getProcessId, getProcessStatus, getProcessData } =
-    useDashboardContext();
+  const {
+    yamlConfig,
+    getProcessId,
+    getProcessStatus,
+    getProcessData,
+    getProcessResources,
+  } = useDashboardContext();
   const processStatus = () => getProcessStatus(props.processName);
   const processData = () => getProcessData(props.processName);
+  const resources = () => getProcessResources(props.processName);
+  const isRunning = () =>
+    processStatus() === ProcessStatus.RUNNING ||
+    processStatus() === ProcessStatus.RESTARTING;
 
   const [uiState, setUiState] = createStore({
     autoScroll: true,
@@ -455,6 +465,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 <div class="badge badge-neutral">Idle</div>
               </Match>
             </Switch>
+            <ProcessResources resources={resources()} isRunning={isRunning()} />
           </div>
           <button
             type="button"

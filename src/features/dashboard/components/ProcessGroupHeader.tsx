@@ -24,7 +24,7 @@ export const ProcessGroupHeader = (props: ProcessGroupHeaderProps) => {
 
   return (
     <tr class="bg-base-300">
-      <td colspan="3" class="p-2!">
+      <td colspan="4" class="p-2!">
         <div class="flex items-center justify-between">
           <button
             type="button"

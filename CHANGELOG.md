@@ -22,6 +22,7 @@
 - 🚀 Added **process grouping**: new optional `group` field per process to organize processes into collapsible groups.
 - ✨ Added **copy log line** button, visible on hover.
 - ✨ Added toast notifications when a process crashes.
+- 🚀 Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard.
 
 ## 1.5.0 - 2026-01-24
 

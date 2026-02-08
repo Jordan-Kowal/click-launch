@@ -62,11 +62,13 @@ import {
 } from "./utils/extractYamlConfig";
 import {
   getBulkProcessStatus,
+  getRunningProcessPids,
   isProcessRunning,
   startProcess,
   stopAllProcesses,
   stopProcess,
 } from "./utils/processManager";
+import { getProcessResources } from "./utils/resourceMonitor";
 import { validatePaths } from "./utils/validatePaths";
 
 const createWindow = (): void => {
@@ -205,6 +207,12 @@ app.whenReady().then(() => {
   // IPC handler for getting bulk process status
   ipcMain.handle("process:bulk-status", async (_, processIds: string[]) => {
     return getBulkProcessStatus(processIds);
+  });
+
+  // IPC handler for getting process resources (CPU/memory)
+  ipcMain.handle("process:resources", async (_, processIds: string[]) => {
+    const pidMap = getRunningProcessPids(processIds);
+    return getProcessResources(pidMap);
   });
 
   // IPC handler for stopping all processes
