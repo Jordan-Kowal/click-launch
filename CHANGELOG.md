@@ -19,6 +19,7 @@
   - See [README.md](README.md) for more information.
 - 🚀 Added **crashed status** to distinguish between manually stopped and crashed processes.
 - 🚀 Added **working directory override**: new optional `cwd` field per process to run commands from a custom directory.
+- 🚀 Added **process grouping**: new optional `group` field per process to organize processes into collapsible groups.
 - ✨ Added **copy log line** button, visible on hover.
 - ✨ Added toast notifications when a process crashes.
 

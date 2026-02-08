@@ -26,6 +26,7 @@ export type YamlConfig = {
   processes: {
     name: string;
     base_command: string;
+    group?: string;
     cwd?: string;
     env?: ProcessEnv;
     restart?: RestartConfig;
