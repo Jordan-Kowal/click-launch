@@ -129,6 +129,12 @@ export interface ElectronAPI {
   getProcessResources: (
     processIds: ProcessId[],
   ) => Promise<BulkProcessResourcesResult>;
+  // File operations
+  writeFile: (
+    dirPath: string,
+    fileName: string,
+    content: string,
+  ) => Promise<string>;
   // Process log streaming
   onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
   removeProcessLogListener: () => void;

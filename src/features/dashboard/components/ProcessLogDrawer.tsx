@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ChevronDown,
   ChevronUp,
+  Download,
   Regex,
   Search,
   Trash2,
@@ -19,9 +20,11 @@ import {
   Switch,
 } from "solid-js";
 import { createStore } from "solid-js/store";
+import toast from "solid-toast";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
+import { formatLogsAsText, generateExportFilename } from "@/utils/logExport";
 import { useDashboardContext } from "../contexts";
 import { ProcessStatus } from "../enums";
 import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
@@ -46,6 +49,7 @@ const SCROLL_TO_BOTTOM_THRESHOLD = 200;
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const {
     yamlConfig,
+    rootDirectory,
     getProcessId,
     getProcessStatus,
     getProcessData,
@@ -220,6 +224,34 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     setSelectedLogId(null);
     clearBatchTimer();
     clearSearchTimer();
+  };
+
+  const exportLogs = async () => {
+    const logs = currentLogs();
+    if (logs.length === 0) {
+      toast.error("No logs to export");
+      return;
+    }
+    const rootDir = rootDirectory();
+    if (!rootDir) {
+      toast.error("No project directory available");
+      return;
+    }
+    try {
+      const content = formatLogsAsText(logs, props.processName);
+      const fileName = generateExportFilename(props.processName);
+      const dirPath = `${rootDir}/logs/click-launch`;
+      const filePath = await window.electronAPI.writeFile(
+        dirPath,
+        fileName,
+        content,
+      );
+      toast.success(`Logs exported to ${filePath}`);
+    } catch (error) {
+      toast.error(
+        `Failed to export logs: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
   };
 
   const onSearchChange = (e: Event) => {
@@ -477,9 +509,9 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         </div>
 
         {/* Search and options */}
-        <div class="py-3 px-4 border-b border-base-300 gap-2 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="py-3 px-4 border-b border-base-300 gap-2 flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div class="flex items-center gap-4 min-h-12">
-            <div class="relative w-full md:w-96">
+            <div class="relative w-full lg:w-96">
               <label class="input input-sm w-full">
                 <Search size={16} />
                 <input
@@ -510,7 +542,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 </div>
               </Show>
             </div>
-            <div class="flex items-center gap-1 w-18 justify-end md:justify-start">
+            <div class="flex items-center gap-1 w-18 justify-end lg:justify-start">
               <Show
                 when={searchState.term}
                 fallback={<span class="text-sm text-gray-500">No search</span>}
@@ -572,8 +604,8 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
           </div>
 
           {/* Options */}
-          <div class="flex items-center gap-4 text-xs">
-            <label class="flex items-center gap-2 cursor-pointer">
+          <div class="flex items-center gap-4 text-xs self-end lg:self-auto">
+            <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
               <input
                 type="checkbox"
                 class="checkbox checkbox-xs checkbox-primary"
@@ -587,7 +619,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               />
               Auto-scroll
             </label>
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
               <input
                 type="checkbox"
                 class="checkbox checkbox-xs checkbox-primary"
@@ -598,15 +630,24 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
               />
               Pause
             </label>
-            <button
-              type="button"
-              class="btn btn-outline btn-error btn-xs"
-              onClick={clearLogs}
-              title="Clear logs"
-            >
-              <Trash2 size={16} />
-              Clear logs
-            </button>
+            <div class="tooltip tooltip-bottom" data-tip="Export logs">
+              <button
+                type="button"
+                class="btn btn-outline btn-primary btn-xs btn-square"
+                onClick={exportLogs}
+              >
+                <Download size={16} />
+              </button>
+            </div>
+            <div class="tooltip tooltip-bottom" data-tip="Clear logs">
+              <button
+                type="button"
+                class="btn btn-outline btn-error btn-xs btn-square"
+                onClick={clearLogs}
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
         </div>
 

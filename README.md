@@ -57,6 +57,7 @@
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 - **Process grouping**: Organize processes into collapsible groups with per-group start/stop
 - **Resource monitoring**: Real-time CPU and memory usage per process
+- **Log export**: Export process logs as plain text files for sharing or debugging
 
 | Homepage                              | Dashboard                               | Log Drawer                                |
 | ------------------------------------- | --------------------------------------- | ----------------------------------------- |

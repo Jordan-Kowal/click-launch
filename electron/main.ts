@@ -1,5 +1,6 @@
 import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
@@ -220,6 +221,22 @@ app.whenReady().then(() => {
     stopAllProcesses();
     return { success: true };
   });
+
+  // IPC handler for writing a file to disk (used by log export)
+  ipcMain.handle(
+    "file:write",
+    async (
+      _,
+      dirPath: string,
+      fileName: string,
+      content: string,
+    ): Promise<string> => {
+      await mkdir(dirPath, { recursive: true });
+      const filePath = join(dirPath, fileName);
+      await writeFile(filePath, content, "utf-8");
+      return filePath;
+    },
+  );
 
   // IPC handler for getting resource paths
   ipcMain.handle("app:getResourcePath", async (_, filename: string) => {

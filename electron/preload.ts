@@ -50,6 +50,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   removeProcessCrashListener: () => {
     ipcRenderer.removeAllListeners("process-crash");
   },
+  // File operations
+  writeFile: (dirPath: string, fileName: string, content: string) =>
+    ipcRenderer.invoke("file:write", dirPath, fileName, content),
   // Update management
   installUpdate: () => ipcRenderer.invoke("app:installUpdate"),
 });

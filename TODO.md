@@ -7,8 +7,7 @@ This document outlines planned improvements for Click-Launch. Each section conta
 ## Table of Contents
 
 1. [Environment Variables UI](#1-environment-variables-ui)
-2. [Log Export/Save](#2-log-exportsave)
-3. [Settings/Preferences Panel](#3-settingspreferences-panel)
+2. [Settings/Preferences Panel](#2-settingspreferences-panel)
 
 ---
 
@@ -55,94 +54,7 @@ Environment variables can be defined per process in `config.yml` via the `env` f
 
 ---
 
-## 2. Log Export/Save
-
-**Priority:** High
-**Complexity:** Low
-**Feature:** Allow users to export process logs to a file
-
-### User Story
-
-As a developer, I want to export logs from a process so that I can share them with teammates or save them for later debugging.
-
-### UI Design
-
-Add an export button to the `ProcessLogDrawer` header, next to existing controls:
-
-```
-[Pause] [Clear] [Export ↓] [×]
-```
-
-Export options (via dropdown or modal):
-
-- Export as `.txt` (plain text, ANSI codes stripped)
-- Export as `.json` (structured with timestamps and log types)
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`src/features/dashboard/components/ProcessLogDrawer.tsx`**
-   - Add export button with Lucide `Download` icon
-   - Implement export handler that calls IPC
-
-2. **`src/electron/enums.ts`**
-   - Add new channel: `DIALOG_SAVE_FILE = "dialog:saveFile"`
-
-3. **`electron/main.ts`**
-   - Add IPC handler for save file dialog
-   - Use `dialog.showSaveDialog()` with filters for `.txt` and `.json`
-
-4. **`electron/preload.ts`**
-   - Expose `saveFileDialog()` method
-
-5. **`src/electron/types.ts`**
-   - Add type for save dialog options and result
-
-#### Export Formats
-
-**Plain Text (.txt):**
-
-```
-[2024-01-15 10:23:45] [stdout] Server starting on port 3000
-[2024-01-15 10:23:46] [stdout] Database connected
-[2024-01-15 10:23:47] [stderr] Warning: Deprecation notice...
-```
-
-**JSON (.json):**
-
-```json
-{
-  "processName": "API Server",
-  "command": "pnpm start --port 3000",
-  "exportedAt": "2024-01-15T10:30:00Z",
-  "logs": [
-    {
-      "timestamp": "2024-01-15T10:23:45Z",
-      "type": "stdout",
-      "message": "Server starting on port 3000"
-    }
-  ]
-}
-```
-
-#### Helper Function
-
-Create utility in `src/utils/logExport.ts`:
-
-```typescript
-export const formatLogsAsText = (logs: ProcessLog[], processName: string): string => { ... }
-export const formatLogsAsJson = (logs: ProcessLog[], processName: string, command: string): string => { ... }
-export const stripAnsiCodes = (text: string): string => { ... }
-```
-
-#### Default Filename
-
-`{processName}-logs-{timestamp}.{ext}` (e.g., `api-server-logs-2024-01-15-103000.txt`)
-
----
-
-## 3. Settings/Preferences Panel
+## 2. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -253,8 +165,7 @@ type Settings = {
 Suggested implementation order based on value and dependencies:
 
 1. **Environment Variables UI** - Medium effort, completes env vars feature
-2. **Log Export** - Low effort, frequently requested
-3. **Settings Panel** - Medium effort, enables other features
+2. **Settings Panel** - Medium effort, enables other features
 
 ---
 
