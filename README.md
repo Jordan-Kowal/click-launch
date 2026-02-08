@@ -53,7 +53,7 @@
 - **Flexible configuration**: YAML-based setup with customizable arguments
 - **Process monitoring**: Real-time status, logs, and runtime tracking
 - **Argument types**: Toggle switches, dropdowns, and text inputs
-- **Environment variables**: Set custom env vars per process, merged with system environment
+- **Environment variables**: Set custom env vars per process, editable before launch, merged with system environment
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 - **Process grouping**: Organize processes into collapsible groups with per-group start/stop
 - **Resource monitoring**: Real-time CPU and memory usage per process

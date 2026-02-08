@@ -6,55 +6,11 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 ## Table of Contents
 
-1. [Environment Variables UI](#1-environment-variables-ui)
-2. [Settings/Preferences Panel](#2-settingspreferences-panel)
+1. [Settings/Preferences Panel](#1-settingspreferences-panel)
 
 ---
 
-## 1. Environment Variables UI
-
-**Priority:** Medium
-**Complexity:** Medium
-**Feature:** Display and manage environment variables in the UI
-
-### User Story
-
-As a developer, I want to see which environment variables are configured for each process and optionally add custom ones at runtime.
-
-### Current State
-
-Environment variables can be defined per process in `config.yml` via the `env` field. These are passed to the spawned process but are not visible in the UI.
-
-### Proposed Enhancements
-
-#### 1. Display configured env vars
-
-- Show an indicator on `ProcessRow` when a process has custom env vars
-- Add a tooltip or expandable section showing variable names (values hidden for security)
-- Example: "3 env vars configured: NODE_ENV, DEBUG, API_URL"
-
-#### 2. Runtime env var input (optional)
-
-- Add a new argument type `env` that allows users to pass additional env vars at runtime
-- These would be merged with the configured env vars (runtime takes precedence)
-- UI: Key-value input field in the process arguments section
-
-### Files to Modify
-
-1. **`src/features/dashboard/components/ProcessRow.tsx`**
-   - Add visual indicator for processes with env vars
-   - Tooltip showing configured variable names
-
-2. **`src/features/dashboard/components/ProcessEnvDisplay.tsx`** (new)
-   - Component to display env var names in a tooltip or expandable section
-
-3. **`electron/utils/extractYamlConfig.ts`** (if adding new arg type)
-   - Add `ENV` to `ArgType` enum
-   - Add validation for env arg type
-
----
-
-## 2. Settings/Preferences Panel
+## 1. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -168,8 +124,7 @@ type Settings = {
 
 Suggested implementation order based on value and dependencies:
 
-1. **Environment Variables UI** - Medium effort, completes env vars feature
-2. **Settings Panel** - Medium effort, enables other features
+1. **Settings Panel** - Medium effort, enables other features
 
 ---
 

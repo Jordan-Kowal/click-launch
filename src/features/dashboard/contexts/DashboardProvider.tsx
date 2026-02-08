@@ -100,6 +100,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
         result.config.processes.forEach((process) => {
           initialProcessesData[process.name] = {
             argValues: {},
+            envValues: process.env ? { ...process.env } : {},
             status: ProcessStatus.STOPPED,
             processId: null,
             startTime: null,
@@ -328,6 +329,14 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     return getProcessConfig(processName)?.args;
   };
 
+  const _getProcessEnv = (processName: string) => {
+    return getProcessConfig(processName)?.env;
+  };
+
+  const _setEnvValue = (processName: string, key: string, value: string) => {
+    setProcessesData(processName, "envValues", key, value);
+  };
+
   const getProcessResources = (
     processName: string,
   ): ProcessResourceData | undefined => {
@@ -373,8 +382,12 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
       ? { ...processConfig.restart }
       : undefined;
     const cwd = resolveProcessCwd(processConfig);
-    // Spread env to create a plain object for IPC
-    const env = processConfig.env ? { ...processConfig.env } : undefined;
+    // Use editable env values from the store (spread to create a plain object for IPC)
+    const storeEnv = processesData[processName]?.envValues;
+    const env =
+      storeEnv && Object.keys(storeEnv).length > 0
+        ? { ...storeEnv }
+        : undefined;
     const result = await window.electronAPI.startProcess(
       cwd,
       command,
@@ -512,6 +525,8 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     getProcessStartTime,
     getProcessId,
     getProcessArgs,
+    getProcessEnv: _getProcessEnv,
+    setEnvValue: _setEnvValue,
     getProcessResources,
     setArgValues,
     startProcess,

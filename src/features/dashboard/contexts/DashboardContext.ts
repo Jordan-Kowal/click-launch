@@ -2,6 +2,7 @@ import { createContext } from "solid-js";
 import type {
   ArgConfig,
   ProcessConfig,
+  ProcessEnv,
   ProcessId,
   ProcessResourceData,
   ValidationResult,
@@ -11,6 +12,7 @@ import type { ProcessStatus } from "../enums";
 
 export type ProcessData = {
   argValues: Record<string, string>;
+  envValues: Record<string, string>;
   status: ProcessStatus;
   processId: ProcessId | null;
   startTime: Date | null;
@@ -47,6 +49,8 @@ export type DashboardContextType = {
   getProcessId: (processName: string) => ProcessId | null;
   getProcessArgs: (processName: string) => ArgConfig[] | undefined;
   setArgValues: (processName: string, argName: string, value: string) => void;
+  getProcessEnv: (processName: string) => ProcessEnv | undefined;
+  setEnvValue: (processName: string, key: string, value: string) => void;
   getProcessResources: (processName: string) => ProcessResourceData | undefined;
   startProcess: (processName: string) => Promise<void>;
   stopProcess: (processName: string) => Promise<void>;

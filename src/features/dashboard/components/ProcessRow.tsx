@@ -6,6 +6,7 @@ import { ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 import { ProcessDuration } from "./ProcessDuration";
+import { ProcessEnvVar } from "./ProcessEnvVar";
 import { ProcessResources } from "./ProcessResources";
 
 type ProcessRowProps = {
@@ -19,6 +20,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
   const {
     getProcessCommand,
     getProcessArgs,
+    getProcessEnv,
     getProcessStatus,
     getProcessStartTime,
     getProcessData,
@@ -26,10 +28,20 @@ export const ProcessRow = (props: ProcessRowProps) => {
   } = useDashboardContext();
   const command = () => getProcessCommand(props.process.name);
   const args = () => getProcessArgs(props.process.name);
+  const env = () => getProcessEnv(props.process.name);
+  const envEntries = () => Object.entries(env() ?? {});
   const status = () => getProcessStatus(props.process.name);
   const startTime = () => getProcessStartTime(props.process.name);
   const processData = () => getProcessData(props.process.name);
   const resources = () => getProcessResources(props.process.name);
+  const envSummary = createMemo(() => {
+    const data = processData();
+    if (!data) return "";
+    return Object.entries(data.envValues)
+      .filter(([_, v]) => v !== "")
+      .map(([k, v]) => `${k}=${v}`)
+      .join(" ");
+  });
   const [showOptions, setShowOptions] = createSignal(false);
 
   const toggleOptions = () => setShowOptions(!showOptions());
@@ -72,7 +84,9 @@ export const ProcessRow = (props: ProcessRowProps) => {
     </button>
   ));
 
-  const hasOptions = () => args() && args()!.length > 0;
+  const hasArgs = () => (args()?.length ?? 0) > 0;
+  const hasEnv = () => envEntries().length > 0;
+  const hasOptions = () => hasArgs() || hasEnv();
 
   return (
     <tr class={`${props.index % 2 !== 0 ? "bg-base-200" : ""}`}>
@@ -83,6 +97,11 @@ export const ProcessRow = (props: ProcessRowProps) => {
             <div class="text-xs italic text-gray-400 whitespace-pre-wrap wrap-break-word">
               {command()}
             </div>
+            <Show when={envSummary()}>
+              <div class="text-xs italic text-gray-400 whitespace-pre-wrap wrap-break-word">
+                {envSummary()}
+              </div>
+            </Show>
             <Show when={hasOptions()}>{button()}</Show>
           </div>
           <Show when={hasOptions()}>
@@ -97,6 +116,22 @@ export const ProcessRow = (props: ProcessRowProps) => {
                   />
                 )}
               </For>
+              <Show when={hasEnv()}>
+                <Show when={hasArgs()}>
+                  <div class="divider divider-start my-0 text-xs opacity-60">
+                    Env
+                  </div>
+                </Show>
+                <For each={envEntries()}>
+                  {([key, defaultValue]) => (
+                    <ProcessEnvVar
+                      processName={props.process.name}
+                      envKey={key}
+                      defaultValue={defaultValue}
+                    />
+                  )}
+                </For>
+              </Show>
             </div>
           </Show>
         </div>
