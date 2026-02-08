@@ -28,6 +28,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getBulkProcessStatus: (processIds: string[]) =>
     ipcRenderer.invoke("process:bulk-status", processIds),
   stopAllProcesses: () => ipcRenderer.invoke("process:stop-all"),
+  getProcessResources: (processIds: string[]) =>
+    ipcRenderer.invoke("process:resources", processIds),
   // Process log streaming
   onProcessLog: (callback: (logData: any) => void) => {
     ipcRenderer.on("process-log", (_: any, logData: any) => callback(logData));
