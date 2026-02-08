@@ -70,6 +70,7 @@ As a user, I want to customize application settings so that Click-Launch works t
 |---------|------|---------|-------------|
 | Log buffer size | number | 1500 | Max logs to keep per process |
 | Status poll interval | number | 1000 | Process status check interval (ms) |
+| Log export directory | path | `{configDir}/logs/click-launch/` | Directory where exported log files are saved |
 | Theme | select | "dark" | UI theme (dark/light/system) |
 | Confirm on reload | boolean | true | Show confirmation when reloading config |
 | Start minimized | boolean | false | Start app minimized to tray |
@@ -123,6 +124,7 @@ Appearance
 Process Management
   Log buffer size          [1500___]
   Status poll interval     [1000___] ms
+  Log export directory     [~/logs/click-launch/] [Browse]
 
 Behavior
   Confirm on reload        [✓]
@@ -143,6 +145,7 @@ type Settings = {
   processManagement: {
     logBufferSize: number;
     pollIntervalMs: number;
+    logExportDirectory: string;
   };
   behavior: {
     confirmOnReload: boolean;
@@ -156,6 +159,7 @@ type Settings = {
 
 - `logBufferSize`: min 100, max 10000
 - `pollIntervalMs`: min 500, max 5000
+- `logExportDirectory`: must be a valid directory path; use Electron's `dialog.showOpenDialog` for folder selection
 - Invalid values reset to defaults
 
 ---
