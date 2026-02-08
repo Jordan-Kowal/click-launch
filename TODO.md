@@ -22,15 +22,12 @@ As a user, I want to customize application settings so that Click-Launch works t
 
 ### Settings to Include
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| Log buffer size | number | 1500 | Max logs to keep per process |
-| Status poll interval | number | 1000 | Process status check interval (ms) |
-| Log export directory | path | `{configDir}/logs/click-launch/` | Directory where exported log files are saved |
-| Theme | select | "dark" | UI theme (dark/light/system) |
-| Confirm on reload | boolean | true | Show confirmation when reloading config |
-| Start minimized | boolean | false | Start app minimized to tray |
-| Show notifications | boolean | true | Enable desktop notifications |
+| Setting              | Type   | Default                          | Description                                  |
+| -------------------- | ------ | -------------------------------- | -------------------------------------------- |
+| Log buffer size      | number | 1500                             | Max logs to keep per process                 |
+| Log export directory | path   | `{configDir}/logs/click-launch/` | Directory where exported log files are saved |
+| Theme                | select | "dark"                           | UI theme (dark/light/system)                 |
+| Show notifications   | boolean | true                            | Enable desktop notifications                 |
 
 ### Implementation Details
 
@@ -59,13 +56,8 @@ As a user, I want to customize application settings so that Click-Launch works t
 
 3. **`src/features/dashboard/contexts/DashboardContext.ts`**
    - Read log buffer size from settings
-   - Read poll interval from settings
 
-4. **`electron/main.ts`** (for app-level settings)
-   - Handle start minimized option
-   - Pass settings to relevant handlers
-
-5. **`src/App.tsx`**
+4. **`src/App.tsx`**
    - Wrap with `SettingsProvider`
 
 #### Settings Page Layout
@@ -79,12 +71,9 @@ Appearance
 
 Process Management
   Log buffer size          [1500___]
-  Status poll interval     [1000___] ms
   Log export directory     [~/logs/click-launch/] [Browse]
 
-Behavior
-  Confirm on reload        [✓]
-  Start minimized          [ ]
+Notifications
   Show notifications       [✓]
 
 ─────────────────────────────────────
@@ -96,16 +85,13 @@ Behavior
 ```typescript
 type Settings = {
   appearance: {
-    theme: 'dark' | 'light' | 'system';
+    theme: "dark" | "light" | "system";
   };
   processManagement: {
     logBufferSize: number;
-    pollIntervalMs: number;
     logExportDirectory: string;
   };
-  behavior: {
-    confirmOnReload: boolean;
-    startMinimized: boolean;
+  notifications: {
     showNotifications: boolean;
   };
 };
@@ -114,7 +100,6 @@ type Settings = {
 #### Validation
 
 - `logBufferSize`: min 100, max 10000
-- `pollIntervalMs`: min 500, max 5000
 - `logExportDirectory`: must be a valid directory path; use Electron's `dialog.showOpenDialog` for folder selection
 - Invalid values reset to defaults
 
