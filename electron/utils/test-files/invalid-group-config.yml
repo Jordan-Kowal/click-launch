@@ -1,0 +1,10 @@
+project_name: "Invalid Group Test"
+
+processes:
+  - name: "Process with numeric group"
+    base_command: "echo test"
+    group: 123
+
+  - name: "Process with empty group"
+    base_command: "echo test"
+    group: ""

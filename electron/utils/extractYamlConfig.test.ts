@@ -206,6 +206,27 @@ const testCases: TestCase[] = [
     ],
     shouldBeValid: false,
   },
+  {
+    name: "valid group config (with groups and without)",
+    filename: "./electron/utils/test-files/valid-group-config.yml",
+    expectedErrors: [],
+    shouldBeValid: true,
+  },
+  {
+    name: "invalid group config (non-string and empty)",
+    filename: "./electron/utils/test-files/invalid-group-config.yml",
+    expectedErrors: [
+      {
+        message: "group must be a non-empty string",
+        path: "processes[0]",
+      },
+      {
+        message: "group must be a non-empty string",
+        path: "processes[1]",
+      },
+    ],
+    shouldBeValid: false,
+  },
 ];
 
 describe.concurrent("extractYamlConfig", async () => {

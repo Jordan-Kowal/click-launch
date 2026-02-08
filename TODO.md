@@ -8,9 +8,8 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 1. [Environment Variables UI](#1-environment-variables-ui)
 2. [Log Export/Save](#2-log-exportsave)
-3. [Process Grouping/Tags](#3-process-groupingtags)
-4. [Settings/Preferences Panel](#4-settingspreferences-panel)
-5. [Resource Monitoring](#5-resource-monitoring)
+3. [Settings/Preferences Panel](#3-settingspreferences-panel)
+4. [Resource Monitoring](#4-resource-monitoring)
 
 ---
 
@@ -144,105 +143,7 @@ export const stripAnsiCodes = (text: string): string => { ... }
 
 ---
 
-## 3. Process Grouping/Tags
-
-**Priority:** Medium
-**Complexity:** Medium
-**Feature:** Organize processes into collapsible groups for better organization
-
-### User Story
-
-As a developer with many processes, I want to organize them into groups (e.g., "Backend", "Frontend", "Infrastructure") so that I can manage related processes together.
-
-### Configuration Schema
-
-```yaml
-processes:
-  - name: "PostgreSQL"
-    group: "Infrastructure"
-    base_command: "docker compose up postgres"
-
-  - name: "Redis"
-    group: "Infrastructure"
-    base_command: "docker compose up redis"
-
-  - name: "API Server"
-    group: "Backend"
-    base_command: "pnpm start:api"
-
-  - name: "Web App"
-    group: "Frontend"
-    base_command: "pnpm start:web"
-
-  - name: "Standalone Process"  # No group - shows in "Other" or ungrouped
-    base_command: "pnpm start:worker"
-```
-
-### Implementation Details
-
-#### Files to Modify
-
-1. **`electron/utils/extractYamlConfig.ts`**
-   - Add optional `group: string` field to `ProcessConfig`
-   - Validate group name (non-empty string if provided)
-
-2. **`src/features/dashboard/contexts/DashboardContext.ts`**
-   - Add helper to group processes: `getProcessesByGroup()`
-   - Track collapsed state per group
-
-3. **`src/features/dashboard/components/ProcessTable.tsx`**
-   - Render processes grouped by their `group` field
-   - Add collapsible group headers with expand/collapse toggle
-   - Show process count per group
-   - Add "Start Group" / "Stop Group" buttons on group headers
-
-4. **`src/features/dashboard/components/ProcessGroupHeader.tsx`** (new)
-   - Group header component with:
-     - Group name
-     - Process count (running/total)
-     - Expand/collapse chevron
-     - Start all / Stop all buttons for group
-
-#### UI Behavior
-
-- Groups are collapsible (click header to toggle)
-- Collapsed state persists in localStorage
-- Ungrouped processes appear in "Other" section or at the top
-- Group order: alphabetical, with "Other" last
-- Visual distinction between groups (subtle separator or background)
-
-#### Group Header Design
-
-```
-▼ Infrastructure (2/3 running)              [▶ Start All] [■ Stop All]
-  ├─ PostgreSQL                             [Running] [■]
-  ├─ Redis                                  [Running] [■]
-  └─ Elasticsearch                          [Stopped] [▶]
-
-▶ Backend (0/2 running)                     [▶ Start All] [■ Stop All]
-  (collapsed)
-```
-
-#### Data Structure
-
-```typescript
-type GroupedProcesses = {
-  [groupName: string]: ProcessConfig[];
-};
-
-const groupProcesses = (processes: ProcessConfig[]): GroupedProcesses => {
-  return processes.reduce((acc, process) => {
-    const group = process.group || 'Other';
-    acc[group] = acc[group] || [];
-    acc[group].push(process);
-    return acc;
-  }, {} as GroupedProcesses);
-};
-```
-
----
-
-## 4. Settings/Preferences Panel
+## 3. Settings/Preferences Panel
 
 **Priority:** Medium
 **Complexity:** Medium
@@ -348,7 +249,7 @@ type Settings = {
 
 ---
 
-## 5. Resource Monitoring
+## 4. Resource Monitoring
 
 **Priority:** Medium
 **Complexity:** High
@@ -458,8 +359,7 @@ Suggested implementation order based on value and dependencies:
 1. **Environment Variables UI** - Medium effort, completes env vars feature
 2. **Log Export** - Low effort, frequently requested
 3. **Settings Panel** - Medium effort, enables other features
-4. **Process Grouping** - Medium effort, helps larger projects
-5. **Resource Monitoring** - High effort, nice to have
+4. **Resource Monitoring** - High effort, nice to have
 
 ---
 

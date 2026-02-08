@@ -1,0 +1,13 @@
+project_name: "Group Test Project"
+
+processes:
+  - name: "Process with group"
+    base_command: "echo hello"
+    group: "Infrastructure"
+
+  - name: "Process with another group"
+    base_command: "echo world"
+    group: "Backend"
+
+  - name: "Process without group"
+    base_command: "echo default"

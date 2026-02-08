@@ -1,6 +1,7 @@
 import { createContext } from "solid-js";
 import type {
   ArgConfig,
+  ProcessConfig,
   ProcessId,
   ValidationResult,
   YamlConfig,
@@ -17,6 +18,11 @@ export type ProcessData = {
   maxRetries: number;
 };
 
+export type GroupedProcesses = {
+  name: string;
+  processes: ProcessConfig[];
+};
+
 export type DashboardContextType = {
   isLoading: () => boolean;
   yamlConfig: () => YamlConfig | null;
@@ -24,6 +30,14 @@ export type DashboardContextType = {
   errors: () => ValidationResult["errors"];
   parseFile: () => Promise<void>;
   hasRunningProcesses: () => boolean;
+  // Group-related
+  getGroupedProcesses: () => GroupedProcesses[];
+  hasGroups: () => boolean;
+  isGroupCollapsed: (groupName: string) => boolean;
+  toggleGroupCollapsed: (groupName: string) => void;
+  getGroupRunningCount: (groupName: string) => number;
+  startGroup: (groupName: string) => Promise<void>;
+  stopGroup: (groupName: string) => Promise<void>;
   // Process-specific data and actions
   getProcessData: (processName: string) => ProcessData | undefined;
   getProcessCommand: (processName: string) => string;

@@ -1,17 +1,17 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { useDashboardContext } from "../contexts";
+import { ProcessGroupHeader } from "./ProcessGroupHeader";
 import { ProcessLogDrawer } from "./ProcessLogDrawer";
 import { ProcessRow } from "./ProcessRow";
 
 export const ProcessTable = () => {
-  const { yamlConfig, rootDirectory } = useDashboardContext();
+  const { rootDirectory, getGroupedProcesses, hasGroups, isGroupCollapsed } =
+    useDashboardContext();
   const [selectedProcessName, setSelectedProcessName] = createSignal<
     string | null
   >(null);
 
   let drawerCheckboxRef!: HTMLInputElement;
-
-  const processes = () => yamlConfig()?.processes || [];
 
   const openModal = (processName: string) => {
     setSelectedProcessName(processName);
@@ -42,14 +42,28 @@ export const ProcessTable = () => {
               </tr>
             </thead>
             <tbody>
-              <For each={processes()}>
-                {(process, index) => (
-                  <ProcessRow
-                    process={process}
-                    index={index()}
-                    rootDirectory={rootDirectory()!}
-                    onOpenModal={openModal}
-                  />
+              <For each={getGroupedProcesses()}>
+                {(group) => (
+                  <>
+                    <Show when={hasGroups()}>
+                      <ProcessGroupHeader
+                        groupName={group.name}
+                        totalCount={group.processes.length}
+                      />
+                    </Show>
+                    <Show when={!hasGroups() || !isGroupCollapsed(group.name)}>
+                      <For each={group.processes}>
+                        {(process, index) => (
+                          <ProcessRow
+                            process={process}
+                            index={index()}
+                            rootDirectory={rootDirectory()!}
+                            onOpenModal={openModal}
+                          />
+                        )}
+                      </For>
+                    </Show>
+                  </>
                 )}
               </For>
             </tbody>

@@ -2,6 +2,7 @@ project_name: "Development Services"
 
 processes:
   - name: "Web Server"
+    group: "Frontend"
     base_command: "bash ./resources/web-server.sh"
     env:
       NODE_ENV: development
@@ -34,6 +35,7 @@ processes:
         output_prefix: "--port"
 
   - name: "Database"
+    group: "Infrastructure"
     base_command: "bash ./resources/database.sh"
     args:
       - type: "select"
@@ -64,6 +66,7 @@ processes:
         output_prefix: "--port"
 
   - name: "API Server"
+    group: "Backend"
     base_command: "bash ./resources/api-server.sh"
     args:
       - type: "toggle"
@@ -89,9 +92,11 @@ processes:
     base_command: "bash ./resources/counter-with-replacement.sh"
 
   - name: "Infinite Process"
+    group: "Infrastructure"
     base_command: "bash ./resources/infinite-process.sh"
 
   - name: "Crashing Process (Auto-Restart)"
+    group: "Backend"
     base_command: "bash ./resources/crashing-process.sh 3 1"
     restart:
       enabled: true
@@ -103,5 +108,6 @@ processes:
     base_command: "bash ./resources/crashing-process.sh 2 1"
 
   - name: "Show Working Directory"
+    group: "Infrastructure"
     base_command: "bash show-cwd.sh"
     cwd: "./resources"

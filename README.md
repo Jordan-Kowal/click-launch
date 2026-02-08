@@ -53,10 +53,12 @@
 - **Flexible configuration**: YAML-based setup with customizable arguments
 - **Process monitoring**: Real-time status, logs, and runtime tracking
 - **Argument types**: Toggle switches, dropdowns, and text inputs
+- **Environment variables**: Set custom env vars per process, merged with system environment
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
+- **Process grouping**: Organize processes into collapsible groups with per-group start/stop
 
-| Homepage | Dashboard | Log Drawer |
-| --- | --- | --- |
+| Homepage                              | Dashboard                               | Log Drawer                                |
+| ------------------------------------- | --------------------------------------- | ----------------------------------------- |
 | ![Homepage](resources/1-homepage.png) | ![Dashboard](resources/2-dashboard.png) | ![Log Drawer](resources/3-log-drawer.png) |
 
 ## 📦 Installation
@@ -92,21 +94,22 @@ Create a `config.yml` file in your project directory to define your development 
 
 ### Root Configuration
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `project_name` | `string` | ✅ | Display name for your project | `"My Dev Stack"` |
-| `processes` | `array` | ✅ | List of processes to manage (min: 1) | See process structure below |
+| YAML Path      | Type     | Required | Description                          | Example                     |
+| -------------- | -------- | -------- | ------------------------------------ | --------------------------- |
+| `project_name` | `string` | ✅       | Display name for your project        | `"My Dev Stack"`            |
+| `processes`    | `array`  | ✅       | List of processes to manage (min: 1) | See process structure below |
 
 ### Process Configuration
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `processes[].name` | `string` | ✅ | Display name for the process | `"Web Server"` |
-| `processes[].base_command` | `string` | ✅ | Base command to execute | `"npm start"` |
-| `processes[].cwd` | `string` | ❌ | Working directory for the process (relative to config file or absolute) | `"./packages/api"` |
-| `processes[].env` | `object` | ❌ | Custom environment variables | See env config below |
-| `processes[].restart` | `object` | ❌ | Auto-restart configuration | See restart config below |
-| `processes[].args` | `array` | ❌ | List of configurable arguments | See argument types below |
+| YAML Path                  | Type     | Required | Description                                                             | Example                  |
+| -------------------------- | -------- | -------- | ----------------------------------------------------------------------- | ------------------------ |
+| `processes[].name`         | `string` | ✅       | Display name for the process                                            | `"Web Server"`           |
+| `processes[].base_command` | `string` | ✅       | Base command to execute                                                 | `"npm start"`            |
+| `processes[].group`        | `string` | ❌       | Group name for organizing processes                                     | `"Backend"`              |
+| `processes[].cwd`          | `string` | ❌       | Working directory for the process (relative to config file or absolute) | `"./packages/api"`       |
+| `processes[].env`          | `object` | ❌       | Custom environment variables                                            | See env config below     |
+| `processes[].restart`      | `object` | ❌       | Auto-restart configuration                                              | See restart config below |
+| `processes[].args`         | `array`  | ❌       | List of configurable arguments                                          | See argument types below |
 
 ### Environment Variables Configuration
 
@@ -129,16 +132,27 @@ processes:
 - Empty string values are allowed (useful for declaring a variable exists)
 - Values override any existing system environment variables with the same name
 
+### Process Grouping Configuration
+
+Add an optional `group` field to organize processes into collapsible groups. Processes sharing the same group are displayed together with Start All / Stop All controls. Ungrouped processes appear in an "Other" section.
+
+```yaml
+processes:
+  - name: "PostgreSQL"
+    group: "Infrastructure"
+    base_command: "docker compose up postgres"
+```
+
 ### Restart Configuration
 
 Configure automatic restart behavior for processes that crash unexpectedly.
 
-| YAML Path | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `restart.enabled` | `boolean` | ✅ | - | Enable/disable auto-restart |
-| `restart.max_retries` | `number` | ❌ | `3` | Max consecutive restart attempts before giving up |
-| `restart.delay_ms` | `number` | ❌ | `1000` | Delay in milliseconds before restarting |
-| `restart.reset_after_ms` | `number` | ❌ | `30000` | Reset retry counter if process runs longer than this |
+| YAML Path                | Type      | Required | Default | Description                                          |
+| ------------------------ | --------- | -------- | ------- | ---------------------------------------------------- |
+| `restart.enabled`        | `boolean` | ✅       | -       | Enable/disable auto-restart                          |
+| `restart.max_retries`    | `number`  | ❌       | `3`     | Max consecutive restart attempts before giving up    |
+| `restart.delay_ms`       | `number`  | ❌       | `1000`  | Delay in milliseconds before restarting              |
+| `restart.reset_after_ms` | `number`  | ❌       | `30000` | Reset retry counter if process runs longer than this |
 
 **Behavior:**
 
@@ -149,33 +163,33 @@ Configure automatic restart behavior for processes that crash unexpectedly.
 
 ### Argument Configuration (All Types)
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `args[].type` | `string` | ✅ | Argument type: `toggle`, `select`, or `input` | `"toggle"` |
-| `args[].name` | `string` | ✅ | Display name in UI | `"Watch Mode"` |
-| `args[].default` | `any` | ✅ | Default value (type depends on arg type) | `true`, `"development"`, `"3000"` |
+| YAML Path        | Type     | Required | Description                                   | Example                           |
+| ---------------- | -------- | -------- | --------------------------------------------- | --------------------------------- |
+| `args[].type`    | `string` | ✅       | Argument type: `toggle`, `select`, or `input` | `"toggle"`                        |
+| `args[].name`    | `string` | ✅       | Display name in UI                            | `"Watch Mode"`                    |
+| `args[].default` | `any`    | ✅       | Default value (type depends on arg type)      | `true`, `"development"`, `"3000"` |
 
 ### Toggle-Specific Configuration
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `args[].values` | `array` | ✅ | Exactly 2 values: one for `true`, one for `false` | See toggle example |
-| `args[].values[].value` | `boolean` | ✅ | Must be `true` or `false` | `true` |
-| `args[].values[].output` | `string` | ❌ | Command line output (can be empty) | `"--watch"` |
+| YAML Path                | Type      | Required | Description                                       | Example            |
+| ------------------------ | --------- | -------- | ------------------------------------------------- | ------------------ |
+| `args[].values`          | `array`   | ✅       | Exactly 2 values: one for `true`, one for `false` | See toggle example |
+| `args[].values[].value`  | `boolean` | ✅       | Must be `true` or `false`                         | `true`             |
+| `args[].values[].output` | `string`  | ❌       | Command line output (can be empty)                | `"--watch"`        |
 
 ### Select-Specific Configuration
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `args[].values` | `array` | ✅ | List of options (min: 2) | See select example |
-| `args[].values[].value` | `string` | ✅ | Option value | `"development"` |
-| `args[].values[].output` | `string` | ❌ | Command line output (can be empty) | `"--env=development"` |
+| YAML Path                | Type     | Required | Description                        | Example               |
+| ------------------------ | -------- | -------- | ---------------------------------- | --------------------- |
+| `args[].values`          | `array`  | ✅       | List of options (min: 2)           | See select example    |
+| `args[].values[].value`  | `string` | ✅       | Option value                       | `"development"`       |
+| `args[].values[].output` | `string` | ❌       | Command line output (can be empty) | `"--env=development"` |
 
 ### Input-Specific Configuration
 
-| YAML Path | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `args[].output_prefix` | `string` | ❌ | Prefix added to user input | `"--port"` |
+| YAML Path              | Type     | Required | Description                | Example    |
+| ---------------------- | -------- | -------- | -------------------------- | ---------- |
+| `args[].output_prefix` | `string` | ❌       | Prefix added to user input | `"--port"` |
 
 ### Example Configuration
 
@@ -184,6 +198,7 @@ project_name: "Development Services"
 
 processes:
   - name: "Web Server"
+    group: "Frontend"
     base_command: "pnpm start"
     restart:
       enabled: true

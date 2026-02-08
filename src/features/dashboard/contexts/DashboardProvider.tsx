@@ -20,6 +20,7 @@ import { ProcessStatus } from "../enums";
 import {
   DashboardContext,
   type DashboardContextType,
+  type GroupedProcesses,
   type ProcessData,
 } from "./DashboardContext";
 
@@ -56,6 +57,10 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
   // Store for all process data, keyed by process name
   const [processesData, setProcessesData] = createStore<
     Record<string, ProcessData>
+  >({});
+  // Track collapsed state per group
+  const [collapsedGroups, setCollapsedGroups] = createStore<
+    Record<string, boolean>
   >({});
   // Single polling interval for all processes
   let pollInterval: ReturnType<typeof setInterval> | null = null;
@@ -354,6 +359,82 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     }
   };
 
+  // Group-related helpers
+  const hasGroups = createMemo(() => {
+    const processes = yamlData.yamlConfig?.processes ?? [];
+    return processes.some((p) => !!p.group);
+  });
+
+  const getGroupedProcesses = createMemo((): GroupedProcesses[] => {
+    const processes = yamlData.yamlConfig?.processes ?? [];
+    if (!hasGroups()) {
+      return [{ name: "Other", processes }];
+    }
+    const groups: Record<string, typeof processes> = {};
+    for (const process of processes) {
+      const groupName = process.group || "Other";
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
+      groups[groupName].push(process);
+    }
+    // Alphabetical order, "Other" last
+    const sortedNames = Object.keys(groups).sort((a, b) => {
+      if (a === "Other") return 1;
+      if (b === "Other") return -1;
+      return a.localeCompare(b);
+    });
+    return sortedNames.map((name) => ({ name, processes: groups[name] }));
+  });
+
+  const isGroupCollapsed = (groupName: string): boolean => {
+    return collapsedGroups[groupName] ?? false;
+  };
+
+  const toggleGroupCollapsed = (groupName: string) => {
+    setCollapsedGroups(groupName, !isGroupCollapsed(groupName));
+  };
+
+  const getGroupRunningCount = (groupName: string): number => {
+    const group = getGroupedProcesses().find((g) => g.name === groupName);
+    if (!group) return 0;
+    return group.processes.filter((p) => {
+      const status = processesData[p.name]?.status;
+      return (
+        status === ProcessStatus.RUNNING || status === ProcessStatus.RESTARTING
+      );
+    }).length;
+  };
+
+  const startGroup = async (groupName: string) => {
+    const group = getGroupedProcesses().find((g) => g.name === groupName);
+    if (!group) return;
+    const promises = group.processes
+      .filter((p) => {
+        const status = processesData[p.name]?.status;
+        return (
+          status === ProcessStatus.STOPPED || status === ProcessStatus.CRASHED
+        );
+      })
+      .map((p) => startProcess(p.name));
+    await Promise.all(promises);
+  };
+
+  const stopGroup = async (groupName: string) => {
+    const group = getGroupedProcesses().find((g) => g.name === groupName);
+    if (!group) return;
+    const promises = group.processes
+      .filter((p) => {
+        const status = processesData[p.name]?.status;
+        return (
+          status === ProcessStatus.RUNNING ||
+          status === ProcessStatus.RESTARTING
+        );
+      })
+      .map((p) => stopProcess(p.name));
+    await Promise.all(promises);
+  };
+
   const value: DashboardContextType = {
     isLoading,
     yamlConfig: () => yamlData.yamlConfig,
@@ -361,6 +442,13 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     errors: () => yamlData.errors,
     parseFile,
     hasRunningProcesses,
+    getGroupedProcesses,
+    hasGroups,
+    isGroupCollapsed,
+    toggleGroupCollapsed,
+    getGroupRunningCount,
+    startGroup,
+    stopGroup,
     getProcessData,
     getProcessCommand,
     getProcessStatus,
