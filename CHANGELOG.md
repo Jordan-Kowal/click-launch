@@ -35,6 +35,7 @@
 
 ### 🔧 Others
 
+- Added top-level **ErrorBoundary** to catch uncaught rendering errors with a fallback UI.
 - Updated GitHub Actions to actions/cache@v4.
 - Multiple low-level changes to improve performance and stability.
 
