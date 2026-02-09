@@ -1,6 +1,12 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
-import type { ProcessEnv } from "@/electron/types";
+import type {
+  ProcessCrashData,
+  ProcessEnv,
+  ProcessLogData,
+  ProcessRestartData,
+  RestartConfig,
+} from "@/electron/types";
 import type { ValidationResult } from "./utils/extractYamlConfig";
 
 contextBridge.exposeInMainWorld("electronAPI", {
@@ -20,7 +26,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   startProcess: (
     cwd: string,
     command: string,
-    restartConfig?: any,
+    restartConfig?: RestartConfig,
     env?: ProcessEnv,
   ) => ipcRenderer.invoke("process:start", cwd, command, restartConfig, env),
   stopProcess: (processId: string) =>
@@ -33,21 +39,28 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getProcessResources: (processIds: string[]) =>
     ipcRenderer.invoke("process:resources", processIds),
   // Process log streaming
-  onProcessLog: (callback: (logData: any) => void) => {
-    ipcRenderer.on("process-log", (_: any, logData: any) => callback(logData));
+  onProcessLog: (callback: (logData: ProcessLogData) => void) => {
+    ipcRenderer.on("process-log", (_event: unknown, logData: ProcessLogData) =>
+      callback(logData),
+    );
   },
   removeProcessLogListener: () => {
     ipcRenderer.removeAllListeners("process-log");
   },
   // Process restart events
-  onProcessRestart: (callback: (data: any) => void) => {
-    ipcRenderer.on("process-restart", (_: any, data: any) => callback(data));
+  onProcessRestart: (callback: (data: ProcessRestartData) => void) => {
+    ipcRenderer.on(
+      "process-restart",
+      (_event: unknown, data: ProcessRestartData) => callback(data),
+    );
   },
   removeProcessRestartListener: () => {
     ipcRenderer.removeAllListeners("process-restart");
   },
-  onProcessCrash: (callback: (data: any) => void) => {
-    ipcRenderer.on("process-crash", (_: any, data: any) => callback(data));
+  onProcessCrash: (callback: (data: ProcessCrashData) => void) => {
+    ipcRenderer.on("process-crash", (_event: unknown, data: ProcessCrashData) =>
+      callback(data),
+    );
   },
   removeProcessCrashListener: () => {
     ipcRenderer.removeAllListeners("process-crash");

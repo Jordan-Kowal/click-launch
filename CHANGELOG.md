@@ -30,6 +30,7 @@
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
   - **Toggle resource monitor** to show or hide CPU/memory columns.
+- 🔧 Updated GitHub Actions to actions/cache@v4.
 
 ## 1.5.0 - 2026-01-24
 

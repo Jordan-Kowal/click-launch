@@ -14,7 +14,8 @@ export const useSelectFile = () => {
           `${routePaths.dashboard}?file=${encodeURIComponent(filePath)}`,
         );
       }
-    } catch (_error) {
+    } catch (error) {
+      console.error("Failed to open file dialog:", error);
       toast.error("Failed to open file dialog");
     }
   };

@@ -105,6 +105,17 @@ export const SettingsModal = (props: SettingsModalProps) => {
                   onChange={handleToggle("showResourceMonitor")}
                 />
               </SettingsRow>
+              <SettingsRow
+                label="Show notifications"
+                tooltip="Enable/disable the notification toasts"
+              >
+                <input
+                  type="checkbox"
+                  class="toggle toggle-sm toggle-primary"
+                  checked={settings().showNotifications}
+                  onChange={handleNotificationToggle}
+                />
+              </SettingsRow>
             </SettingsSection>
 
             <SettingsSection title="Logs">
@@ -119,17 +130,6 @@ export const SettingsModal = (props: SettingsModalProps) => {
                   min={100}
                   max={10000}
                   onInput={handleLogBufferChange}
-                />
-              </SettingsRow>
-              <SettingsRow
-                label="Show notifications"
-                tooltip="Enable/disable the notification toasts"
-              >
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-primary"
-                  checked={settings().showNotifications}
-                  onChange={handleNotificationToggle}
                 />
               </SettingsRow>
             </SettingsSection>

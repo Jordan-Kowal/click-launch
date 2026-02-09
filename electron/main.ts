@@ -6,7 +6,9 @@ import { fileURLToPath } from "node:url";
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
 import fixPath from "fix-path";
 
-// ES module equivalent of __dirname
+import type { RestartConfig } from "@/electron/types";
+
+// ES module equivalent of __dirname — import.meta.url is valid in ES modules but TS doesn't recognize it in this config
 // @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -197,7 +199,7 @@ app.whenReady().then(() => {
       _,
       cwd: string,
       command: string,
-      restartConfig?: any,
+      restartConfig?: RestartConfig,
       env?: Record<string, string>,
     ) => {
       return startProcess(cwd, command, restartConfig, env);

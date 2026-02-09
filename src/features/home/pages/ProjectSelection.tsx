@@ -14,7 +14,9 @@ const ProjectSelection = () => {
         await window.electronAPI.validatePaths(projectList);
       if (invalidPaths.length === 0) return;
       removeProjects(invalidPaths);
-    } catch (_) {}
+    } catch (error) {
+      console.error("Failed to validate project paths:", error);
+    }
   };
 
   onMount(() => {
