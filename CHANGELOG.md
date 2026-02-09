@@ -8,29 +8,35 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 2.0.0 - TBD
 
-- 🚀 Added **environment variables**: optional `env` field per process, visible and editable in the UI before launch.
-- 🚀 Added **keyboard shortcuts reference** in the log drawer. Press `⌘ + /` to view them.
-- 🚀 Added **process auto-restart** feature:
-  - New `restart` YAML configuration option to configure auto-restart behavior.
-  - Visual indicators for restarting processes showing retry progress (e.g., "Restarting (1/3)").
-  - Ability to cancel auto-restart by manually stopping a restarting process.
-  - See [README.md](README.md) for more information.
-- 🚀 Added **crashed status** to distinguish between manually stopped and crashed processes.
-- 🚀 Added **working directory override**: new optional `cwd` field per process to run commands from a custom directory.
-- 🚀 Added **process grouping**: new optional `group` field per process to organize processes into collapsible groups.
-- ✨ Added **copy log line** button, visible on hover.
-- ✨ Added toast notifications when a process crashes.
-- 🚀 Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard.
-- 🚀 Added **log export**: export process logs as text files to `logs/click-launch/` in the project root directory.
-- 🚀 Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
+### 🚀 Features
+
+- Added new **configuration options** per process:
+  - `env`: custom environment variables, visible and editable in the UI before launch.
+  - `restart`: auto-restart with configurable retries, delay, and visual status indicators.
+  - `cwd`: working directory override (relative to config file or absolute).
+  - `group`: organize processes into collapsible groups with per-group start/stop.
+- Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard.
+- Added **log export**: export process logs as text files to `logs/click-launch/` in the project root directory.
+- Added **copy log line** button, visible on hover.
+- Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
   - **Theme switching** between Nord (light) and Dracula (dark) themes.
   - **Log buffer size** control (100-10,000 lines per process).
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
   - **Toggle resource monitor** to show or hide CPU/memory columns.
-- 🔧 Updated GitHub Actions to actions/cache@v4.
+
+### ✨ Improvements
+
+- Added toast notifications when a process crashes.
+- Added **crashed status** to distinguish between manually stopped and crashed processes.
+- Added **keyboard shortcuts reference** in the log drawer. Press `⌘ + /` to view them.
+
+### 🔧 Others
+
+- Updated GitHub Actions to actions/cache@v4.
+- Multiple low-level changes to improve performance and stability.
 
 ## 1.5.0 - 2026-01-24
 

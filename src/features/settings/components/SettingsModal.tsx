@@ -1,8 +1,8 @@
 import { Moon, Sun, X } from "lucide-solid";
 import { Show } from "solid-js";
-import toast from "solid-toast";
 import { useSettingsContext } from "@/contexts";
 import type { Settings } from "@/contexts/SettingsContext";
+import { useToast } from "@/hooks/useToast";
 import { SettingsRow } from "./SettingsRow";
 import { SettingsSection } from "./SettingsSection";
 
@@ -13,6 +13,7 @@ type SettingsModalProps = {
 
 export const SettingsModal = (props: SettingsModalProps) => {
   const { settings, updateSetting, resetSettings } = useSettingsContext();
+  const toaster = useToast();
 
   const handleBackdropClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -41,7 +42,7 @@ export const SettingsModal = (props: SettingsModalProps) => {
     const target = e.target as HTMLInputElement;
     updateSetting("showNotifications", target.checked);
     if (target.checked) {
-      toast.success("Notifications enabled");
+      toaster.success("Notifications enabled");
     }
   };
 
