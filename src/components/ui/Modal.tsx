@@ -1,5 +1,5 @@
 import { createSignal, type JSX } from "solid-js";
-import { toast } from "solid-toast";
+import { useToast } from "@/hooks";
 
 type ModalProps = {
   ref: HTMLDialogElement | ((el: HTMLDialogElement) => void);
@@ -10,6 +10,7 @@ type ModalProps = {
 
 export const Modal = (props: ModalProps) => {
   const [isLoading, setIsLoading] = createSignal(false);
+  const toast = useToast();
   let dialogElement: HTMLDialogElement | undefined;
 
   const closeModal = () => {

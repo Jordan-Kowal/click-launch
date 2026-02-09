@@ -7,7 +7,6 @@ import {
   useContext,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import toast from "solid-toast";
 import { useAppStorageContext } from "@/contexts";
 import type {
   ProcessCrashData,
@@ -17,6 +16,7 @@ import type {
   ValidationResult,
   YamlConfig,
 } from "@/electron/types";
+import { useToast } from "@/hooks";
 import { ProcessStatus } from "../enums";
 import {
   DashboardContext,
@@ -55,6 +55,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     errors: [],
   });
   const { registerProject } = useAppStorageContext();
+  const toast = useToast();
 
   // Store for all process data, keyed by process name
   const [processesData, setProcessesData] = createStore<

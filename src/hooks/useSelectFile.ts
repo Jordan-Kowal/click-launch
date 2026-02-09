@@ -1,9 +1,10 @@
 import { useNavigate } from "@solidjs/router";
-import toast from "solid-toast";
 import { routePaths } from "@/routes";
+import { useToast } from "./useToast";
 
 export const useSelectFile = () => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   return async () => {
     try {

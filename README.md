@@ -34,6 +34,7 @@
     - [Select-Specific Configuration](#select-specific-configuration)
     - [Input-Specific Configuration](#input-specific-configuration)
     - [Example Configuration](#example-configuration)
+  - [🛠️ Settings](#️-settings)
   - [🚀 Usage](#-usage)
   - [⌨️ Keyboard Shortcuts](#️-keyboard-shortcuts)
   - [🤝 Contributing](#-contributing)
@@ -58,6 +59,7 @@
 - **Process grouping**: Organize processes into collapsible groups with per-group start/stop
 - **Resource monitoring**: Real-time CPU and memory usage per process
 - **Log export**: Export process logs as plain text files for sharing or debugging
+- **Settings panel**: Customize theme, log buffer, notifications, grouping, and resource monitor display
 
 | Homepage                              | Dashboard                               | Log Drawer                                |
 | ------------------------------------- | --------------------------------------- | ----------------------------------------- |
@@ -244,6 +246,18 @@ processes:
 - For input arguments, set `output_prefix: ""` if you want the raw value without any prefix.
 - The `restart` configuration is optional. Processes without it will show "Crashed" status on non-zero exit.
 
+## 🛠️ Settings
+
+Click the **cog icon** in the navigation bar to open the settings panel. Changes are applied instantly and persisted across sessions.
+
+| Setting               | Type   | Default | Description                                            |
+| --------------------- | ------ | ------- | ------------------------------------------------------ |
+| Theme                 | Toggle | Nord    | Switch between Nord (light) and Dracula (dark) themes  |
+| Show grouping         | Toggle | On      | Show processes in collapsible groups or as a flat list |
+| Show resource monitor | Toggle | On      | Show or hide CPU/memory usage columns                  |
+| Log buffer size       | Number | 1500    | Maximum log lines kept per process (100-10,000)        |
+| Show notifications    | Toggle | On      | Enable or suppress toast notifications                 |
+
 ## 🚀 Usage
 
 1. **Open Click Launch**
@@ -257,13 +271,13 @@ processes:
 
 Press `⌘ + /` while the log drawer is open to display the keyboard shortcuts reference.
 
-| Shortcut | Description |
-|----------|-------------|
-| `⌘ + /` | Show keyboard shortcuts |
-| `⌘ + F` | Focus search input |
-| `Escape` | Close shortcuts modal or drawer |
-| `Enter` | Next search result |
-| `Shift + Enter` | Previous search result |
+| Shortcut        | Description                     |
+| --------------- | ------------------------------- |
+| `⌘ + /`         | Show keyboard shortcuts         |
+| `⌘ + F`         | Focus search input              |
+| `Escape`        | Close shortcuts modal or drawer |
+| `Enter`         | Next search result              |
+| `Shift + Enter` | Previous search result          |
 
 ## 🤝 Contributing
 

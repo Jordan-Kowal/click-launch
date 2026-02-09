@@ -111,6 +111,7 @@ export interface ElectronAPI {
   // App utils
   getResourcePath: (filename: string) => Promise<string>;
   openFileDialog: () => Promise<string | undefined>;
+  openFolderDialog: () => Promise<string | undefined>;
   validateYaml: (filePath: string) => Promise<ValidationResult>;
   validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;
   // Process management

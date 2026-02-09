@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("app:getResourcePath", filename),
   openFileDialog: (): Promise<string | undefined> =>
     ipcRenderer.invoke("dialog:openFile"),
+  openFolderDialog: (): Promise<string | undefined> =>
+    ipcRenderer.invoke("dialog:openFolder"),
   validateYaml: (filePath: string): Promise<ValidationResult> =>
     ipcRenderer.invoke("yaml:validate", filePath),
   validatePaths: (filePaths: string[]): Promise<[string[], string[]]> =>

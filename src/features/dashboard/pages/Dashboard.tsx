@@ -8,9 +8,9 @@ import {
   Show,
   Switch,
 } from "solid-js";
-import toast from "solid-toast";
 import { BaseLayout, HeroLayout } from "@/components/layout";
 import { LoadingRing, Modal, ScreenTitle } from "@/components/ui";
+import { useToast } from "@/hooks";
 import { routePaths } from "@/routes";
 import { ErrorList, ProcessTable } from "../components";
 import { DashboardProvider } from "../contexts";
@@ -21,6 +21,7 @@ export type DashboardRouteKey = "dashboard";
 const DashboardPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const selectedFile = Array.isArray(searchParams.file)
     ? searchParams.file[0]
     : searchParams.file;

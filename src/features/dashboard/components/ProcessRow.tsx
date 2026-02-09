@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp, ScrollText } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
+import { useSettingsContext } from "@/contexts";
 import type { ProcessConfig } from "@/electron/types";
 import { useDashboardContext } from "../contexts/";
 import { ProcessStatus } from "../enums";
@@ -26,6 +27,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
     getProcessData,
     getProcessResources,
   } = useDashboardContext();
+  const { settings } = useSettingsContext();
   const command = () => getProcessCommand(props.process.name);
   const args = () => getProcessArgs(props.process.name);
   const env = () => getProcessEnv(props.process.name);
@@ -148,15 +150,17 @@ export const ProcessRow = (props: ProcessRowProps) => {
           />
         </div>
       </td>
-      <td class="align-top w-32 shrink-0 p-2!">
-        <ProcessResources
-          resources={resources()}
-          isRunning={
-            status() === ProcessStatus.RUNNING ||
-            status() === ProcessStatus.RESTARTING
-          }
-        />
-      </td>
+      <Show when={settings().showResourceMonitor}>
+        <td class="align-top w-32 shrink-0 p-2!">
+          <ProcessResources
+            resources={resources()}
+            isRunning={
+              status() === ProcessStatus.RUNNING ||
+              status() === ProcessStatus.RESTARTING
+            }
+          />
+        </td>
+      </Show>
       <td class="align-top w-32 shrink-0 p-2!">
         <div class="flex items-center gap-2">
           <PlayStopButton processName={props.process.name} />

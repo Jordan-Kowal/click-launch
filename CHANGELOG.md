@@ -24,6 +24,12 @@
 - ✨ Added toast notifications when a process crashes.
 - 🚀 Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard.
 - 🚀 Added **log export**: export process logs as text files to `logs/click-launch/` in the project root directory.
+- 🚀 Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
+  - **Theme switching** between Nord (light) and Dracula (dark) themes.
+  - **Log buffer size** control (100-10,000 lines per process).
+  - **Toggle notifications** to suppress or enable toast messages.
+  - **Toggle grouping** to show a flat process list or grouped view.
+  - **Toggle resource monitor** to show or hide CPU/memory columns.
 
 ## 1.5.0 - 2026-01-24
 

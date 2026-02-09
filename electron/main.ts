@@ -143,6 +143,15 @@ app.whenReady().then(() => {
     return result.filePaths[0];
   });
 
+  // IPC handler for folder dialog (for settings - log export directory)
+  ipcMain.handle("dialog:openFolder", async (): Promise<string | undefined> => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+      title: "Select log export directory",
+    });
+    return result.filePaths[0];
+  });
+
   // IPC handler for YAML validation
   ipcMain.handle(
     "yaml:validate",

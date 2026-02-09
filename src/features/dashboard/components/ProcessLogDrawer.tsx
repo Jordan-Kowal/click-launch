@@ -20,9 +20,10 @@ import {
   Switch,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import toast from "solid-toast";
+import { useSettingsContext } from "@/contexts";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
+import { useToast } from "@/hooks";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 import { formatLogsAsText, generateExportFilename } from "@/utils/logExport";
 import { useDashboardContext } from "../contexts";
@@ -40,7 +41,6 @@ type ProcessLogDrawerProps = {
 
 type LogWithId = ProcessLogData & { id: string };
 
-const MAX_LOGS = 1_500;
 const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
@@ -55,6 +55,8 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
     getProcessData,
     getProcessResources,
   } = useDashboardContext();
+  const { settings } = useSettingsContext();
+  const toast = useToast();
   const processStatus = () => getProcessStatus(props.processName);
   const processData = () => getProcessData(props.processName);
   const resources = () => getProcessResources(props.processName);
@@ -143,8 +145,9 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         }
       });
 
-      if (updated.length > MAX_LOGS) {
-        updated.splice(0, updated.length - MAX_LOGS);
+      const maxLogs = settings().logBufferSize;
+      if (updated.length > maxLogs) {
+        updated.splice(0, updated.length - maxLogs);
       }
 
       setLogsByProcess(processName, updated);

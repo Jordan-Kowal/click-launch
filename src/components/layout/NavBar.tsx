@@ -1,5 +1,7 @@
 import { useLocation, useNavigate } from "@solidjs/router";
-import { House } from "lucide-solid";
+import { House, Settings } from "lucide-solid";
+import { createSignal } from "solid-js";
+import { SettingsModal } from "@/features/settings/components";
 import { routePaths } from "@/routes";
 import { Logo } from "../ui/Logo";
 import { Modal } from "../ui/Modal";
@@ -8,6 +10,7 @@ export const NavBar = () => {
   let modalRef!: HTMLDialogElement;
   const location = useLocation();
   const navigate = useNavigate();
+  const [showSettings, setShowSettings] = createSignal(false);
 
   const handleConfirm = async () => {
     await window.electronAPI.stopAllProcesses();
@@ -32,23 +35,35 @@ export const NavBar = () => {
           </div>
           <span class="font-bold text-sm">Click Launch</span>
         </div>
-        <div
-          class="tooltip tooltip-left absolute -top-0.5 right-1"
-          data-tip="Homepage"
-        >
-          <button
-            type="button"
-            class="btn btn-ghost btn-circle btn-sm no-drag"
-            onClick={onHomeButtonClick}
-          >
-            <House size={20} />
-          </button>
+        <div class="flex items-center gap-0 absolute -top-0.5 right-1">
+          <div class="tooltip tooltip-left" data-tip="Settings">
+            <button
+              type="button"
+              class="btn btn-ghost btn-circle btn-sm no-drag"
+              onClick={() => setShowSettings(true)}
+            >
+              <Settings size={18} />
+            </button>
+          </div>
+          <div class="tooltip tooltip-left" data-tip="Homepage">
+            <button
+              type="button"
+              class="btn btn-ghost btn-circle btn-sm no-drag"
+              onClick={onHomeButtonClick}
+            >
+              <House size={20} />
+            </button>
+          </div>
         </div>
       </div>
       <Modal ref={modalRef!} onConfirm={handleConfirm} closable={true}>
         <h1 class="text-xl font-bold">Return to project selection?</h1>
         <p>Any ongoing processes will be shut down.</p>
       </Modal>
+      <SettingsModal
+        isOpen={showSettings()}
+        onClose={() => setShowSettings(false)}
+      />
     </>
   );
 };

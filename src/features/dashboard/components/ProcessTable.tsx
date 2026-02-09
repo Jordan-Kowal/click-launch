@@ -1,4 +1,5 @@
 import { createSignal, For, Show } from "solid-js";
+import { useSettingsContext } from "@/contexts";
 import { useDashboardContext } from "../contexts";
 import { ProcessGroupHeader } from "./ProcessGroupHeader";
 import { ProcessLogDrawer } from "./ProcessLogDrawer";
@@ -7,6 +8,7 @@ import { ProcessRow } from "./ProcessRow";
 export const ProcessTable = () => {
   const { rootDirectory, getGroupedProcesses, hasGroups, isGroupCollapsed } =
     useDashboardContext();
+  const { settings } = useSettingsContext();
   const [selectedProcessName, setSelectedProcessName] = createSignal<
     string | null
   >(null);
@@ -38,7 +40,9 @@ export const ProcessTable = () => {
               <tr>
                 <th class="w-auto min-w-0">Processes</th>
                 <th class="w-32 shrink-0">Status</th>
-                <th class="w-32 shrink-0">Resources</th>
+                <Show when={settings().showResourceMonitor}>
+                  <th class="w-32 shrink-0">Resources</th>
+                </Show>
                 <th class="w-32 shrink-0">Actions</th>
               </tr>
             </thead>
@@ -46,13 +50,19 @@ export const ProcessTable = () => {
               <For each={getGroupedProcesses()}>
                 {(group) => (
                   <>
-                    <Show when={hasGroups()}>
+                    <Show when={hasGroups() && settings().showGrouping}>
                       <ProcessGroupHeader
                         groupName={group.name}
                         totalCount={group.processes.length}
                       />
                     </Show>
-                    <Show when={!hasGroups() || !isGroupCollapsed(group.name)}>
+                    <Show
+                      when={
+                        !hasGroups() ||
+                        !settings().showGrouping ||
+                        !isGroupCollapsed(group.name)
+                      }
+                    >
                       <For each={group.processes}>
                         {(process, index) => (
                           <ProcessRow

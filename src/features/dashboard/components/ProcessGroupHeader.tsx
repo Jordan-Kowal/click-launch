@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight, Play, Square } from "lucide-solid";
 import { createMemo, Show } from "solid-js";
+import { useSettingsContext } from "@/contexts";
 import { useDashboardContext } from "../contexts/";
 
 type ProcessGroupHeaderProps = {
@@ -15,6 +16,7 @@ export const ProcessGroupHeader = (props: ProcessGroupHeaderProps) => {
     startGroup,
     stopGroup,
   } = useDashboardContext();
+  const { settings } = useSettingsContext();
 
   const collapsed = () => isGroupCollapsed(props.groupName);
   const runningCount = () => getGroupRunningCount(props.groupName);
@@ -24,7 +26,7 @@ export const ProcessGroupHeader = (props: ProcessGroupHeaderProps) => {
 
   return (
     <tr class="bg-base-300">
-      <td colspan="4" class="p-2!">
+      <td colspan={settings().showResourceMonitor ? 4 : 3} class="p-2!">
         <div class="flex items-center justify-between">
           <button
             type="button"

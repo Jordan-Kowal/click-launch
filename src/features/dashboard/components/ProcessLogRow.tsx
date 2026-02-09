@@ -1,8 +1,8 @@
 import { Copy } from "lucide-solid";
 import { createMemo, For, type JSX } from "solid-js";
-import toast from "solid-toast";
 import { LogType } from "@/electron/enums";
 import type { ProcessLogData } from "@/electron/types";
+import { useToast } from "@/hooks";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 
 type ProcessLogRowProps = {
@@ -35,14 +35,15 @@ const highlightSearchTerm = (
   );
 };
 
-const copyLogLine = (text: string) => {
-  navigator.clipboard.writeText(text).then(
-    () => toast.success("Copied to clipboard"),
-    () => toast.error("Failed to copy"),
-  );
-};
-
 export const ProcessLogRow = (props: ProcessLogRowProps) => {
+  const toast = useToast();
+
+  const copyLogLine = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => toast.success("Copied to clipboard"),
+      () => toast.error("Failed to copy"),
+    );
+  };
   if (props.log.type === LogType.EXIT) {
     return (
       <div>
