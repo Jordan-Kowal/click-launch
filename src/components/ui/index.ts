@@ -1,3 +1,4 @@
+export { ErrorFallback } from "./ErrorFallback";
 export { FadeIn } from "./FadeIn";
 export { LoadingRing } from "./LoadingRing";
 export { Logo } from "./Logo";
