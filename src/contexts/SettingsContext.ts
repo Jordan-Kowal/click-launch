@@ -13,7 +13,7 @@ export const MAX_LOG_BUFFER_SIZE = 50000;
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: "nord",
-  logBufferSize: 5000,
+  logBufferSize: 10000,
   showNotifications: true,
   showGrouping: true,
   showResourceMonitor: true,

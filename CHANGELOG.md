@@ -29,7 +29,7 @@
 
 ### ✨ Improvements
 
-- Increased **default log buffer size** from 1,500 to 5,000 lines per process (now feasible thanks to virtualization).
+- Increased **default log buffer size** from 1,500 to 10,000 lines per process (now feasible thanks to virtualization).
 - Added toast notifications when a process crashes.
 - Added **crashed status** to distinguish between manually stopped and crashed processes.
 - Added **keyboard shortcuts reference** in the log drawer. Press `⌘ + /` to view them.
