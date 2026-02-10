@@ -12,11 +12,7 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 `ProcessLogDrawer` is 730 lines. Extract `LogSearch`, `LogControls`, and `LogList` sub-components.
 
-## 3. Optimize log search with explicit on() dependencies
-
-Search effect in `ProcessLogDrawer` runs on every log change. Use `on()` with explicit dependencies to reduce unnecessary re-runs.
-
-## 4. Pick a better dark mode theme
+## 3. Pick a better dark mode theme
 
 Current dark theme is Dracula (custom-defined in `src/styles/index.css`). Evaluate other DaisyUI dark themes or improve the custom one for a better look.
 

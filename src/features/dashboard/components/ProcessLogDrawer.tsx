@@ -358,82 +358,87 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   // Auto-scroll to bottom when logs are rendered
   createEffect(on(() => currentLogs().length, scrollToBottom));
 
-  // Update matching log IDs when search term or logs change
-  createEffect(() => {
-    const searchTerm = searchState.term;
-    const logs = currentLogs();
-    const useRegex = isRegexMode();
-    // Early exit: empty search term clears all matches and selections
-    if (!searchTerm.trim()) {
-      previousSearchTerm = searchTerm;
-      setRegexError(null);
-      setSearchState({
-        term: searchTerm,
-        matchingLogIds: [],
-        currentMatchIndex: -1,
-      });
-      setSelectedLogId(null);
-      return;
-    }
-    // Regex mode: compile pattern and validate syntax
-    let regex: RegExp | null = null;
-    if (useRegex) {
-      try {
-        regex = new RegExp(searchTerm, "i");
+  // Update matching log IDs when search term, logs, or regex mode change
+  createEffect(
+    on([() => searchState.term, currentLogs, isRegexMode], () => {
+      const searchTerm = searchState.term;
+      const logs = currentLogs();
+      const useRegex = isRegexMode();
+      // Early exit: empty search term clears all matches and selections
+      if (!searchTerm.trim()) {
+        previousSearchTerm = searchTerm;
         setRegexError(null);
-      } catch (error) {
-        // Invalid regex: show error and clear matches
-        setRegexError((error as Error).message);
         setSearchState({
           term: searchTerm,
           matchingLogIds: [],
           currentMatchIndex: -1,
         });
         setSelectedLogId(null);
-        previousSearchTerm = searchTerm;
         return;
       }
-    }
-    // Find all logs matching the search term (excluding EXIT logs)
-    const matchingIds: string[] = [];
-    logs.forEach((log) => {
-      if (log.type === LogType.EXIT) return;
-      const matches = useRegex
-        ? regex?.test(log.output)
-        : log.output.toLowerCase().includes(searchTerm.toLowerCase());
-      if (matches) {
-        matchingIds.push(log.id);
+      // Regex mode: compile pattern and validate syntax
+      let regex: RegExp | null = null;
+      if (useRegex) {
+        try {
+          regex = new RegExp(searchTerm, "i");
+          setRegexError(null);
+        } catch (error) {
+          // Invalid regex: show error and clear matches
+          setRegexError((error as Error).message);
+          setSearchState({
+            term: searchTerm,
+            matchingLogIds: [],
+            currentMatchIndex: -1,
+          });
+          setSelectedLogId(null);
+          previousSearchTerm = searchTerm;
+          return;
+        }
       }
-    });
-    // Determine which match to select and highlight
-    let newCurrentMatchIndex = -1;
-    const currentSelectedId = selectedLogId();
-    if (matchingIds.length > 0) {
-      if (searchTerm !== previousSearchTerm) {
-        // New search term: jump to first match
-        newCurrentMatchIndex = 0;
-        setSelectedLogId(matchingIds[0]);
-      } else if (currentSelectedId && matchingIds.includes(currentSelectedId)) {
-        // Same search, current selection still valid: preserve it
-        newCurrentMatchIndex = matchingIds.indexOf(currentSelectedId);
+      // Find all logs matching the search term (excluding EXIT logs)
+      const matchingIds: string[] = [];
+      logs.forEach((log) => {
+        if (log.type === LogType.EXIT) return;
+        const matches = useRegex
+          ? regex?.test(log.output)
+          : log.output.toLowerCase().includes(searchTerm.toLowerCase());
+        if (matches) {
+          matchingIds.push(log.id);
+        }
+      });
+      // Determine which match to select and highlight
+      let newCurrentMatchIndex = -1;
+      const currentSelectedId = selectedLogId();
+      if (matchingIds.length > 0) {
+        if (searchTerm !== previousSearchTerm) {
+          // New search term: jump to first match
+          newCurrentMatchIndex = 0;
+          setSelectedLogId(matchingIds[0]);
+        } else if (
+          currentSelectedId &&
+          matchingIds.includes(currentSelectedId)
+        ) {
+          // Same search, current selection still valid: preserve it
+          newCurrentMatchIndex = matchingIds.indexOf(currentSelectedId);
+        } else {
+          // Same search, but current selection no longer valid: reset to first match
+          newCurrentMatchIndex = 0;
+          setSelectedLogId(matchingIds[0]);
+        }
       } else {
-        // Same search, but current selection no longer valid: reset to first match
-        newCurrentMatchIndex = 0;
-        setSelectedLogId(matchingIds[0]);
+        // No matches found: clear selection
+        setSelectedLogId(null);
       }
-    } else {
-      // No matches found: clear selection
-      setSelectedLogId(null);
-    }
-    // Update state tracking for next effect run
-    previousSearchTerm = searchTerm;
-    // Commit the new search state
-    setSearchState({
-      term: searchTerm,
-      matchingLogIds: matchingIds,
-      currentMatchIndex: newCurrentMatchIndex,
-    });
-  });
+      // Update state tracking for next effect run
+      previousSearchTerm = searchTerm;
+      // Commit the new search state
+      setSearchState({
+        term: searchTerm,
+        matchingLogIds: matchingIds,
+        currentMatchIndex: newCurrentMatchIndex,
+      });
+    }),
+  );
 
   // Listen for logs from all processes
   createEffect(() => {

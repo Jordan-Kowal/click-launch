@@ -29,17 +29,16 @@
 
 ### ✨ Improvements
 
-- Increased **default log buffer size** from 1,500 to 10,000 lines per process (now feasible thanks to virtualization).
 - Added toast notifications when a process crashes.
 - Added **crashed status** to distinguish between manually stopped and crashed processes.
 - Added **keyboard shortcuts reference** in the log drawer. Press `⌘ + /` to view them.
+- Improved performances on logs with **log virtualization** and other optimizations.
+- Increased **default log buffer size** from 1,500 to 10,000 lines per process (thanks to virtualization).
 
 ### 🔧 Others
 
-- Improved performances on logs with **log virtualization** (rendering only visible rows).
 - Added top-level **ErrorBoundary** to catch uncaught rendering errors with a fallback UI.
 - Updated GitHub Actions to actions/cache@v4.
-- Multiple low-level changes to improve performance and stability.
 - Added `pnpm version:bump` script to automate version bumping.
 
 ## 1.5.0 - 2026-01-24
