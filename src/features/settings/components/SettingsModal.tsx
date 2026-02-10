@@ -1,7 +1,11 @@
 import { Moon, Sun, X } from "lucide-solid";
 import { Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
-import type { Settings } from "@/contexts/SettingsContext";
+import {
+  MAX_LOG_BUFFER_SIZE,
+  MIN_LOG_BUFFER_SIZE,
+  type Settings,
+} from "@/contexts/SettingsContext";
 import { useToast } from "@/hooks/useToast";
 import { SettingsRow } from "./SettingsRow";
 import { SettingsSection } from "./SettingsSection";
@@ -122,14 +126,14 @@ export const SettingsModal = (props: SettingsModalProps) => {
             <SettingsSection title="Logs">
               <SettingsRow
                 label="Log buffer size"
-                tooltip="How many logs are kept in memory. May impact performance (from 100 to 10,000)"
+                tooltip={`How many logs are kept in memory (from ${MIN_LOG_BUFFER_SIZE.toLocaleString()} to ${MAX_LOG_BUFFER_SIZE.toLocaleString()})`}
               >
                 <input
                   type="number"
                   class="input input-sm input-bordered w-28 text-right"
                   value={settings().logBufferSize}
-                  min={100}
-                  max={10000}
+                  min={MIN_LOG_BUFFER_SIZE}
+                  max={MAX_LOG_BUFFER_SIZE}
                   onInput={handleLogBufferChange}
                 />
               </SettingsRow>

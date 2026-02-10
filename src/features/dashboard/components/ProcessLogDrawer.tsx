@@ -1,3 +1,4 @@
+import { createVirtualizer } from "@tanstack/solid-virtual";
 import {
   ArrowDown,
   ArrowLeft,
@@ -11,6 +12,7 @@ import {
 } from "lucide-solid";
 import {
   createEffect,
+  createMemo,
   createSignal,
   For,
   Match,
@@ -45,6 +47,8 @@ const BATCH_DELAY_MS = 500;
 const BATCH_DELAY_MS_AUTO_SCROLL = 100;
 const SEARCH_DELAY_MS = 500;
 const SCROLL_TO_BOTTOM_THRESHOLD = 200;
+const VIRTUALIZER_ESTIMATE_SIZE = 24;
+const VIRTUALIZER_OVERSCAN = 10;
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const {
@@ -93,21 +97,34 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   const currentLogs = () => logsByProcess[props.processName] || [];
   const processNames = () => yamlConfig()?.processes.map((p) => p.name) || [];
 
+  const matchingLogIdSet = createMemo(
+    () => new Set(searchState.matchingLogIds),
+  );
+
   // Filter logs based on mode: in filter mode, only show matching logs
-  const displayedLogs = () => {
+  const displayedLogs = createMemo(() => {
     const logs = currentLogs();
     if (!isFilterMode() || !searchState.term.trim()) {
       return logs;
     }
-    return logs.filter((log) => searchState.matchingLogIds.includes(log.id));
-  };
+    const idSet = matchingLogIdSet();
+    return logs.filter((log) => idSet.has(log.id));
+  });
 
   let logsContainerRef!: HTMLDivElement;
   let searchInputRef!: HTMLInputElement;
-  const logRefs = new Map<string, HTMLElement>();
   let batchTimer: number | null = null;
   let scrollAnimationFrame: number | null = null;
   let previousSearchTerm = "";
+
+  const virtualizer = createVirtualizer({
+    get count() {
+      return displayedLogs().length;
+    },
+    getScrollElement: () => logsContainerRef,
+    estimateSize: () => VIRTUALIZER_ESTIMATE_SIZE,
+    overscan: VIRTUALIZER_OVERSCAN,
+  });
 
   const clearBatchTimer = () => {
     if (batchTimer === null) return;
@@ -197,22 +214,16 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   };
 
   const scrollToBottom = () => {
-    if (!uiState.autoScroll || !logsContainerRef) return;
-    setTimeout(() => {
-      if (!logsContainerRef) return;
-      logsContainerRef.scrollTo({
-        top: logsContainerRef.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 50);
+    if (!uiState.autoScroll) return;
+    const count = displayedLogs().length;
+    if (count === 0) return;
+    virtualizer.scrollToIndex(count - 1, { align: "end" });
   };
 
   const scrollToBottomManual = () => {
-    if (!logsContainerRef) return;
-    logsContainerRef.scrollTo({
-      top: logsContainerRef.scrollHeight,
-      behavior: "smooth",
-    });
+    const count = displayedLogs().length;
+    if (count === 0) return;
+    virtualizer.scrollToIndex(count - 1, { align: "end" });
   };
 
   const clearLogs = () => {
@@ -274,9 +285,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       return;
     }
     const logId = logIds[matchIndex];
-    const logElement = logRefs.get(logId);
-    if (logElement && logsContainerRef) {
-      logElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    const logs = displayedLogs();
+    const logIndex = logs.findIndex((log) => log.id === logId);
+    if (logIndex >= 0) {
+      virtualizer.scrollToIndex(logIndex, { align: "center" });
     }
     setSearchState("currentMatchIndex", matchIndex);
     setSelectedLogId(logId);
@@ -545,7 +557,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 </div>
               </Show>
             </div>
-            <div class="flex items-center gap-1 w-18 justify-end lg:justify-start">
+            <div class="flex items-center gap-1 shrink-0 whitespace-nowrap justify-end lg:justify-start">
               <Show
                 when={searchState.term}
                 fallback={<span class="text-sm text-gray-500">No search</span>}
@@ -668,25 +680,37 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
                 </div>
               }
             >
-              <div class={`font-mono text-sm space-y-1 pl-1`}>
-                <For each={displayedLogs()}>
-                  {(log) => {
-                    const isCurrentMatch = () => selectedLogId() === log.id;
+              <div
+                class="font-mono text-sm pl-1 w-full"
+                style={{
+                  "padding-top": `${virtualizer.getVirtualItems()[0]?.start ?? 0}px`,
+                  "padding-bottom": `${(() => {
+                    const items = virtualizer.getVirtualItems();
+                    const lastItem = items[items.length - 1];
+                    if (!lastItem) return 0;
+                    return virtualizer.getTotalSize() - lastItem.end;
+                  })()}px`,
+                }}
+              >
+                <For each={virtualizer.getVirtualItems()}>
+                  {(virtualRow) => {
+                    const log = () => displayedLogs()[virtualRow.index];
+                    const isCurrentMatch = () => selectedLogId() === log()?.id;
 
                     return (
-                      <ProcessLogRow
-                        log={log}
-                        searchTerm={searchState.term}
-                        isRegexMode={isRegexMode()}
-                        isCurrentMatch={isCurrentMatch()}
-                        ref={(el: HTMLDivElement | undefined) => {
-                          if (el) {
-                            logRefs.set(log.id, el);
-                          } else {
-                            logRefs.delete(log.id);
-                          }
-                        }}
-                      />
+                      <Show when={log()}>
+                        <div
+                          ref={virtualizer.measureElement}
+                          data-index={virtualRow.index}
+                        >
+                          <ProcessLogRow
+                            log={log()!}
+                            searchTerm={searchState.term}
+                            isRegexMode={isRegexMode()}
+                            isCurrentMatch={isCurrentMatch()}
+                          />
+                        </div>
+                      </Show>
                     );
                   }}
                 </For>

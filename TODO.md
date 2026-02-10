@@ -12,19 +12,11 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 `ProcessLogDrawer` is 730 lines. Extract `LogSearch`, `LogControls`, and `LogList` sub-components.
 
-## 3. Add log virtualization to ProcessLogDrawer
-
-`ProcessLogDrawer` renders all log lines in the DOM (up to 10,000). Use `@tanstack/solid-virtual` or similar for virtual scrolling.
-
-## 4. Optimize log search with explicit on() dependencies
+## 3. Optimize log search with explicit on() dependencies
 
 Search effect in `ProcessLogDrawer` runs on every log change. Use `on()` with explicit dependencies to reduce unnecessary re-runs.
 
-## 5. Add version management automation
-
-No automated version bumping. Add a `pnpm version:bump` script or `standard-version` integration.
-
-## 6. Pick a better dark mode theme
+## 4. Pick a better dark mode theme
 
 Current dark theme is Dracula (custom-defined in `src/styles/index.css`). Evaluate other DaisyUI dark themes or improve the custom one for a better look.
 

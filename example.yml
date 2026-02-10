@@ -88,6 +88,11 @@ processes:
         default: "8000"
         output_prefix: "--custom-port"
 
+      - type: "input"
+        name: "Sleep Interval (s)"
+        default: "0.1"
+        output_prefix: "--sleep-interval"
+
   - name: "Counter with Replacement"
     base_command: "bash ./resources/counter-with-replacement.sh"
 

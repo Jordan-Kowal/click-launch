@@ -10,7 +10,6 @@ type ProcessLogRowProps = {
   searchTerm?: string;
   isRegexMode?: boolean;
   isCurrentMatch?: boolean;
-  ref?: (el: HTMLDivElement | undefined) => void;
 };
 
 const highlightSearchTerm = (
@@ -77,7 +76,6 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
 
   return (
     <div
-      ref={props.ref}
       class={`group relative ${
         props.isCurrentMatch ? "bg-gray-700 rounded" : ""
       } whitespace-pre-wrap wrap-break-word`}

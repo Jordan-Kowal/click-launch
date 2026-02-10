@@ -41,9 +41,11 @@
     "biome:check": "biome check ./src ./electron",
     "biome:check:fix": "biome check ./src ./electron --write --unsafe",
     "test": "(export NODE_NO_WARNINGS=1 && vitest)",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "version:bump": "node scripts/bump-version.mjs"
   },
   "dependencies": {
+    "@tanstack/solid-virtual": "3.13.18",
     "fix-path": "5.0.0",
     "js-yaml": "4.1.1"
   },

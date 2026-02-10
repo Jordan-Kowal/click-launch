@@ -6,6 +6,7 @@
 cache_enabled="true"
 rate_limit="1000"
 custom_port="8000"
+sleep_interval="1"
 
 # Parse named arguments
 while [[ $# -gt 0 ]]; do
@@ -20,6 +21,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --custom-port)
       custom_port="$2"
+      shift 2
+      ;;
+    --sleep-interval)
+      sleep_interval="$2"
       shift 2
       ;;
     *)
@@ -55,5 +60,5 @@ while true; do
     fi
   fi
 
-  sleep 1
+  sleep "$sleep_interval"
 done

@@ -8,9 +8,12 @@ export type Settings = {
   showResourceMonitor: boolean;
 };
 
+export const MIN_LOG_BUFFER_SIZE = 100;
+export const MAX_LOG_BUFFER_SIZE = 50000;
+
 export const DEFAULT_SETTINGS: Settings = {
   theme: "nord",
-  logBufferSize: 1500,
+  logBufferSize: 5000,
   showNotifications: true,
   showGrouping: true,
   showResourceMonitor: true,

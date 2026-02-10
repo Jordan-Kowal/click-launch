@@ -2,6 +2,8 @@ import { createEffect, createMemo, type JSX, useContext } from "solid-js";
 import { useLocalStorage } from "../hooks";
 import {
   DEFAULT_SETTINGS,
+  MAX_LOG_BUFFER_SIZE,
+  MIN_LOG_BUFFER_SIZE,
   type Settings,
   SettingsContext,
   type SettingsContextProps,
@@ -52,7 +54,10 @@ export const SettingsProvider = (props: SettingsProviderProps) => {
     const updated = { ...current, [key]: value };
     if (key === "logBufferSize") {
       const numValue = value as number;
-      updated.logBufferSize = Math.max(100, Math.min(10000, numValue));
+      updated.logBufferSize = Math.max(
+        MIN_LOG_BUFFER_SIZE,
+        Math.min(MAX_LOG_BUFFER_SIZE, numValue),
+      );
     }
     setStorageValue(JSON.stringify(updated));
   };
