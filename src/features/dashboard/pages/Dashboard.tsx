@@ -13,8 +13,7 @@ import { LoadingRing, Modal, ScreenTitle } from "@/components/ui";
 import { useToast } from "@/hooks";
 import { routePaths } from "@/routes";
 import { ErrorList, ProcessTable } from "../components";
-import { DashboardProvider } from "../contexts";
-import { useDashboardContext } from "../contexts/";
+import { DashboardProvider, useDashboardContext } from "../contexts";
 
 export type DashboardRouteKey = "dashboard";
 

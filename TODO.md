@@ -4,15 +4,11 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 ---
 
-## 1. Split DashboardProvider into focused contexts
-
-`DashboardProvider` is 542 lines handling YAML parsing, process state, polling, restart events, grouping, and resources. Split into smaller focused contexts.
-
-## 2. Extract sub-components from ProcessLogDrawer
+## 1. Extract sub-components from ProcessLogDrawer
 
 `ProcessLogDrawer` is 730 lines. Extract `LogSearch`, `LogControls`, and `LogList` sub-components.
 
-## 3. Pick a better dark mode theme
+## 2. Pick a better dark mode theme
 
 Current dark theme is Dracula (custom-defined in `src/styles/index.css`). Evaluate other DaisyUI dark themes or improve the custom one for a better look.
 

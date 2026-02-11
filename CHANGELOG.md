@@ -37,6 +37,7 @@
 
 ### 🔧 Others
 
+- Refactored main components for better readability and maintainability.
 - Added top-level **ErrorBoundary** to catch uncaught rendering errors with a fallback UI.
 - Updated GitHub Actions to actions/cache@v4.
 - Added `pnpm version:bump` script to automate version bumping.
