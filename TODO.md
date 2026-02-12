@@ -40,61 +40,55 @@ No way to filter processes by name when many are configured. Add search input ab
 
 Quick copy logs to clipboard (not just file export). Add "Copy to Clipboard" button next to export in log drawer toolbar.
 
-### 7. Extract Duplicate Status Checks
-
-**Impact: LOW** | **Effort: LOW**
-
-Pattern `status === RUNNING || status === RESTARTING` repeated across components. Create `isProcessActive(status)` utility function.
-
-### 8. Optimize Log Flush
+### 7. Optimize Log Flush
 
 **Impact: LOW** | **Effort: LOW**
 
 `flushLogs` iterates through ALL processes even if only one has pending logs. Track which processes have pending logs in a Set, only iterate those.
 
-### 9. Optimize Resource Monitoring
+### 8. Optimize Resource Monitoring
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Currently executes one `ps` shell command per process every 3 seconds. Batch all PIDs into single `ps` command, parse results once.
 
-### 10. Batch IPC Log Messages
+### 9. Batch IPC Log Messages
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Verbose processes send hundreds of individual IPC messages per second. Batch logs in main process (50-100ms window) before sending to renderer.
 
-### 11. Consolidate ProcessDuration Timers
+### 10. Consolidate ProcessDuration Timers
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Each running process has its own `setInterval` (1s). With 10 processes = 10+ separate timers. Create single global 1-second interval in DashboardContext, expose `currentTime` signal that components derive from.
 
-### 12. Extract Generic usePolling Hook
+### 11. Extract Generic usePolling Hook
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Nearly identical polling patterns in `useProcesses` and `useResources`. Create generic `usePolling<T>(fetchFn, interval, enabled)` hook.
 
-### 13. Pick a Better Dark Mode Theme
+### 12. Pick a Better Dark Mode Theme
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Current dark theme is Dracula (custom-defined in `src/styles/index.css`). Evaluate other DaisyUI dark themes or improve the custom one for a better look.
 
-### 14. Cache ANSI Parsing Results
+### 13. Cache ANSI Parsing Results
 
 **Impact: LOW** | **Effort: MEDIUM**
 
 ANSI parsing happens on every log render (mitigated by virtualization). Pre-parse and cache segments when logs are added to store.
 
-### 15. Historical Resource Graphs
+### 14. Historical Resource Graphs
 
 **Impact: HIGH** | **Effort: HIGH**
 
 Track CPU/memory usage over time and display in graphs. Store historical data points (last hour/day), add chart library (recharts/chart.js), create resource graph drawer.
 
-### 16. Split Log View
+### 15. Split Log View
 
 **Impact: MEDIUM** | **Effort: HIGH**
 

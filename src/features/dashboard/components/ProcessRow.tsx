@@ -3,7 +3,7 @@ import { createMemo, createSignal, For, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
 import type { ProcessConfig } from "@/electron/types";
 import { useDashboardContext } from "../contexts/";
-import { ProcessStatus } from "../enums";
+import { isProcessActive, ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessArg } from "./ProcessArg";
 import { ProcessDuration } from "./ProcessDuration";
@@ -143,10 +143,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
           <div class={`badge ${statusVariant()}`}>{statusText()}</div>
           <ProcessDuration
             startTime={startTime()}
-            isRunning={
-              status() === ProcessStatus.RUNNING ||
-              status() === ProcessStatus.RESTARTING
-            }
+            isRunning={isProcessActive(status())}
           />
         </div>
       </td>
@@ -154,10 +151,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
         <td class="align-top w-32 shrink-0 p-2!">
           <ProcessResources
             resources={resources()}
-            isRunning={
-              status() === ProcessStatus.RUNNING ||
-              status() === ProcessStatus.RESTARTING
-            }
+            isRunning={isProcessActive(status())}
           />
         </td>
       </Show>

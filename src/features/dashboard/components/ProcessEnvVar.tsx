@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { useDashboardContext } from "../contexts/";
-import { ProcessStatus } from "../enums";
+import { isProcessActive } from "../enums";
 
 type ProcessEnvVarProps = {
   processName: string;
@@ -13,7 +13,7 @@ export const ProcessEnvVar = (props: ProcessEnvVarProps) => {
   const { setEnvValue, getProcessStatus } = useDashboardContext();
   const status = () => getProcessStatus(props.processName);
 
-  const canEdit = () => status() === ProcessStatus.STOPPED;
+  const canEdit = () => !isProcessActive(status());
 
   const onInputChange = (e: Event) => {
     const target = e.target as HTMLInputElement;

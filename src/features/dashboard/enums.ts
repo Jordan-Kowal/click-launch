@@ -6,3 +6,6 @@ export enum ProcessStatus {
   CRASHED = "Crashed",
   RESTARTING = "Restarting",
 }
+
+export const isProcessActive = (status: ProcessStatus): boolean =>
+  status !== ProcessStatus.STOPPED && status !== ProcessStatus.CRASHED;

@@ -9,7 +9,7 @@ import {
 import { ArgType } from "@/electron/enums";
 import type { ArgConfig } from "@/electron/types";
 import { useDashboardContext } from "../contexts/";
-import { ProcessStatus } from "../enums";
+import { isProcessActive } from "../enums";
 
 type ProcessArgProps = {
   processName: string;
@@ -29,7 +29,7 @@ export const ProcessArg = (props: ProcessArgProps) => {
   const { setArgValues, getProcessStatus } = useDashboardContext();
   const status = () => getProcessStatus(props.processName);
 
-  const canEdit = () => status() === ProcessStatus.STOPPED;
+  const canEdit = () => !isProcessActive(status());
 
   const onSelectChange = (e: Event) => {
     const target = e.target as HTMLSelectElement;

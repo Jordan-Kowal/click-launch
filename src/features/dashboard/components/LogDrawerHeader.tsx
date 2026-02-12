@@ -1,7 +1,7 @@
 import { ArrowLeft, X } from "lucide-solid";
 import { Match, Switch } from "solid-js";
 import { useDashboardContext } from "../contexts";
-import { ProcessStatus } from "../enums";
+import { isProcessActive, ProcessStatus } from "../enums";
 import { PlayStopButton } from "./PlayStopButton";
 import { ProcessResources } from "./ProcessResources";
 
@@ -17,9 +17,7 @@ export const LogDrawerHeader = (props: LogDrawerHeaderProps) => {
   const processStatus = () => getProcessStatus(props.processName);
   const processData = () => getProcessData(props.processName);
   const resources = () => getProcessResources(props.processName);
-  const isRunning = () =>
-    processStatus() === ProcessStatus.RUNNING ||
-    processStatus() === ProcessStatus.RESTARTING;
+  const isRunning = () => isProcessActive(processStatus());
 
   return (
     <div class="px-4 py-2 border-b border-base-300">

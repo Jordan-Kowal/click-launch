@@ -5,7 +5,7 @@ import type {
   GroupedProcesses,
   ProcessData,
 } from "../contexts/DashboardContext";
-import { ProcessStatus } from "../enums";
+import { isProcessActive } from "../enums";
 
 type UseGroupingParams = {
   yamlConfig: () => YamlConfig | null;
@@ -63,9 +63,7 @@ export const useGrouping = ({
     if (!group) return 0;
     return group.processes.filter((p) => {
       const status = processesData[p.name]?.status;
-      return (
-        status === ProcessStatus.RUNNING || status === ProcessStatus.RESTARTING
-      );
+      return status !== undefined && isProcessActive(status);
     }).length;
   };
 
@@ -75,9 +73,7 @@ export const useGrouping = ({
     const promises = group.processes
       .filter((p) => {
         const status = processesData[p.name]?.status;
-        return (
-          status === ProcessStatus.STOPPED || status === ProcessStatus.CRASHED
-        );
+        return status !== undefined && !isProcessActive(status);
       })
       .map((p) => startProcess(p.name));
     await Promise.all(promises);
@@ -89,10 +85,7 @@ export const useGrouping = ({
     const promises = group.processes
       .filter((p) => {
         const status = processesData[p.name]?.status;
-        return (
-          status === ProcessStatus.RUNNING ||
-          status === ProcessStatus.RESTARTING
-        );
+        return status !== undefined && isProcessActive(status);
       })
       .map((p) => stopProcess(p.name));
     await Promise.all(promises);

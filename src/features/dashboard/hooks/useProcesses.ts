@@ -8,7 +8,7 @@ import type {
 } from "@/electron/types";
 import { useToast } from "@/hooks";
 import type { ProcessData } from "../contexts/DashboardContext";
-import { ProcessStatus } from "../enums";
+import { isProcessActive, ProcessStatus } from "../enums";
 
 const POLL_STATUS_INTERVAL_MS = 1000;
 
@@ -32,13 +32,7 @@ export const useProcesses = ({
   let pollInterval: ReturnType<typeof setInterval> | null = null;
 
   const hasRunningProcesses = createMemo(() => {
-    return (
-      Object.values(processesData).filter(
-        (p) =>
-          p.status === ProcessStatus.RUNNING ||
-          p.status === ProcessStatus.RESTARTING,
-      ).length > 0
-    );
+    return Object.values(processesData).some((p) => isProcessActive(p.status));
   });
 
   // Initialize process data when config changes
@@ -147,11 +141,7 @@ export const useProcesses = ({
     pollInterval = setInterval(async () => {
       const activeProcesses: Array<{ name: string; pid: ProcessId }> = [];
       Object.entries(processesData).forEach(([name, data]) => {
-        if (
-          data.processId &&
-          data.status !== ProcessStatus.STOPPED &&
-          data.status !== ProcessStatus.CRASHED
-        ) {
+        if (data.processId && isProcessActive(data.status)) {
           activeProcesses.push({ name, pid: data.processId });
         }
       });

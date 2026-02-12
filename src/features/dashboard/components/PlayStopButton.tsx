@@ -1,7 +1,7 @@
 import { Play, Square } from "lucide-solid";
 import { Match, Switch } from "solid-js";
 import { useDashboardContext } from "../contexts/";
-import { ProcessStatus } from "../enums";
+import { isProcessActive, ProcessStatus } from "../enums";
 
 type PlayStopButtonProps = {
   processName: string;
@@ -13,12 +13,7 @@ export const PlayStopButton = (props: PlayStopButtonProps) => {
 
   return (
     <Switch>
-      <Match
-        when={
-          status() === ProcessStatus.STOPPED ||
-          status() === ProcessStatus.CRASHED
-        }
-      >
+      <Match when={!isProcessActive(status())}>
         <button
           type="button"
           class="btn btn-primary btn-circle btn-sm"

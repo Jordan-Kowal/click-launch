@@ -2,7 +2,7 @@ import { onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { ProcessId, ProcessResourceData } from "@/electron/types";
 import type { ProcessData } from "../contexts/DashboardContext";
-import { ProcessStatus } from "../enums";
+import { isProcessActive } from "../enums";
 
 const POLL_RESOURCES_INTERVAL_MS = 3000;
 
@@ -32,11 +32,7 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
     resourcePollInterval = setInterval(async () => {
       const activeProcesses: Array<{ name: string; pid: ProcessId }> = [];
       Object.entries(processesData).forEach(([name, data]) => {
-        if (
-          data.processId &&
-          (data.status === ProcessStatus.RUNNING ||
-            data.status === ProcessStatus.RESTARTING)
-        ) {
+        if (data.processId && isProcessActive(data.status)) {
           activeProcesses.push({ name, pid: data.processId });
         }
       });
