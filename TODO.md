@@ -4,9 +4,9 @@ This document outlines planned improvements for Click-Launch. Each section conta
 
 ---
 
-## 1. Extract sub-components from ProcessLogDrawer
+## 1. Handle orphaned processes on unexpected app exit
 
-`ProcessLogDrawer` is 730 lines. Extract `LogSearch`, `LogControls`, and `LogList` sub-components.
+Processes spawn with `detached: true` in `electron/utils/processManager.ts`. If the Electron app crashes or gets force-killed, child processes keep running with no cleanup. Consider writing a PID file on process start (and removing on stop) so the app can detect and kill orphans on next launch.
 
 ## 2. Pick a better dark mode theme
 
