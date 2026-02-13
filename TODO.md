@@ -14,7 +14,7 @@ Add restart button to ProcessRow actions that stops then immediately restarts th
 
 **Impact: HIGH** | **Effort: MEDIUM**
 
-`ProcessRow.tsx` makes 9+ individual context calls creating separate reactive dependencies. Consolidate into single `createMemo(() => getProcessData(props.process.name))` to reduce recalculations on every status poll.
+`ProcessRow.tsx` makes 7 individual context accessor calls (`getProcessCommand`, `getProcessArgs`, `getProcessEnv`, `getProcessStatus`, `getProcessStartTime`, `getProcessData`, `getProcessResources`), each creating separate reactive dependencies on the same underlying store. Consolidate into single `createMemo(() => getProcessData(props.process.name))` to reduce redundant store tracking on every status poll.
 
 ### 3. Log Level Filtering
 
@@ -30,65 +30,41 @@ Processes spawn with `detached: true` in `electron/utils/processManager.ts`. If 
 
 ### 5. Process Search/Filter in Main Table
 
-**Impact: MEDIUM** | **Effort: LOW**
-
-No way to filter processes by name when many are configured. Add search input above ProcessTable to filter by process name/group.
-
-### 6. Export Logs to Clipboard
-
-**Impact: MEDIUM** | **Effort: LOW**
-
-Quick copy logs to clipboard (not just file export). Add "Copy to Clipboard" button next to export in log drawer toolbar.
-
-### 7. Optimize Log Flush
-
 **Impact: LOW** | **Effort: LOW**
 
-`flushLogs` iterates through ALL processes even if only one has pending logs. Track which processes have pending logs in a Set, only iterate those.
+Add search input above ProcessTable to filter by process name/group. Note: the grouping feature already addresses most of this need for typical configs (5-15 processes). This becomes more valuable at scale (15+ processes).
 
-### 8. Optimize Resource Monitoring
+### 6. Optimize Resource Monitoring
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Currently executes one `ps` shell command per process every 3 seconds. Batch all PIDs into single `ps` command, parse results once.
 
-### 9. Batch IPC Log Messages
-
-**Impact: MEDIUM** | **Effort: MEDIUM**
-
-Verbose processes send hundreds of individual IPC messages per second. Batch logs in main process (50-100ms window) before sending to renderer.
-
-### 10. Consolidate ProcessDuration Timers
+### 7. Consolidate ProcessDuration Timers
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
 Each running process has its own `setInterval` (1s). With 10 processes = 10+ separate timers. Create single global 1-second interval in DashboardContext, expose `currentTime` signal that components derive from.
 
-### 11. Extract Generic usePolling Hook
+### 8. Pick a Better Dark Mode Theme
 
 **Impact: MEDIUM** | **Effort: MEDIUM**
 
-Nearly identical polling patterns in `useProcesses` and `useResources`. Create generic `usePolling<T>(fetchFn, interval, enabled)` hook.
+Current dark theme is a custom Dracula variant (modified hue in `src/styles/index.css`). Evaluate DaisyUI 5's built-in dark themes (night, abyss, dim, coffee, etc.) or improve the custom one for a better look.
 
-### 12. Pick a Better Dark Mode Theme
-
-**Impact: MEDIUM** | **Effort: MEDIUM**
-
-Current dark theme is Dracula (custom-defined in `src/styles/index.css`). Evaluate other DaisyUI dark themes or improve the custom one for a better look.
-
-### 13. Cache ANSI Parsing Results
+### 9. Cache ANSI Parsing Results
 
 **Impact: LOW** | **Effort: MEDIUM**
 
-ANSI parsing happens on every log render (mitigated by virtualization). Pre-parse and cache segments when logs are added to store.
+`ProcessLogRow` memoizes ANSI parsing via `createMemo`, but virtualization destroys and recreates row components on scroll, causing re-parsing every time a log row re-enters the viewport. Pre-parse and cache segments when logs are added to the store so parsed results survive component mount/unmount cycles.
 
-### 14. Historical Resource Graphs
+### 10. Historical Resource Graphs
 
 **Impact: HIGH** | **Effort: HIGH**
 
 Track CPU/memory usage over time and display in graphs. Store historical data points (last hour/day), add chart library (recharts/chart.js), create resource graph drawer.
 
-### 15. Split Log View
+### 11. Split Log View
 
 **Impact: MEDIUM** | **Effort: HIGH**
 
