@@ -48,10 +48,12 @@ if (changelogContent.includes("## TBD")) {
   console.log("  ⚠ CHANGELOG.md — no '## TBD' section found, skipping");
 }
 
-// 6. Git commit + tag
+// 6. Git commit + tag + push
 console.log("");
 execSync(`git add package.json README.md CHANGELOG.md`, { cwd: ROOT, stdio: "inherit" });
 execSync(`git commit -m "chore: bump version to ${newVersion}"`, { cwd: ROOT, stdio: "inherit" });
 execSync(`git tag ${newVersion}`, { cwd: ROOT, stdio: "inherit" });
+execSync(`git push`, { cwd: ROOT, stdio: "inherit" });
+execSync(`git push origin ${newVersion}`, { cwd: ROOT, stdio: "inherit" });
 
-console.log(`\nDone! Version bumped to ${newVersion} and tagged.`);
+console.log(`\nDone! Version bumped to ${newVersion}, tagged, and pushed.`);
