@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 2.0.0 - 2026-02-14
 
 ### 🚀 Features
 
