@@ -103,14 +103,16 @@ export const useLogStore = ({
     clearBatchTimer();
   };
 
-  // Listen for logs from all processes
+  // Listen for batched logs from all processes
   createEffect(() => {
-    window.electronAPI.onProcessLog((logData) => {
-      addLog(logData);
+    window.electronAPI.onProcessLogBatch((logs) => {
+      for (const logData of logs) {
+        addLog(logData);
+      }
     });
 
     onCleanup(() => {
-      window.electronAPI.removeProcessLogListener();
+      window.electronAPI.removeProcessLogBatchListener();
       clearBatchTimer();
       flushLogs();
     });

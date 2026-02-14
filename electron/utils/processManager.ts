@@ -25,6 +25,32 @@ type ProcessState = {
 // Process management state
 const runningProcesses = new Map<string, ProcessState>();
 
+// Log batching — accumulate logs and flush every 100ms as a single IPC message
+const LOG_BATCH_INTERVAL_MS = 100;
+
+let pendingLogs: Array<Record<string, unknown>> = [];
+let batchTimer: ReturnType<typeof setInterval> | null = null;
+
+const flushLogs = () => {
+  if (pendingLogs.length === 0) {
+    if (batchTimer) {
+      clearInterval(batchTimer);
+      batchTimer = null;
+    }
+    return;
+  }
+  const batch = pendingLogs;
+  pendingLogs = [];
+  sendToAllWindows("process-log:batch", batch);
+};
+
+const queueLog = (logData: Record<string, unknown>) => {
+  pendingLogs.push(logData);
+  if (!batchTimer) {
+    batchTimer = setInterval(flushLogs, LOG_BATCH_INTERVAL_MS);
+  }
+};
+
 export type ProcessStartResult = {
   success: boolean;
   processId?: string;
@@ -78,9 +104,9 @@ const spawnProcess = (
     manualStop: false,
   });
 
-  // Stream stdout to renderer
+  // Stream stdout to renderer (batched)
   childProcess.stdout?.on("data", (data) => {
-    sendToAllWindows("process-log", {
+    queueLog({
       processId,
       type: LogType.STDOUT,
       output: data.toString(),
@@ -88,9 +114,9 @@ const spawnProcess = (
     });
   });
 
-  // Stream stderr to renderer
+  // Stream stderr to renderer (batched)
   childProcess.stderr?.on("data", (data) => {
-    sendToAllWindows("process-log", {
+    queueLog({
       processId,
       type: LogType.STDERR,
       output: data.toString(),
@@ -109,7 +135,7 @@ const spawnProcess = (
     if (state) {
       runningProcesses.delete(processId);
     }
-    sendToAllWindows("process-log", {
+    queueLog({
       processId,
       type: LogType.ERROR,
       output: error.message,
@@ -125,6 +151,9 @@ const handleProcessExit = (
   code: number | null,
   signal: string | null,
 ) => {
+  // Flush any pending logs before processing exit
+  flushLogs();
+
   const state = runningProcesses.get(processId);
   if (!state) return;
 
@@ -142,13 +171,14 @@ const handleProcessExit = (
   runningProcesses.delete(processId);
 
   // Send exit log
-  sendToAllWindows("process-log", {
+  queueLog({
     processId,
     type: LogType.EXIT,
     code,
     signal,
     timestamp: new Date().toISOString(),
   });
+  flushLogs();
 
   // Don't restart if:
   // 1. Manual stop was requested
@@ -306,6 +336,7 @@ export const stopProcess = async (
 };
 
 export const stopAllProcesses = (): void => {
+  flushLogs();
   runningProcesses.forEach((_state, processId) => {
     stopProcess(processId);
   });

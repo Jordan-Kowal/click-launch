@@ -136,9 +136,9 @@ export interface ElectronAPI {
     fileName: string,
     content: string,
   ) => Promise<string>;
-  // Process log streaming
-  onProcessLog: (callback: (logData: ProcessLogData) => void) => void;
-  removeProcessLogListener: () => void;
+  // Process log streaming (batched)
+  onProcessLogBatch: (callback: (logs: ProcessLogData[]) => void) => void;
+  removeProcessLogBatchListener: () => void;
   // Process restart events
   onProcessRestart: (callback: (data: ProcessRestartData) => void) => void;
   removeProcessRestartListener: () => void;

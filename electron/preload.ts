@@ -38,14 +38,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
   stopAllProcesses: () => ipcRenderer.invoke("process:stop-all"),
   getProcessResources: (processIds: string[]) =>
     ipcRenderer.invoke("process:resources", processIds),
-  // Process log streaming
-  onProcessLog: (callback: (logData: ProcessLogData) => void) => {
-    ipcRenderer.on("process-log", (_event: unknown, logData: ProcessLogData) =>
-      callback(logData),
+  // Process log streaming (batched)
+  onProcessLogBatch: (callback: (logs: ProcessLogData[]) => void) => {
+    ipcRenderer.on(
+      "process-log:batch",
+      (_event: unknown, logs: ProcessLogData[]) => callback(logs),
     );
   },
-  removeProcessLogListener: () => {
-    ipcRenderer.removeAllListeners("process-log");
+  removeProcessLogBatchListener: () => {
+    ipcRenderer.removeAllListeners("process-log:batch");
   },
   // Process restart events
   onProcessRestart: (callback: (data: ProcessRestartData) => void) => {
