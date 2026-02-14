@@ -1,7 +1,7 @@
 import { createContext } from "solid-js";
 
 export type Settings = {
-  theme: "nord" | "dracula";
+  theme: "nord" | "forest";
   logBufferSize: number;
   showNotifications: boolean;
   showGrouping: boolean;

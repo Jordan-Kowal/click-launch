@@ -34,7 +34,7 @@ export const SettingsModal = (props: SettingsModalProps) => {
   };
 
   const handleThemeToggle = () => {
-    updateSetting("theme", settings().theme === "nord" ? "dracula" : "nord");
+    updateSetting("theme", settings().theme === "nord" ? "forest" : "nord");
   };
 
   const handleToggle = (key: keyof Settings) => (e: Event) => {
@@ -78,7 +78,7 @@ export const SettingsModal = (props: SettingsModalProps) => {
                 <label class="toggle toggle-sm text-base-content">
                   <input
                     type="checkbox"
-                    checked={settings().theme === "dracula"}
+                    checked={settings().theme === "forest"}
                     onChange={handleThemeToggle}
                   />
                   <Sun size={14} />

@@ -21,7 +21,7 @@
 - Added **log export**: export process logs as text files to `logs/click-launch/` in the project root directory.
 - Added **copy log line** button, visible on hover.
 - Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
-  - **Theme switching** between Nord (light) and Dracula (dark) themes.
+  - **Theme switching** between Nord (light) and Forest (dark) themes.
   - **Log buffer size** control (100-50,000 lines per process).
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
