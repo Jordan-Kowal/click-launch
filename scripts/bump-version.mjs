@@ -18,7 +18,7 @@ const oldVersion = pkg.version;
 
 // 2. Compute new version
 const parts = oldVersion.split(".").map(Number);
-const idx = BUMP_TYPES.indexOf(bumpType);
+const idx = BUMP_TYPES.length - 1 - BUMP_TYPES.indexOf(bumpType);
 parts[idx] += 1;
 for (let i = idx + 1; i < parts.length; i++) parts[i] = 0;
 const newVersion = parts.join(".");
