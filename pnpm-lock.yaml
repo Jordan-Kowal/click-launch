@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@tanstack/solid-virtual':
-        specifier: ^3.13.18
+        specifier: 3.13.18
         version: 3.13.18(solid-js@1.9.11)
       fix-path:
         specifier: 5.0.0
