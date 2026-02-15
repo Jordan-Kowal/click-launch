@@ -52,7 +52,9 @@ export const LogVirtualList = (props: LogVirtualListProps) => {
 
                 return (
                   <div
-                    ref={props.virtualizer.measureElement}
+                    ref={(el) =>
+                      queueMicrotask(() => props.virtualizer.measureElement(el))
+                    }
                     data-index={virtualRow.index}
                   >
                     <Show when={log()}>
