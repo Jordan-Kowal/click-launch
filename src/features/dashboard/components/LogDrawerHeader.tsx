@@ -8,6 +8,7 @@ import { ProcessResources } from "./ProcessResources";
 type LogDrawerHeaderProps = {
   processName: string;
   onClose: () => void;
+  onOpenResourceDrawer?: () => void;
 };
 
 export const LogDrawerHeader = (props: LogDrawerHeaderProps) => {
@@ -48,7 +49,11 @@ export const LogDrawerHeader = (props: LogDrawerHeaderProps) => {
             <div class="badge badge-neutral">Idle</div>
           </Match>
         </Switch>
-        <ProcessResources resources={resources()} isRunning={isRunning()} />
+        <ProcessResources
+          resources={resources()}
+          isRunning={isRunning()}
+          onViewMore={props.onOpenResourceDrawer}
+        />
       </div>
       <button
         type="button"

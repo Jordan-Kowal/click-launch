@@ -1,3 +1,4 @@
+import { ChartLine } from "lucide-solid";
 import { createMemo, Show } from "solid-js";
 import type { ProcessResourceData } from "@/electron/types";
 import { formatBytes, formatCpu } from "@/utils/formatters";
@@ -5,6 +6,7 @@ import { formatBytes, formatCpu } from "@/utils/formatters";
 type ProcessResourcesProps = {
   resources: ProcessResourceData | undefined;
   isRunning: boolean;
+  onViewMore?: () => void;
 };
 
 export const ProcessResources = (props: ProcessResourcesProps) => {
@@ -19,20 +21,20 @@ export const ProcessResources = (props: ProcessResourcesProps) => {
   });
 
   return (
-    <Show
-      when={props.isRunning && cpu() && memory()}
-      fallback={
-        <div class="flex flex-col gap-0">
-          <div class="text-xs text-gray-500 font-mono whitespace-nowrap">
-            CPU: —
-          </div>
-          <div class="text-xs text-gray-500 font-mono whitespace-nowrap">
-            RAM: —
-          </div>
-        </div>
-      }
-    >
-      <div class="flex flex-col gap-0">
+    <div class="flex flex-col gap-0">
+      <Show
+        when={props.isRunning && cpu() && memory()}
+        fallback={
+          <>
+            <div class="text-xs text-base-content/50 font-mono whitespace-nowrap">
+              CPU: —
+            </div>
+            <div class="text-xs text-base-content/50 font-mono whitespace-nowrap">
+              RAM: —
+            </div>
+          </>
+        }
+      >
         <div
           class="text-xs font-mono whitespace-nowrap text-base-content"
           title="CPU usage"
@@ -45,7 +47,18 @@ export const ProcessResources = (props: ProcessResourcesProps) => {
         >
           RAM: {memory()}
         </div>
-      </div>
-    </Show>
+      </Show>
+      <Show when={props.onViewMore}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs gap-1 px-1 mt-0.5"
+          onClick={props.onViewMore}
+          title="View resource history"
+        >
+          <ChartLine size={12} />
+          <span class="text-xs">View more</span>
+        </button>
+      </Show>
+    </div>
   );
 };

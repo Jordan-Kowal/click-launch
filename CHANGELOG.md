@@ -8,6 +8,11 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🚀 Added **resource history**: per-process CPU/memory charts with peak indicators.
+- 🚀 Added **history duration** setting to control resource history retention (1-120 min).
+
 ## 2.0.0 - 2026-02-14
 
 ### 🚀 Features

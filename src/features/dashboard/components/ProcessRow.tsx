@@ -15,6 +15,7 @@ type ProcessRowProps = {
   index: number;
   rootDirectory: string;
   onOpenModal: (processName: string) => void;
+  onOpenResourceDrawer: (processName: string) => void;
 };
 
 export const ProcessRow = (props: ProcessRowProps) => {
@@ -152,6 +153,7 @@ export const ProcessRow = (props: ProcessRowProps) => {
           <ProcessResources
             resources={resources()}
             isRunning={isProcessActive(status())}
+            onViewMore={() => props.onOpenResourceDrawer(props.process.name)}
           />
         </td>
       </Show>

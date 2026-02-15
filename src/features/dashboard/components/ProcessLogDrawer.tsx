@@ -18,6 +18,7 @@ type ProcessLogDrawerProps = {
   processName: string;
   isOpen: boolean;
   onClose: () => void;
+  onOpenResourceDrawer?: () => void;
 };
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
@@ -118,6 +119,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         <LogDrawerHeader
           processName={props.processName}
           onClose={props.onClose}
+          onOpenResourceDrawer={props.onOpenResourceDrawer}
         />
 
         <LogSearchBar

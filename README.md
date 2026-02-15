@@ -57,7 +57,7 @@
 - **Environment variables**: Set custom env vars per process, editable before launch, merged with system environment
 - **Auto-restart**: Automatically restart crashed processes with configurable retry limits
 - **Process grouping**: Organize processes into collapsible groups with per-group start/stop
-- **Resource monitoring**: Real-time CPU and memory usage per process
+- **Resource monitoring**: Real-time CPU and memory usage per process, with historical charts
 - **Log export**: Export process logs as plain text files for sharing or debugging
 - **Settings panel**: Customize theme, log buffer, notifications, grouping, and resource monitor display
 
@@ -250,13 +250,14 @@ processes:
 
 Click the **cog icon** in the navigation bar to open the settings panel. Changes are applied instantly and persisted across sessions.
 
-| Setting               | Type   | Default | Description                                            |
-| --------------------- | ------ | ------- | ------------------------------------------------------ |
-| Theme                 | Toggle | Nord    | Switch between Nord (light) and Forest (dark) themes   |
-| Show grouping         | Toggle | On      | Show processes in collapsible groups or as a flat list |
-| Show resource monitor | Toggle | On      | Show or hide CPU/memory usage columns                  |
-| Log buffer size       | Number | 10000   | Maximum log lines kept per process (100-50,000)        |
-| Show notifications    | Toggle | On      | Enable or suppress toast notifications                 |
+| Setting                  | Type   | Default | Description                                            |
+| ------------------------ | ------ | ------- | ------------------------------------------------------ |
+| Theme                    | Toggle | Nord    | Switch between Nord (light) and Forest (dark) themes   |
+| Show grouping            | Toggle | On      | Show processes in collapsible groups or as a flat list  |
+| Show resource monitor    | Toggle | On      | Show or hide CPU/memory usage columns                  |
+| Log buffer size          | Number | 10000   | Maximum log lines kept per process (100-50,000)        |
+| Show notifications       | Toggle | On      | Enable or suppress toast notifications                 |
+| History duration (min)   | Number | 15      | Minutes of resource history to retain per process (1-120) |
 
 ## 🚀 Usage
 

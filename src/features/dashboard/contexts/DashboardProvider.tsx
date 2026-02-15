@@ -77,6 +77,9 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     stopGroup: grouping.stopGroup,
     // Resources
     getProcessResources: resources.getProcessResources,
+    getProcessResourceHistory: resources.getProcessResourceHistory,
+    getProcessSessionPeaks: resources.getProcessSessionPeaks,
+    getProcessWindowPeaks: resources.getProcessWindowPeaks,
   };
 
   return (

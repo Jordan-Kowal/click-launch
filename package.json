@@ -47,7 +47,8 @@
   "dependencies": {
     "@tanstack/solid-virtual": "3.13.18",
     "fix-path": "5.0.0",
-    "js-yaml": "4.1.1"
+    "js-yaml": "4.1.1",
+    "lightweight-charts": "5.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.14",

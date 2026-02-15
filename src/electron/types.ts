@@ -89,6 +89,12 @@ export type ProcessResourceData = {
 
 export type BulkProcessResourcesResult = Record<ProcessId, ProcessResourceData>;
 
+export type ResourceHistoryEntry = {
+  timestamp: number;
+  cpu: number;
+  memoryBytes: number;
+};
+
 export type ProcessRestartData = {
   processId: ProcessId;
   retryCount: number;
