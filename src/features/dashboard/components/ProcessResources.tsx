@@ -51,7 +51,7 @@ export const ProcessResources = (props: ProcessResourcesProps) => {
       <Show when={props.onViewMore}>
         <button
           type="button"
-          class="btn btn-ghost btn-xs gap-1 px-1 mt-0.5"
+          class="btn btn-link btn-xs gap-1 mt-0.5 px-0! self-start"
           onClick={props.onViewMore}
           title="View resource history"
         >
