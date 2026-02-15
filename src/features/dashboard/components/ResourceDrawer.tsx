@@ -2,8 +2,8 @@ import { createEffect, onCleanup, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
 import { formatBytes, formatCpu } from "@/utils/formatters";
 import { useDashboardContext } from "../contexts";
-import { LightweightResourceChart } from "./LightweightResourceChart";
-import { ResourceDrawerHeader } from "./ResourceDrawerHeader";
+import { ProcessDrawerHeader } from "./ProcessDrawerHeader";
+import { ResourceChart } from "./ResourceChart";
 
 type ResourceDrawerProps = {
   processName: string;
@@ -43,7 +43,8 @@ export const ResourceDrawer = (props: ResourceDrawerProps) => {
         aria-label="Close drawer"
       />
       <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6 relative overflow-y-auto">
-        <ResourceDrawerHeader
+        <ProcessDrawerHeader
+          title="Resources"
           processName={props.processName}
           onClose={props.onClose}
         />
@@ -103,8 +104,13 @@ export const ResourceDrawer = (props: ResourceDrawerProps) => {
                 </Show>
               </div>
             </div>
-            <div class="rounded-box bg-base-200 p-2">
-              <LightweightResourceChart history={history} theme={theme} />
+            <div class="rounded-box bg-base-200 p-2 flex-1 flex flex-col min-h-0">
+              <ResourceChart
+                history={history}
+                theme={theme}
+                historyMinutes={() => settings().resourceHistoryMinutes}
+                sessionPeakMemory={() => sessionPeaks()?.memoryBytes ?? 0}
+              />
             </div>
           </div>
         </Show>

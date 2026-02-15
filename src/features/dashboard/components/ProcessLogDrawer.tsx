@@ -3,6 +3,7 @@ import { useSettingsContext } from "@/contexts";
 import { useToast } from "@/hooks";
 import { formatLogsAsText, generateExportFilename } from "@/utils/logExport";
 import { useDashboardContext } from "../contexts";
+import { isProcessActive } from "../enums";
 import {
   useDrawerKeyboard,
   useLogScroll,
@@ -10,9 +11,10 @@ import {
   useLogStore,
 } from "../hooks";
 import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
-import { LogDrawerHeader } from "./LogDrawerHeader";
 import { LogSearchBar } from "./LogSearchBar";
 import { LogVirtualList } from "./LogVirtualList";
+import { ProcessDrawerHeader } from "./ProcessDrawerHeader";
+import { ProcessResources } from "./ProcessResources";
 
 type ProcessLogDrawerProps = {
   processName: string;
@@ -22,8 +24,16 @@ type ProcessLogDrawerProps = {
 };
 
 export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
-  const { yamlConfig, rootDirectory, getProcessId } = useDashboardContext();
+  const {
+    yamlConfig,
+    rootDirectory,
+    getProcessId,
+    getProcessStatus,
+    getProcessResources,
+  } = useDashboardContext();
   const { settings } = useSettingsContext();
+  const resources = () => getProcessResources(props.processName);
+  const isRunning = () => isProcessActive(getProcessStatus(props.processName));
   const toast = useToast();
 
   let searchInputRef: HTMLInputElement | undefined;
@@ -116,11 +126,17 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         aria-label="Close drawer"
       />
       <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6 relative">
-        <LogDrawerHeader
+        <ProcessDrawerHeader
+          title="Logs"
           processName={props.processName}
           onClose={props.onClose}
-          onOpenResourceDrawer={props.onOpenResourceDrawer}
-        />
+        >
+          <ProcessResources
+            resources={resources()}
+            isRunning={isRunning()}
+            onViewMore={props.onOpenResourceDrawer}
+          />
+        </ProcessDrawerHeader>
 
         <LogSearchBar
           searchInputRef={(el) => {
