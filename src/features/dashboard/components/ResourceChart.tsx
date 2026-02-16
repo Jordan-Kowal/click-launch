@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import type { ResourceHistoryEntry } from "@/electron/types";
@@ -12,7 +12,6 @@ type ResourceChartProps = {
 };
 
 const MEMORY_STEP = 256 * 1024 * 1024; // 256 MB
-const LEGEND_HEIGHT = 30;
 const MIN_CHART_HEIGHT = 200;
 
 const getThemeColor = (varName: string): string => {
@@ -42,6 +41,11 @@ const formatHHMM = (epochSec: number): string => {
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
 };
 
+const formatHHMMSS = (epochSec: number): string => {
+  const d = new Date(epochSec * 1000);
+  return `${padTime(d.getHours())}:${padTime(d.getMinutes())}:${padTime(d.getSeconds())}`;
+};
+
 type ThemeColors = {
   cpuColor: string;
   memoryColor: string;
@@ -56,12 +60,21 @@ const resolveThemeColors = (): ThemeColors => ({
   base300: getThemeColor("--color-base-300"),
 });
 
+type TooltipData = {
+  left: number;
+  top: number;
+  time: string;
+  cpu: string;
+  mem: string;
+};
+
 const buildOpts = (
   width: number,
   height: number,
   historyMinutes: number,
   memMax: number,
   colors: ThemeColors,
+  onCursor: (u: uPlot) => void,
 ): uPlot.Options => {
   const nowSec = Math.floor(Date.now() / 1000);
   const minSec = nowSec - historyMinutes * 60;
@@ -69,23 +82,14 @@ const buildOpts = (
   return {
     width,
     height,
-    cursor: {
-      drag: { setScale: false },
-    },
+    legend: { show: false },
+    cursor: { drag: { setScale: false } },
+    hooks: { setCursor: [onCursor] },
     select: { show: false, left: 0, top: 0, width: 0, height: 0 },
     scales: {
-      x: {
-        auto: false,
-        range: [minSec, nowSec],
-      },
-      cpu: {
-        auto: false,
-        range: [0, 100],
-      },
-      mem: {
-        auto: false,
-        range: [0, memMax],
-      },
+      x: { auto: false, range: [minSec, nowSec] },
+      cpu: { auto: false, range: [0, 100] },
+      mem: { auto: false, range: [0, memMax] },
     },
     series: [
       {},
@@ -152,17 +156,55 @@ const historyToData = (
 };
 
 const chartHeight = (containerHeight: number): number =>
-  Math.max((containerHeight || 400) - LEGEND_HEIGHT, MIN_CHART_HEIGHT);
+  Math.max(containerHeight || 400, MIN_CHART_HEIGHT);
 
 export const ResourceChart = (props: ResourceChartProps) => {
   let wrapper!: HTMLDivElement;
+  let tooltipEl!: HTMLDivElement;
   let chart: uPlot | null = null;
   let colors: ThemeColors | null = null;
   let resizeObserver: ResizeObserver | null = null;
   let lastWidth = 0;
   let lastHeight = 0;
 
+  const [tooltip, setTooltip] = createSignal<TooltipData | null>(null);
+
   const getMemMax = () => ceilMemoryScale(props.sessionPeakMemory());
+
+  const onCursor = (u: uPlot) => {
+    const { left, top, idx } = u.cursor;
+    if (idx == null || left == null || top == null || left < 0) {
+      setTooltip(null);
+      return;
+    }
+    const dataLen = u.data[0].length;
+    if (
+      dataLen === 0 ||
+      u.posToVal(left, "x") < u.data[0][0] ||
+      u.posToVal(left, "x") > u.data[0][dataLen - 1]
+    ) {
+      setTooltip(null);
+      return;
+    }
+    const cpu = u.data[1][idx];
+    const mem = u.data[2][idx];
+
+    // Diagonal positioning: top-right, flip down if no room above
+    const ttH = tooltipEl?.offsetHeight ?? 50;
+    const ttW = tooltipEl?.offsetWidth ?? 100;
+    let posLeft = left;
+    if (posLeft + ttW > u.over.clientWidth) posLeft = left - ttW;
+    let posTop = top - ttH;
+    if (posTop < 0) posTop = top + 40;
+
+    setTooltip({
+      left: posLeft,
+      top: posTop,
+      time: formatHHMMSS(u.data[0][idx]),
+      cpu: cpu != null ? `${cpu.toFixed(1)}%` : "-",
+      mem: mem != null ? formatBytes(mem) : "-",
+    });
+  };
 
   const buildChart = () => {
     if (chart) {
@@ -182,6 +224,7 @@ export const ResourceChart = (props: ResourceChartProps) => {
       props.historyMinutes(),
       getMemMax(),
       colors,
+      onCursor,
     );
     const data = historyToData(props.history());
     chart = new uPlot(opts, data, wrapper);
@@ -207,7 +250,6 @@ export const ResourceChart = (props: ResourceChartProps) => {
     const history = props.history();
     if (!chart || !colors) return;
 
-    // Update x-axis range and memory scale without rebuilding
     const nowSec = Math.floor(Date.now() / 1000);
     const minSec = nowSec - props.historyMinutes() * 60;
     chart.setScale("x", { min: minSec, max: nowSec });
@@ -226,5 +268,25 @@ export const ResourceChart = (props: ResourceChartProps) => {
     chart?.destroy();
   });
 
-  return <div ref={wrapper!} class="flex-1 min-h-0" />;
+  return (
+    <div class="relative flex-1 min-h-0">
+      <div ref={wrapper!} class="absolute inset-0" />
+      <Show when={tooltip()}>
+        {(tt) => (
+          <div
+            ref={tooltipEl!}
+            class="absolute z-10 pointer-events-none whitespace-pre rounded-md border border-base-300 bg-base-100/90 px-2.5 py-1.5 text-xs shadow-lg"
+            style={{
+              left: `${tt().left}px`,
+              top: `${tt().top}px`,
+            }}
+          >
+            <div class="font-semibold">{tt().time}</div>
+            <div>CPU: {tt().cpu}</div>
+            <div>Mem: {tt().mem}</div>
+          </div>
+        )}
+      </Show>
+    </div>
+  );
 };
