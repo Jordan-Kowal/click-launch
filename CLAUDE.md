@@ -48,13 +48,21 @@ When in doubt: default to feature-specific (easier to promote later)
 
 ## Code Style
 
-### File Naming
+### Global
+
+- Descriptive names: `isLoading`, `hasError`, `canSubmit`
+- Named constants over magic numbers
+- Minimal external dependencies — prefer standard library / built-in solutions
+
+### Frontend (TypeScript / SolidJS)
+
+**File Naming:**
 
 - Components: `PascalCase.tsx`
 - Hooks: `useCamelCase.ts`
 - Utilities/Types/Config: `camelCase.ts`
 
-### Barrel Exports
+**Barrel Exports:**
 
 Use `index.ts` at every level **except** `src/components/`:
 
@@ -64,85 +72,104 @@ Use `index.ts` at every level **except** `src/components/`:
 ❌ src/components/index.ts (no root barrel)
 ```
 
-### TypeScript
+**TypeScript:**
 
 - Use `type` over `interface`
 - Arrow functions for pure functions
-- Descriptive names: `isLoading`, `hasError`, `canSubmit`
-- Named constants over magic numbers
 - Named exports only (no default exports, except for page components)
 - No SSR/server components—this is a static frontend
 
-### Styling (DaisyUI + Tailwind)
+**Linting & Formatting:**
 
-**DaisyUI First:**
+- Biome handles both linting and formatting (see `biome.json`)
+- Biome auto-runs on save: removes unused imports, sorts imports alphabetically
 
-- ✅ Use DaisyUI components for UI elements: `btn`, `modal`, `card`, `menu`, `kbd`, `badge`, etc.
-- ✅ Use DaisyUI semantic colors: `bg-base-100`, `text-base-content`, `btn-primary`, etc.
-- ✅ Use DaisyUI modifiers: `btn-sm`, `btn-ghost`, `modal-open`, `rounded-box`, etc.
-- ✅ Refer to the DaisyUI documentation for available modifiers and components.
-- ❌ Avoid raw Tailwind for things DaisyUI handles (buttons, modals, cards, menus, etc.)
+**Styling (DaisyUI + Tailwind):**
 
-**Tailwind for Fine-Tuning:**
+- ✅ DaisyUI first for UI elements (`btn`, `modal`, `card`, `menu`, `kbd`, `badge`) and semantic colors (`bg-base-100`, `text-base-content`, `btn-primary`)
+- ✅ Refer to the DaisyUI documentation for available modifiers and components
+- ✅ Tailwind for layout (`flex`, `grid`, `gap-*`), positioning, spacing, transitions, and custom sizing
+- ❌ Avoid raw Tailwind for things DaisyUI handles
 
-- ✅ Use Tailwind for layout: `flex`, `grid`, `gap-*`, `space-y-*`
-- ✅ Use Tailwind for positioning: `absolute`, `relative`, `inset-0`
-- ✅ Use Tailwind for spacing adjustments: `mt-4`, `px-2`, `py-1.5`
-- ✅ Use Tailwind for transitions: `transition-opacity`, `duration-200`
-- ✅ Use Tailwind for custom sizing when DaisyUI sizes don't fit
+**SolidJS Control Flow (Critical):**
 
-### SolidJS Patterns
-
-**Control Flow (Critical):**
-
-- ✅ Use `<Show>` instead of ternaries for conditionals
-- ✅ Use `<For>` instead of `.map()` for lists
-- ✅ Use `<Switch>`/`<Match>` for multiple conditions
+- ✅ `<Show>` for conditionals, `<For>` for lists, `<Switch>`/`<Match>` for multiple conditions
 - ❌ NEVER use ternaries for component rendering
 - ❌ NEVER use `.map()` for rendering lists
 
-**Reactivity:**
+**SolidJS Reactivity:**
 
-- ✅ `createSignal` for primitive local state
-- ✅ `createStore` for complex/nested objects
-- ✅ `createMemo` for derived values (avoid inline computations in JSX)
-- ✅ `createEffect` only for side effects, not derivations
-- ✅ Signals called as functions in JSX: `{count()}` not `{count}`
+- `createSignal` for primitive local state
+- `createStore` for complex/nested objects
+- `createMemo` for derived values (avoid inline computations in JSX)
+- `createEffect` only for side effects, not derivations
+- Signals called as functions in JSX: `{count()}` not `{count}`
 
-**Async & Error Handling:**
+**SolidJS Async & Error Handling:**
 
-- ✅ Async boundaries wrapped with `<Suspense>`
-- ✅ Error boundaries with `<ErrorBoundary>`
-- ✅ Proper fallback components
+- Async boundaries wrapped with `<Suspense>`
+- Error boundaries with `<ErrorBoundary>`
+- Proper fallback components
 
 **Router:**
 
-- ✅ Route definitions in `src/routes.tsx`
-- ✅ Centralized `routePaths` constant exported from `src/routes.tsx`
-- ✅ Use `useNavigate()` for programmatic navigation
-- ✅ Use `<A>` component for declarative navigation
-- ✅ Feature-specific routes in `src/features/{name}/routes.ts(x)`
+- Route definitions in `src/routes.tsx`, centralized `routePaths` constant
+- `useNavigate()` for programmatic, `<A>` for declarative navigation
+- Feature-specific routes in `src/features/{name}/routes.ts(x)`
 
-### Electron Patterns
+**Electron Patterns (legacy, being migrated to Wails):**
 
-**IPC (Inter-Process Communication):**
+- Type-safe channels in `src/electron/types.ts`, enums in `src/electron/enums.ts`
+- Renderer uses `window.electron.invoke()`, main uses `webContents.send()`
+- Context isolation enabled, node integration disabled
+- Minimal main process — keep logic in renderer when possible
 
-- ✅ Type-safe channels in `src/electron/types.ts`
-- ✅ Channel enums in `src/electron/enums.ts`
-- ✅ Renderer uses `window.electron.invoke()`, main uses `webContents.send()`
-- ✅ Always validate payloads on both sides
-- ✅ Preload scripts for safe renderer-main communication
+### Backend (Go / Wails)
 
-**Security:**
+**File Naming:**
 
-- ✅ Context isolation enabled, node integration disabled
-- ✅ Validate all IPC messages
-- ✅ Use CSP headers, disable eval
-- ✅ Follow Electron security checklist
+- Source: `snake_case.go`, tests: `snake_case_test.go`
+- Exported types/functions: `PascalCase`, unexported: `camelCase`
+- Avoid redundancy in package context (e.g. `process.Start` not `process.ProcessStart`)
 
-**Architecture:**
+**Structure:**
 
-- ✅ Minimal main process (keep logic in renderer when possible)
-- ✅ Renderer for UI, main for native APIs (file system, notifications)
-- ✅ Proper window/lifecycle management
-- ✅ Exclude unnecessary Node.js modules from renderer bundle
+- Services as Go structs registered with Wails via `application.NewService()`
+- One service per domain: `config_service.go`, `process_service.go`, `resource_service.go`, `file_service.go`, `app_service.go`
+- Exported methods auto-generate TypeScript bindings via `wails3 generate bindings`
+- Main → renderer streaming uses Wails events (`app.Event.Emit()`)
+
+**Linting & Formatting:**
+
+- `gofmt` for formatting (ships with Go, zero config)
+- `golangci-lint` for linting (configured via `.golangci.yml`)
+- Equivalent of `biome check --write`: `gofmt -w . && golangci-lint run --fix`
+
+**Error Handling:**
+
+- Wrap errors with context: `fmt.Errorf("starting process: %w", err)`
+- Custom error types for known conditions, sentinel errors where appropriate
+- Never panic except for genuine programming errors
+- Handle errors at appropriate levels, don't catch everywhere
+
+**Concurrency:**
+
+- `context.Context` for cancellation and deadlines in blocking operations
+- Channels for orchestration, `sync.Mutex`/`sync.RWMutex` for shared state
+- Goroutine lifecycle management with proper cleanup (`defer`, `context`)
+- Worker pools with bounded concurrency to prevent resource exhaustion
+
+**Design:**
+
+- Accept interfaces, return structs
+- Keep interfaces small and single-purpose
+- Functional options pattern for flexible API configuration
+- Dependency injection via interfaces for testability
+- Explicit over implicit — clarity trumps cleverness
+
+**Testing:**
+
+- `go test ./...` must pass, race detector: `go test -race ./...`
+- Table-driven tests with subtests (`t.Run`)
+- Mock external dependencies via interfaces
+- Test fixtures in `testdata/` directories
