@@ -11,8 +11,7 @@
 ## TBD
 
 - 🚀 Added **restart button** for running processes: quickly restart a process without manually stopping and starting it.
-- 🚀 Added **resource history**: per-process CPU/memory charts with peak indicators.
-- 🚀 Added **history duration** setting to control resource history retention (1-120 min).
+- 🚀 Added **resource history**: per-process CPU/memory charts with peak indicators with 15-minute retention (customizable in the settings panel)
 
 ## 2.0.0 - 2026-02-14
 
