@@ -67,7 +67,7 @@ export const ProcessTable = () => {
                     <Show when={settings().showResourceMonitor}>
                       <th class="w-32 shrink-0">Resources</th>
                     </Show>
-                    <th class="w-32 shrink-0">Actions</th>
+                    <th class="w-40 shrink-0">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -93,7 +93,7 @@ export const ProcessTable = () => {
                                 process={process}
                                 index={index()}
                                 rootDirectory={rootDirectory()!}
-                                onOpenModal={openModal}
+                                onOpenLogs={openModal}
                                 onOpenResourceDrawer={openResourceDrawer}
                               />
                             )}

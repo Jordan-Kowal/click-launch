@@ -244,6 +244,11 @@ export const useProcesses = ({
     }
   };
 
+  const restartProcess = async (processName: string) => {
+    await stopProcess(processName);
+    await startProcess(processName);
+  };
+
   // Context API methods
   const getProcessData = (processName: string): ProcessData | undefined => {
     return processesData[processName];
@@ -301,5 +306,6 @@ export const useProcesses = ({
     setEnvValue,
     startProcess,
     stopProcess,
+    restartProcess,
   };
 };

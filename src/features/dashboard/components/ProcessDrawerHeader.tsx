@@ -2,7 +2,7 @@ import { ArrowLeft, X } from "lucide-solid";
 import { type JSX, Match, Switch } from "solid-js";
 import { useDashboardContext } from "../contexts";
 import { ProcessStatus } from "../enums";
-import { PlayStopButton } from "./PlayStopButton";
+import { ProcessActions } from "./ProcessActions";
 
 type ProcessDrawerHeaderProps = {
   title: string;
@@ -29,7 +29,7 @@ export const ProcessDrawerHeader = (props: ProcessDrawerHeaderProps) => {
         <h3 class="font-bold m-0!">
           {props.title} - {props.processName}
         </h3>
-        <PlayStopButton processName={props.processName} />
+        <ProcessActions processName={props.processName} />
         <Switch>
           <Match when={status() === ProcessStatus.RUNNING}>
             <div class="badge badge-primary">Running</div>

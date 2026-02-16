@@ -67,6 +67,7 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     setEnvValue: processes.setEnvValue,
     startProcess: processes.startProcess,
     stopProcess: processes.stopProcess,
+    restartProcess: processes.restartProcess,
     // Grouping
     hasGroups: grouping.hasGroups,
     getGroupedProcesses: grouping.getGroupedProcesses,

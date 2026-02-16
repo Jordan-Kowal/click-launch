@@ -1,10 +1,10 @@
-import { ChevronDown, ChevronUp, ScrollText } from "lucide-solid";
+import { ChevronDown, ChevronUp } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
 import type { ProcessConfig } from "@/electron/types";
 import { useDashboardContext } from "../contexts/";
 import { isProcessActive, ProcessStatus } from "../enums";
-import { PlayStopButton } from "./PlayStopButton";
+import { ProcessActions } from "./ProcessActions";
 import { ProcessArg } from "./ProcessArg";
 import { ProcessDuration } from "./ProcessDuration";
 import { ProcessEnvVar } from "./ProcessEnvVar";
@@ -14,7 +14,7 @@ type ProcessRowProps = {
   process: ProcessConfig;
   index: number;
   rootDirectory: string;
-  onOpenModal: (processName: string) => void;
+  onOpenLogs: (processName: string) => void;
   onOpenResourceDrawer: (processName: string) => void;
 };
 
@@ -48,7 +48,6 @@ export const ProcessRow = (props: ProcessRowProps) => {
   const [showOptions, setShowOptions] = createSignal(false);
 
   const toggleOptions = () => setShowOptions(!showOptions());
-  const openModal = () => props.onOpenModal(props.process.name);
 
   const statusVariant = createMemo(() => {
     switch (status()) {
@@ -157,18 +156,11 @@ export const ProcessRow = (props: ProcessRowProps) => {
           />
         </td>
       </Show>
-      <td class="align-top w-32 shrink-0 p-2!">
-        <div class="flex items-center gap-2">
-          <PlayStopButton processName={props.process.name} />
-          <button
-            type="button"
-            class="btn btn-circle btn-outline btn-sm"
-            onClick={openModal}
-            title="View logs"
-          >
-            <ScrollText size={16} />
-          </button>
-        </div>
+      <td class="align-top w-40 shrink-0 p-2!">
+        <ProcessActions
+          processName={props.process.name}
+          onOpenLogs={() => props.onOpenLogs(props.process.name)}
+        />
       </td>
     </tr>
   );

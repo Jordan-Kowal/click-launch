@@ -62,6 +62,7 @@ export type DashboardContextType = {
   ) => { cpu: number; memoryBytes: number } | undefined;
   startProcess: (processName: string) => Promise<void>;
   stopProcess: (processName: string) => Promise<void>;
+  restartProcess: (processName: string) => Promise<void>;
 };
 
 export const DashboardContext = createContext<DashboardContextType | undefined>(
