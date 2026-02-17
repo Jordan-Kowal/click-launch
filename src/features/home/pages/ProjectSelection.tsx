@@ -1,3 +1,4 @@
+import { FileService } from "@backend";
 import { onMount } from "solid-js";
 import { HeroLayout } from "@/components/layout";
 import { useAppStorageContext } from "@/contexts";
@@ -10,8 +11,7 @@ const ProjectSelection = () => {
     const projectList = projects();
     if (projectList.length === 0) return;
     try {
-      const [, invalidPaths] =
-        await window.electronAPI.validatePaths(projectList);
+      const [, invalidPaths] = await FileService.ValidatePaths(projectList);
       if (invalidPaths.length === 0) return;
       removeProjects(invalidPaths);
     } catch (error) {

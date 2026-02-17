@@ -34,7 +34,8 @@
     // Paths
     "paths": {
       "@/*": ["./src/*"],
-      "@electron/*": ["./electron/*"]
+      "@electron/*": ["./electron/*"],
+      "@backend": ["./frontend/bindings/github.com/Jordan-Kowal/click-launch/backend"]
     },
 
     // Output

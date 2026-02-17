@@ -68,6 +68,7 @@ export default defineConfig(() => ({
     alias: {
       "@": resolve(__dirname, "./src"),
       "@electron": resolve(__dirname, "./electron"),
+      "@backend": resolve(__dirname, "./frontend/bindings/github.com/Jordan-Kowal/click-launch/backend"),
     },
   },
   base: "./",

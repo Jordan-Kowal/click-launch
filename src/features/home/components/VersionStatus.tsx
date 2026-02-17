@@ -1,3 +1,4 @@
+import { AppService } from "@backend";
 import { Check, Download } from "lucide-solid";
 import { createSignal, onMount, Show } from "solid-js";
 import { getCurrentVersion, getLatestVersion } from "@/utils/versionCheck";
@@ -19,7 +20,7 @@ export const VersionStatus = () => {
     ].join("\n\n");
     const confirmed = confirm(message);
     if (confirmed) {
-      window.electronAPI.installUpdate();
+      AppService.InstallUpdate();
     }
   };
 

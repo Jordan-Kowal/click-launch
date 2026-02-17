@@ -1,3 +1,4 @@
+import { ProcessService } from "@backend";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { Square } from "lucide-solid";
 import {
@@ -49,7 +50,7 @@ const Dashboard = () => {
   let modalRef!: HTMLDialogElement;
 
   const handleReloadConfirm = async () => {
-    await window.electronAPI.stopAllProcesses();
+    await ProcessService.StopAll();
     window.location.reload();
   };
 
@@ -65,7 +66,7 @@ const Dashboard = () => {
   };
 
   const handleStopAll = async () => {
-    await window.electronAPI.stopAllProcesses();
+    await ProcessService.StopAll();
   };
 
   onMount(() => {

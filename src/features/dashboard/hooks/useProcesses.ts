@@ -1,9 +1,12 @@
+import { ProcessService } from "@backend";
+import { Events } from "@wailsio/runtime";
 import { createEffect, createMemo, on, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import type {
   ProcessCrashData,
   ProcessId,
   ProcessRestartData,
+  WailsEvent,
   YamlConfig,
 } from "@/electron/types";
 import { useToast } from "@/hooks";
@@ -103,12 +106,19 @@ export const useProcesses = ({
 
   // Set up crash and restart event listeners
   createEffect(() => {
-    window.electronAPI.onProcessCrash(handleProcessCrash);
-    window.electronAPI.onProcessRestart(handleProcessRestart);
+    const offCrash = Events.On(
+      "process-crash",
+      (event: WailsEvent<ProcessCrashData>) => handleProcessCrash(event.data),
+    );
+    const offRestart = Events.On(
+      "process-restart",
+      (event: WailsEvent<ProcessRestartData>) =>
+        handleProcessRestart(event.data),
+    );
 
     onCleanup(() => {
-      window.electronAPI.removeProcessCrashListener();
-      window.electronAPI.removeProcessRestartListener();
+      offCrash();
+      offRestart();
     });
   });
 
@@ -155,8 +165,7 @@ export const useProcesses = ({
       }
 
       const processIds = activeProcesses.map((p) => p.pid);
-      const statusMap =
-        await window.electronAPI.getBulkProcessStatus(processIds);
+      const statusMap = await ProcessService.BulkStatus(processIds);
 
       activeProcesses.forEach(({ name, pid }) => {
         const currentStatus = processesData[name]?.status;
@@ -196,19 +205,12 @@ export const useProcesses = ({
     const command = computeCommand(processName);
     const restartConfig = processConfig.restart
       ? { ...processConfig.restart }
-      : undefined;
+      : null;
     const cwd = resolveProcessCwd(processConfig);
     const storeEnv = processesData[processName]?.envValues;
     const env =
-      storeEnv && Object.keys(storeEnv).length > 0
-        ? { ...storeEnv }
-        : undefined;
-    const result = await window.electronAPI.startProcess(
-      cwd,
-      command,
-      restartConfig,
-      env,
-    );
+      storeEnv && Object.keys(storeEnv).length > 0 ? { ...storeEnv } : {};
+    const result = await ProcessService.Start(cwd, command, restartConfig, env);
 
     if (result.success && result.processId) {
       setProcessesData(processName, {
@@ -231,7 +233,7 @@ export const useProcesses = ({
     if (!pid) return;
 
     setProcessesData(processName, "status", ProcessStatus.STOPPING);
-    const result = await window.electronAPI.stopProcess(pid);
+    const result = await ProcessService.Stop(pid);
 
     if (result.success) {
       setProcessesData(processName, {

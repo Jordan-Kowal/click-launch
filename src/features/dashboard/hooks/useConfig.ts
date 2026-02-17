@@ -1,3 +1,4 @@
+import { ConfigService } from "@backend";
 import { createEffect, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useAppStorageContext } from "@/contexts";
@@ -18,7 +19,7 @@ export const useConfig = (selectedFile: string) => {
 
   const parseFile = async () => {
     setIsLoading(true);
-    const result = await window.electronAPI.validateYaml(selectedFile);
+    const result = await ConfigService.Validate(selectedFile);
 
     if (result?.isValid && result?.config) {
       setYamlData({

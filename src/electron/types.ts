@@ -1,5 +1,7 @@
 import type { ArgType, LogType } from "./enums";
 
+export type WailsEvent<T> = { data: T };
+
 export type ProcessEnv = Record<string, string>;
 
 export type RestartConfig = {
@@ -109,51 +111,3 @@ export type ProcessCrashData = {
   willRestart: boolean;
   timestamp: string;
 };
-
-export interface ElectronAPI {
-  platform: string;
-  version: string;
-  installUpdate: () => Promise<void>;
-  // App utils
-  getResourcePath: (filename: string) => Promise<string>;
-  openFileDialog: () => Promise<string | undefined>;
-  openFolderDialog: () => Promise<string | undefined>;
-  validateYaml: (filePath: string) => Promise<ValidationResult>;
-  validatePaths: (filePaths: string[]) => Promise<[string[], string[]]>;
-  // Process management
-  startProcess: (
-    cwd: string,
-    command: string,
-    restartConfig?: RestartConfig,
-    env?: ProcessEnv,
-  ) => Promise<ProcessStartResult>;
-  stopProcess: (processId: ProcessId) => Promise<ProcessStopResult>;
-  getProcessStatus: (processId: ProcessId) => Promise<boolean>;
-  getBulkProcessStatus: (
-    processIds: ProcessId[],
-  ) => Promise<BulkProcessStatusResult>;
-  stopAllProcesses: () => Promise<{ success: boolean }>;
-  getProcessResources: (
-    processIds: ProcessId[],
-  ) => Promise<BulkProcessResourcesResult>;
-  // File operations
-  writeFile: (
-    dirPath: string,
-    fileName: string,
-    content: string,
-  ) => Promise<string>;
-  // Process log streaming (batched)
-  onProcessLogBatch: (callback: (logs: ProcessLogData[]) => void) => void;
-  removeProcessLogBatchListener: () => void;
-  // Process restart events
-  onProcessRestart: (callback: (data: ProcessRestartData) => void) => void;
-  removeProcessRestartListener: () => void;
-  onProcessCrash: (callback: (data: ProcessCrashData) => void) => void;
-  removeProcessCrashListener: () => void;
-}
-
-declare global {
-  interface Window {
-    electronAPI: ElectronAPI;
-  }
-}

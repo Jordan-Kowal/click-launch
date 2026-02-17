@@ -1,7 +1,8 @@
+import { Events } from "@wailsio/runtime";
 import { createEffect, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { LogType } from "@/electron/enums";
-import type { ProcessLogData, YamlConfig } from "@/electron/types";
+import type { ProcessLogData, WailsEvent, YamlConfig } from "@/electron/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 
 export type LogWithId = ProcessLogData & { id: string };
@@ -105,14 +106,17 @@ export const useLogStore = ({
 
   // Listen for batched logs from all processes
   createEffect(() => {
-    window.electronAPI.onProcessLogBatch((logs) => {
-      for (const logData of logs) {
-        addLog(logData);
-      }
-    });
+    const off = Events.On(
+      "process-log:batch",
+      (event: WailsEvent<ProcessLogData[]>) => {
+        for (const logData of event.data) {
+          addLog(logData);
+        }
+      },
+    );
 
     onCleanup(() => {
-      window.electronAPI.removeProcessLogBatchListener();
+      off();
       clearBatchTimer();
       flushLogs();
     });

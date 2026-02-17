@@ -1,3 +1,4 @@
+import { ProcessService, ResourceService } from "@backend";
 import { onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useSettingsContext } from "@/contexts";
@@ -65,8 +66,8 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
       }
 
       const processIds = activeProcesses.map((p) => p.pid);
-      const resources =
-        await window.electronAPI.getProcessResources(processIds);
+      const pidMap = await ProcessService.GetRunningProcessPids(processIds);
+      const resources = await ResourceService.Get(pidMap);
 
       const now = Date.now();
       const retentionMs = settings().resourceHistoryMinutes * 60 * 1000;

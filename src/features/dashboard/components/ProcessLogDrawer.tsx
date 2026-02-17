@@ -1,3 +1,4 @@
+import { FileService } from "@backend";
 import { createStore } from "solid-js/store";
 import { useSettingsContext } from "@/contexts";
 import { useToast } from "@/hooks";
@@ -104,11 +105,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       const content = formatLogsAsText(logs, props.processName);
       const fileName = generateExportFilename(props.processName);
       const dirPath = `${rootDir}/logs/click-launch`;
-      const filePath = await window.electronAPI.writeFile(
-        dirPath,
-        fileName,
-        content,
-      );
+      const filePath = await FileService.WriteFile(dirPath, fileName, content);
       toast.success(`Logs exported to ${filePath}`);
     } catch (error) {
       toast.error(

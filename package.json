@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@tanstack/solid-virtual": "3.13.18",
+    "@wailsio/runtime": "3.0.0-alpha.79",
     "fix-path": "5.0.0",
     "js-yaml": "4.1.1",
     "uplot": "1.6.32"

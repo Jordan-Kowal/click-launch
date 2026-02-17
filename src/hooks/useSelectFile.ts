@@ -1,3 +1,4 @@
+import { FileService } from "@backend";
 import { useNavigate } from "@solidjs/router";
 import { routePaths } from "@/routes";
 import { useToast } from "./useToast";
@@ -8,7 +9,7 @@ export const useSelectFile = () => {
 
   return async () => {
     try {
-      const filePath = await window.electronAPI.openFileDialog();
+      const filePath = await FileService.OpenFileDialog();
       if (filePath) {
         navigate(
           `${routePaths.dashboard}?file=${encodeURIComponent(filePath)}`,

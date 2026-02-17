@@ -1,3 +1,4 @@
+import { ProcessService } from "@backend";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { House, Settings } from "lucide-solid";
 import { createSignal } from "solid-js";
@@ -13,7 +14,7 @@ export const NavBar = () => {
   const [showSettings, setShowSettings] = createSignal(false);
 
   const handleConfirm = async () => {
-    await window.electronAPI.stopAllProcesses();
+    await ProcessService.StopAll();
     navigate(routePaths.projectSelection);
   };
 
