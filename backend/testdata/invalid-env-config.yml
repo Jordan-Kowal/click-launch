@@ -1,0 +1,23 @@
+project_name: "Test Project"
+
+processes:
+  - name: "Process with non-object env (array)"
+    base_command: "echo hello"
+    env:
+      - VAR1
+      - VAR2
+
+  - name: "Process with non-string value (number)"
+    base_command: "echo hello"
+    env:
+      PORT: 3000
+
+  - name: "Process with non-string value (boolean)"
+    base_command: "echo hello"
+    env:
+      ENABLED: true
+
+  - name: "Process with non-string value (null)"
+    base_command: "echo hello"
+    env:
+      NULL_VAR: null

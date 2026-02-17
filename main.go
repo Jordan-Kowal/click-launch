@@ -4,6 +4,7 @@ import (
 	"embed"
 	"log"
 
+	"github.com/Jordan-Kowal/click-launch/backend"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -16,6 +17,10 @@ func main() {
 		Description: "Desktop app for managing your local dev stack",
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
+		},
+		Services: []application.Service{
+			application.NewService(backend.NewConfigService()),
+			application.NewService(backend.NewFileService()),
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: false,

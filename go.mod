@@ -2,7 +2,10 @@ module github.com/Jordan-Kowal/click-launch
 
 go 1.25.0
 
-require github.com/wailsapp/wails/v3 v3.0.0-alpha.72
+require (
+	github.com/wailsapp/wails/v3 v3.0.0-alpha.72
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect

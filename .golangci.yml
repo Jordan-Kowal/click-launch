@@ -16,18 +16,16 @@ linters:
     - prealloc
     - unconvert
     - unparam
-
-linters-settings:
-  goconst:
-    min-len: 3
-    min-occurrences: 3
-  gosec:
-    excludes:
-      - G104 # duplicate of errcheck
-
-issues:
-  exclude-dirs:
-    - node_modules
-    - dist
-    - dist-electron
-    - bin
+  settings:
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+    gosec:
+      excludes:
+        - G104 # duplicate of errcheck
+  exclusions:
+    paths:
+      - node_modules
+      - dist
+      - dist-electron
+      - bin

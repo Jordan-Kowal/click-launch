@@ -1,0 +1,13 @@
+project_name: "CWD Test Project"
+
+processes:
+  - name: "Process with relative cwd"
+    base_command: "echo hello"
+    cwd: "./some-folder"
+
+  - name: "Process with absolute cwd"
+    base_command: "echo world"
+    cwd: "/tmp"
+
+  - name: "Process without cwd"
+    base_command: "echo default"
