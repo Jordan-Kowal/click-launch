@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22" # Cached by github (https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#nodejs)
+          node-version: "24"
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
@@ -80,24 +80,29 @@ jobs:
       - name: Run TSC
         run: pnpm tsc
 
-  tests:
-    needs: setup
+  go-test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: 10
+          go-version: "1.24"
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Run Go tests
+        run: go test -race ./backend/...
+
+  go-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
         with:
-          path: |
-            ~/.pnpm-store
-            ./node_modules
-          key: pnpm-${{ hashFiles('./pnpm-lock.yaml') }}
+          go-version: "1.24"
 
-      - name: Run tests
-        run: pnpm test
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest

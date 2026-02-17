@@ -2,7 +2,7 @@ import { ConfigService } from "@backend";
 import { createEffect, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useAppStorageContext } from "@/contexts";
-import type { ValidationResult, YamlConfig } from "@/electron/types";
+import type { ValidationResult, YamlConfig } from "@/types";
 
 export const useConfig = (selectedFile: string) => {
   const [isLoading, setIsLoading] = createSignal(true);

@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { LogType } from "@/electron/enums";
+import { LogType } from "@/types";
 import type { LogWithId } from "./useLogStore";
 
 const SEARCH_DELAY_MS = 500;

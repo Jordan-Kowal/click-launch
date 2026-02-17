@@ -1,2 +1,0 @@
-This is not a YAML file at all.
-Just plain text content.

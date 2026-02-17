@@ -36,7 +36,19 @@ const readmeContent = readFileSync(readmePath, "utf-8");
 writeFileSync(readmePath, readmeContent.replaceAll(oldVersion, newVersion));
 console.log("  ✓ README.md");
 
-// 5. Update CHANGELOG.md
+// 5. Update build/config.yml (Wails config)
+const wailsConfigPath = resolve(ROOT, "build/config.yml");
+const wailsConfigContent = readFileSync(wailsConfigPath, "utf-8");
+writeFileSync(wailsConfigPath, wailsConfigContent.replace(`version: "${oldVersion}"`, `version: "${newVersion}"`));
+console.log("  ✓ build/config.yml");
+
+// 6. Update main.go (Go app version constant)
+const mainGoPath = resolve(ROOT, "main.go");
+const mainGoContent = readFileSync(mainGoPath, "utf-8");
+writeFileSync(mainGoPath, mainGoContent.replace(`appVersion = "${oldVersion}"`, `appVersion = "${newVersion}"`));
+console.log("  ✓ main.go");
+
+// 7. Update CHANGELOG.md
 const changelogPath = resolve(ROOT, "CHANGELOG.md");
 const changelogContent = readFileSync(changelogPath, "utf-8");
 const today = new Date().toISOString().split("T")[0];
@@ -48,9 +60,9 @@ if (changelogContent.includes("## TBD")) {
   console.log("  ⚠ CHANGELOG.md — no '## TBD' section found, skipping");
 }
 
-// 6. Git commit + tag + push
+// 8. Git commit + tag + push
 console.log("");
-execSync(`git add package.json README.md CHANGELOG.md`, { cwd: ROOT, stdio: "inherit" });
+execSync(`git add package.json README.md CHANGELOG.md build/config.yml main.go`, { cwd: ROOT, stdio: "inherit" });
 execSync(`git commit -m "chore: bump version to ${newVersion}"`, { cwd: ROOT, stdio: "inherit" });
 execSync(`git tag ${newVersion}`, { cwd: ROOT, stdio: "inherit" });
 execSync(`git push`, { cwd: ROOT, stdio: "inherit" });

@@ -34,7 +34,6 @@
     // Paths
     "paths": {
       "@/*": ["./src/*"],
-      "@electron/*": ["./electron/*"],
       "@backend": ["./frontend/bindings/github.com/Jordan-Kowal/click-launch/backend"]
     },
 
@@ -42,6 +41,5 @@
     "outDir": "dist"
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "dist-electron", "node_modules"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["dist", "node_modules"]
 }

@@ -1,8 +1,8 @@
 import { Events } from "@wailsio/runtime";
 import { createEffect, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
-import { LogType } from "@/electron/enums";
-import type { ProcessLogData, WailsEvent, YamlConfig } from "@/electron/types";
+import type { ProcessLogData, WailsEvent, YamlConfig } from "@/types";
+import { LogType } from "@/types";
 import { isLiveUpdate } from "@/utils/ansiToHtml";
 
 export type LogWithId = ProcessLogData & { id: string };

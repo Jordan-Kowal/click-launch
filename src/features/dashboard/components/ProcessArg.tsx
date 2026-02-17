@@ -6,8 +6,8 @@ import {
   Match,
   Switch,
 } from "solid-js";
-import { ArgType } from "@/electron/enums";
-import type { ArgConfig } from "@/electron/types";
+import type { ArgConfig } from "@/types";
+import { ArgType } from "@/types";
 import { useDashboardContext } from "../contexts/";
 import { isProcessActive } from "../enums";
 

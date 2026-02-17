@@ -1,6 +1,6 @@
 import { ChartLine } from "lucide-solid";
 import { createMemo, Show } from "solid-js";
-import type { ProcessResourceData } from "@/electron/types";
+import type { ProcessResourceData } from "@/types";
 import { formatBytes, formatCpu } from "@/utils/formatters";
 
 type ProcessResourcesProps = {

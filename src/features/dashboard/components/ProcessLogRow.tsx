@@ -1,8 +1,8 @@
 import { Copy } from "lucide-solid";
 import { createMemo, For, type JSX } from "solid-js";
-import { LogType } from "@/electron/enums";
-import type { ProcessLogData } from "@/electron/types";
 import { useToast } from "@/hooks";
+import type { ProcessLogData } from "@/types";
+import { LogType } from "@/types";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 
 type ProcessLogRowProps = {

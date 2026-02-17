@@ -9,4 +9,15 @@ updates:
       all:
         patterns: ["*"]
     commit-message:
-      prefix: "[Deps] "
+      prefix: "[Frontend Deps] "
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 1
+    groups:
+      all:
+        patterns: ["*"]
+    commit-message:
+      prefix: "[Backend Deps] "

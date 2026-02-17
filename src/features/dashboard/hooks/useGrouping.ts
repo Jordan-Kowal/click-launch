@@ -1,6 +1,6 @@
 import { createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
-import type { YamlConfig } from "@/electron/types";
+import type { YamlConfig } from "@/types";
 import type {
   GroupedProcesses,
   ProcessData,

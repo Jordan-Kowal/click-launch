@@ -15,7 +15,7 @@ Reference these for project details:
 
 Desktop app for managing your local dev stack - configure once, launch everything with a click.
 
-Tech stack: SolidJS, Vite, Tailwind CSS v4 + DaisyUI, Electron, Lucide Solid, Biome, pnpm
+Tech stack: SolidJS, Vite, Tailwind CSS v4 + DaisyUI, Wails v3 (Go), Lucide Solid, Biome, pnpm
 
 ## Project Structure
 
@@ -26,16 +26,18 @@ src/
   components/ui/         # Shared UI primitives
   contexts/              # Shared contexts (Context.ts + Provider.tsx pattern)
   hooks/                 # Shared hooks
-  electron/              # Electron types, enums, IPC definitions
+  types/                 # Shared types (types.ts) and enums (enums.ts)
   utils/                 # Shared utilities
+  backend.d.ts           # Type declarations for Wails-generated bindings
   routes.tsx             # Central routing config, exports routePaths constant
 
-electron/
-  main.ts, preload.ts    # Main/preload processes
-  utils/                 # Main process utilities
+backend/
+  *_service.go           # Go services (config, process, resource, file, app)
+  *_service_test.go      # Go tests (table-driven, interface mocks)
+  testdata/              # YAML test fixtures
 ```
 
-**Shared** (`src/{type}/`, `electron/utils/`) — used by 2+ features
+**Shared** (`src/{type}/`, `backend/`) — used by 2+ features
 **Feature-specific** (`src/features/{name}/{type}/`) — used by single feature only
 
 When in doubt: default to feature-specific (easier to promote later)
@@ -117,12 +119,12 @@ Use `index.ts` at every level **except** `src/components/`:
 - `useNavigate()` for programmatic, `<A>` for declarative navigation
 - Feature-specific routes in `src/features/{name}/routes.ts(x)`
 
-**Electron Patterns (legacy, being migrated to Wails):**
+**Wails Bindings:**
 
-- Type-safe channels in `src/electron/types.ts`, enums in `src/electron/enums.ts`
-- Renderer uses `window.electron.invoke()`, main uses `webContents.send()`
-- Context isolation enabled, node integration disabled
-- Minimal main process — keep logic in renderer when possible
+- Frontend imports services from `@backend` path alias (→ `frontend/bindings/.../backend`)
+- Type declarations in `src/backend.d.ts` (Wails generates `.js` bindings, needs manual `.d.ts`)
+- Events from `@wailsio/runtime`: `Events.On()` returns unsubscribe function
+- Shared types in `src/types/types.ts`, enums in `src/types/enums.ts`
 
 ### Backend (Go / Wails)
 

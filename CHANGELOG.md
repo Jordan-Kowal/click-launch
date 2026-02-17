@@ -10,6 +10,7 @@
 
 ## TBD
 
+- 🔧 **Migrated from Electron to Wails v3 (Go)**: drastically reduced bundle size, lower memory usage, and faster startup.
 - 🚀 Added **restart button** for running processes: quickly restart a process without manually stopping and starting it.
 - 🚀 Added **resource history**: per-process CPU/memory charts with peak indicators with 15-minute retention (customizable in the settings panel)
 

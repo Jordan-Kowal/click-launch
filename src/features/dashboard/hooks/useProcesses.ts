@@ -2,14 +2,14 @@ import { ProcessService } from "@backend";
 import { Events } from "@wailsio/runtime";
 import { createEffect, createMemo, on, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
+import { useToast } from "@/hooks";
 import type {
   ProcessCrashData,
   ProcessId,
   ProcessRestartData,
   WailsEvent,
   YamlConfig,
-} from "@/electron/types";
-import { useToast } from "@/hooks";
+} from "@/types";
 import type { ProcessData } from "../contexts/DashboardContext";
 import { isProcessActive, ProcessStatus } from "../enums";
 

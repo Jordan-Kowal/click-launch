@@ -6,7 +6,7 @@ import type {
   ProcessId,
   ProcessResourceData,
   ResourceHistoryEntry,
-} from "@/electron/types";
+} from "@/types";
 import type { ProcessData } from "../contexts/DashboardContext";
 import { isProcessActive } from "../enums";
 

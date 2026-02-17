@@ -10,9 +10,7 @@ lerna-debug.log*
 # Node
 node_modules
 dist
-dist-electron
 dist-ssr
-release
 *.local
 
 # Vite

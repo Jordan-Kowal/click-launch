@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
-import type { ResourceHistoryEntry } from "@/electron/types";
+import type { ResourceHistoryEntry } from "@/types";
 import { formatBytes } from "@/utils/formatters";
 
 type ResourceChartProps = {

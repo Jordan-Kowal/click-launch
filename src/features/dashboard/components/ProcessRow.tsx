@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
-import type { ProcessConfig } from "@/electron/types";
+import type { ProcessConfig } from "@/types";
 import { useDashboardContext } from "../contexts/";
 import { isProcessActive, ProcessStatus } from "../enums";
 import { ProcessActions } from "./ProcessActions";

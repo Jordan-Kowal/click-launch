@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/suspicious/noControlCharactersInRegex: Stripping ANSI escape codes */
-import { LogType } from "@/electron/enums";
-import type { ProcessLogData } from "@/electron/types";
+
+import type { ProcessLogData } from "@/types";
+import { LogType } from "@/types";
 
 const ANSI_REGEX = /\x1b\[[0-9;]*[A-Za-z]/g;
 

@@ -19,6 +19,15 @@
             "command": "pnpm biome:check:fix $CLAUDE_FILE_PATHS"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo $CLAUDE_FILE_PATHS | tr ' ' '\\n' | grep '\\.go$' | xargs -r gofmt -w"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -34,9 +43,10 @@
   },
   "permissions": {
     "allow": [
-      "Bash(pnpm test:*)",
       "Bash(pnpm biome:check:*)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(go test:*)",
+      "Bash(golangci-lint:*)"
     ]
   }
 }

@@ -11,41 +11,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "24" # Cached by github (https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#nodejs)
+          node-version: "24"
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pnpm-store
-            ./node_modules
-          key: pnpm-${{ hashFiles('./pnpm-lock.yaml') }}
+      - name: Install Go tools
+        run: |
+          go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+          go install github.com/go-task/task/v3/cmd/task@latest
 
-      - name: Configure git to use HTTPS
-        run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
-
-      - name: Install dependencies
-        if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+      - name: Install frontend dependencies
         run: pnpm install
 
-      - name: Build app
-        run: pnpm build
+      - name: Build and package app
+        run: task package
+
+      - name: Create release ZIP
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: cd bin && zip -r "ClickLaunch-${TAG_NAME}.zip" ClickLaunch.app
 
       - name: Upload ZIP to release
         uses: softprops/action-gh-release@v1
         with:
-          files: release/*.zip
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          files: bin/*.zip

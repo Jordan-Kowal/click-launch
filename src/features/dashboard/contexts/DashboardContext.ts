@@ -8,7 +8,7 @@ import type {
   ResourceHistoryEntry,
   ValidationResult,
   YamlConfig,
-} from "@/electron/types";
+} from "@/types";
 import type { ProcessStatus } from "../enums";
 
 export type ProcessData = {

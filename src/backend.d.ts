@@ -9,7 +9,7 @@ declare module "@backend" {
     ProcessStartResult,
     ProcessStopResult,
     ValidationResult,
-  } from "@/electron/types";
+  } from "@/types";
 
   export const AppService: {
     GetVersion(): Promise<string>;
