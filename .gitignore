@@ -29,6 +29,14 @@ bundle-stats.html
 .claude/settings.local.json
 docs/plans
 
+# Go / Wails
+bin
+.task
+frontend/bindings
+build/appicon.png
+build/darwin/icons.icns
+build/darwin/Assets.car
+
 # macOS
 **/.DS_Store
 

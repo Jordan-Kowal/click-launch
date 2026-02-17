@@ -1,0 +1,33 @@
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+
+linters:
+  enable:
+    - bodyclose
+    - errname
+    - errorlint
+    - goconst
+    - gosec
+    - misspell
+    - nilerr
+    - prealloc
+    - unconvert
+    - unparam
+
+linters-settings:
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  gosec:
+    excludes:
+      - G104 # duplicate of errcheck
+
+issues:
+  exclude-dirs:
+    - node_modules
+    - dist
+    - dist-electron
+    - bin
