@@ -21,6 +21,7 @@ func main() {
 		Services: []application.Service{
 			application.NewService(backend.NewConfigService()),
 			application.NewService(backend.NewFileService()),
+			application.NewService(backend.NewProcessService()),
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
