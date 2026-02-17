@@ -2,7 +2,6 @@ package backend
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -48,7 +47,6 @@ type processState struct {
 	manualStop    bool
 	exited        bool
 	restartTimer  *time.Timer
-	cancel        context.CancelFunc
 }
 
 // ProcessService manages child processes: spawning, stopping, restarting, and log streaming.
@@ -172,8 +170,6 @@ func (s *ProcessService) spawnProcess(
 		return fmt.Errorf("starting command: %w", err)
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-
 	state := &processState{
 		cmd:           cmd,
 		pid:           cmd.Process.Pid,
@@ -184,7 +180,6 @@ func (s *ProcessService) spawnProcess(
 		retryCount:    retryCount,
 		lastStartTime: time.Now(),
 		manualStop:    false,
-		cancel:        cancel,
 	}
 
 	s.mu.Lock()
@@ -193,36 +188,37 @@ func (s *ProcessService) spawnProcess(
 
 	s.startBatchTicker()
 
-	go s.streamOutput(ctx, processID, stdout, "stdout")
-	go s.streamOutput(ctx, processID, stderr, "stderr")
-	go s.waitForExit(processID, cmd)
+	// Stream goroutines must finish reading before cmd.Wait() closes the pipes.
+	var streamWg sync.WaitGroup
+	streamWg.Add(2)
+	go func() { defer streamWg.Done(); s.streamOutput(processID, stdout, "stdout") }()
+	go func() { defer streamWg.Done(); s.streamOutput(processID, stderr, "stderr") }()
+	go s.waitForExit(processID, cmd, &streamWg)
 
 	return nil
 }
 
 // streamOutput reads lines from a pipe and queues them as log entries.
-func (s *ProcessService) streamOutput(ctx context.Context, processID string, pipe io.Reader, logType string) {
+// The pipe is closed by cmd.Wait(), so the scanner loop terminates naturally on process exit.
+func (s *ProcessService) streamOutput(processID string, pipe io.Reader, logType string) {
 	scanner := bufio.NewScanner(pipe)
 	scanner.Buffer(make([]byte, 0, 1024*1024), 1024*1024) // 1MB buffer for long lines
 	for scanner.Scan() {
-		select {
-		case <-ctx.Done():
-			return
-		default:
-			s.queueLog(ProcessLogData{
-				ProcessID: processID,
-				Type:      logType,
-				Output:    scanner.Text() + "\n",
-				Timestamp: time.Now().UTC().Format(time.RFC3339Nano),
-			})
-		}
+		s.queueLog(ProcessLogData{
+			ProcessID: processID,
+			Type:      logType,
+			Output:    scanner.Text() + "\n",
+			Timestamp: time.Now().UTC().Format(time.RFC3339Nano),
+		})
 	}
 }
 
 // --- Exit handling and restart ---
 
 // waitForExit waits for the process to exit and handles restart logic.
-func (s *ProcessService) waitForExit(processID string, cmd *exec.Cmd) {
+// streamWg must complete before cmd.Wait() to avoid closing pipes prematurely.
+func (s *ProcessService) waitForExit(processID string, cmd *exec.Cmd, streamWg *sync.WaitGroup) {
+	streamWg.Wait()
 	_ = cmd.Wait()
 
 	// Extract exit info immediately after Wait (only this goroutine touches cmd now)
@@ -247,7 +243,6 @@ func (s *ProcessService) waitForExit(processID string, cmd *exec.Cmd) {
 	command := state.command
 	customEnv := state.customEnv
 
-	state.cancel()
 	delete(s.processes, processID)
 	s.mu.Unlock()
 
@@ -339,7 +334,6 @@ func (s *ProcessService) waitForExit(processID string, cmd *exec.Cmd) {
 		retryCount:   newRetryCount,
 		manualStop:   false,
 		restartTimer: restartTimer,
-		cancel:       func() {},
 	}
 	s.mu.Unlock()
 }

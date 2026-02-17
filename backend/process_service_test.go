@@ -7,7 +7,10 @@ import (
 	"time"
 )
 
-const eventProcessCrash = "process-crash"
+const (
+	eventProcessCrash    = "process-crash"
+	eventProcessLogBatch = "process-log:batch"
+)
 
 // --- Test helpers ---
 
@@ -41,6 +44,28 @@ func (m *mockEmitter) waitForEvent(name string) bool {
 		for _, e := range m.getEvents() {
 			if e.name == name {
 				return true
+			}
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	return false
+}
+
+func (m *mockEmitter) waitForLogContaining(logType string) bool {
+	deadline := time.Now().Add(5 * time.Second)
+	for time.Now().Before(deadline) {
+		for _, e := range m.getEvents() {
+			if e.name != eventProcessLogBatch || len(e.data) == 0 {
+				continue
+			}
+			batch, ok := e.data[0].([]ProcessLogData)
+			if !ok {
+				continue
+			}
+			for _, log := range batch {
+				if log.Type == logType {
+					return true
+				}
 			}
 		}
 		time.Sleep(10 * time.Millisecond)
@@ -257,7 +282,7 @@ func TestLogBatching_EmitsEvents(t *testing.T) {
 
 	svc.Start(t.TempDir(), "echo hello", nil, nil)
 
-	if !emitter.waitForEvent("process-log:batch") {
+	if !emitter.waitForEvent(eventProcessLogBatch) {
 		t.Fatal("expected process-log:batch event to be emitted")
 	}
 }
@@ -275,7 +300,7 @@ func TestExitLog_EmittedOnExit(t *testing.T) {
 	events := emitter.getEvents()
 	foundExitLog := false
 	for _, e := range events {
-		if e.name != "process-log:batch" {
+		if e.name != eventProcessLogBatch {
 			continue
 		}
 		if len(e.data) == 0 {
@@ -419,13 +444,15 @@ func TestStart_CustomEnvPassedToProcess(t *testing.T) {
 	env := map[string]string{"CLICK_LAUNCH_TEST_VAR": "hello_from_test"}
 	svc.Start(t.TempDir(), "echo $CLICK_LAUNCH_TEST_VAR", nil, env)
 
-	// Wait for process to exit and logs to flush
-	time.Sleep(500 * time.Millisecond)
+	// Wait for process to fully exit (ensures all logs are flushed)
+	if !emitter.waitForLogContaining("exit") {
+		t.Fatal("timed out waiting for exit log")
+	}
 
-	events := emitter.getEvents()
 	found := false
+	events := emitter.getEvents()
 	for _, e := range events {
-		if e.name != "process-log:batch" || len(e.data) == 0 {
+		if e.name != eventProcessLogBatch || len(e.data) == 0 {
 			continue
 		}
 		batch, ok := e.data[0].([]ProcessLogData)
