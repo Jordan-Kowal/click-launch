@@ -46,6 +46,8 @@ tasks:
 
   test:
     summary: Runs all tests
+    env:
+      CGO_LDFLAGS: "-mmacosx-version-min=15.0"
     cmds:
       - go test -race ./backend/...
 
