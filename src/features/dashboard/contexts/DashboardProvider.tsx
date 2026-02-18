@@ -79,8 +79,6 @@ export const DashboardProvider = (props: DashboardProviderProps) => {
     // Resources
     getProcessResources: resources.getProcessResources,
     getProcessResourceHistory: resources.getProcessResourceHistory,
-    getProcessSessionPeaks: resources.getProcessSessionPeaks,
-    getProcessWindowPeaks: resources.getProcessWindowPeaks,
   };
 
   return (

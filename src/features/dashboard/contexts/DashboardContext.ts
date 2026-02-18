@@ -54,12 +54,6 @@ export type DashboardContextType = {
   setEnvValue: (processName: string, key: string, value: string) => void;
   getProcessResources: (processName: string) => ProcessResourceData | undefined;
   getProcessResourceHistory: (processName: string) => ResourceHistoryEntry[];
-  getProcessSessionPeaks: (
-    processName: string,
-  ) => { cpu: number; memoryBytes: number } | undefined;
-  getProcessWindowPeaks: (
-    processName: string,
-  ) => { cpu: number; memoryBytes: number } | undefined;
   startProcess: (processName: string) => Promise<void>;
   stopProcess: (processName: string) => Promise<void>;
   restartProcess: (processName: string) => Promise<void>;

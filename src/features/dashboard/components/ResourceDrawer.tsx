@@ -13,18 +13,16 @@ type ResourceDrawerProps = {
 };
 
 export const ResourceDrawer = (props: ResourceDrawerProps) => {
-  const {
-    getProcessResourceHistory,
-    getProcessSessionPeaks,
-    getProcessWindowPeaks,
-  } = useDashboardContext();
+  const { getProcessResourceHistory } = useDashboardContext();
   const { settings } = useSettingsContext();
 
   const history = () => getProcessResourceHistory(props.processName);
   const theme = () => settings().theme;
   const hasData = () => history().length > 0;
-  const sessionPeaks = () => getProcessSessionPeaks(props.processName);
-  const windowPeaks = () => getProcessWindowPeaks(props.processName);
+  const latestEntry = () => {
+    const h = history();
+    return h.length > 0 ? h[h.length - 1] : null;
+  };
 
   createEffect(() => {
     if (!props.isOpen) return;
@@ -64,56 +62,31 @@ export const ResourceDrawer = (props: ResourceDrawerProps) => {
           }
         >
           <div class="flex flex-col flex-1 min-h-0 p-4 gap-4">
-            <div class="flex justify-center">
-              <div class="stats shadow">
-                <Show when={windowPeaks()}>
-                  {(peaks) => (
-                    <>
-                      <div class="stat place-items-center">
-                        <div class="stat-title">
-                          CPU peak ({settings().resourceHistoryMinutes}min)
-                        </div>
-                        <div class="stat-value text-info text-2xl">
-                          {formatCpu(peaks().cpu)}
-                        </div>
+            <Show when={latestEntry()}>
+              {(entry) => (
+                <div class="flex justify-center">
+                  <div class="stats shadow">
+                    <div class="stat place-items-center">
+                      <div class="stat-title">CPU</div>
+                      <div class="stat-value text-info text-2xl">
+                        {formatCpu(entry().cpu)}
                       </div>
-                      <div class="stat place-items-center">
-                        <div class="stat-title">
-                          Mem peak ({settings().resourceHistoryMinutes}min)
-                        </div>
-                        <div class="stat-value text-success text-2xl">
-                          {formatBytes(peaks().memoryBytes)}
-                        </div>
+                    </div>
+                    <div class="stat place-items-center">
+                      <div class="stat-title">Memory</div>
+                      <div class="stat-value text-success text-2xl">
+                        {formatBytes(entry().memoryBytes)}
                       </div>
-                    </>
-                  )}
-                </Show>
-                <Show when={sessionPeaks()}>
-                  {(peaks) => (
-                    <>
-                      <div class="stat place-items-center">
-                        <div class="stat-title">CPU peak (session)</div>
-                        <div class="stat-value text-info text-2xl">
-                          {formatCpu(peaks().cpu)}
-                        </div>
-                      </div>
-                      <div class="stat place-items-center">
-                        <div class="stat-title">Mem peak (session)</div>
-                        <div class="stat-value text-success text-2xl">
-                          {formatBytes(peaks().memoryBytes)}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </Show>
-              </div>
-            </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Show>
             <div class="rounded-box bg-base-200 p-2 flex-1 flex flex-col min-h-0">
               <ResourceChart
                 history={history}
                 theme={theme}
                 historyMinutes={() => settings().resourceHistoryMinutes}
-                sessionPeakMemory={() => sessionPeaks()?.memoryBytes ?? 0}
               />
             </div>
           </div>

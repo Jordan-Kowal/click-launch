@@ -27,14 +27,6 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
     Record<string, ResourceHistoryEntry[]>
   >({});
 
-  const [sessionPeaks, setSessionPeaks] = createStore<
-    Record<string, { cpu: number; memoryBytes: number }>
-  >({});
-
-  const [windowPeaks, setWindowPeaks] = createStore<
-    Record<string, { cpu: number; memoryBytes: number }>
-  >({});
-
   let resourcePollInterval: ReturnType<typeof setInterval> | null = null;
 
   onCleanup(() => {
@@ -77,21 +69,6 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
         if (data) {
           setResourcesData(name, data);
 
-          // Update session peaks
-          const currentPeaks = sessionPeaks[name] ?? {
-            cpu: 0,
-            memoryBytes: 0,
-          };
-          if (
-            data.cpu > currentPeaks.cpu ||
-            data.memoryBytes > currentPeaks.memoryBytes
-          ) {
-            setSessionPeaks(name, {
-              cpu: Math.max(data.cpu, currentPeaks.cpu),
-              memoryBytes: Math.max(data.memoryBytes, currentPeaks.memoryBytes),
-            });
-          }
-
           // Append history entry
           const entry: ResourceHistoryEntry = {
             timestamp: now,
@@ -110,15 +87,6 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
             firstValidIndex === -1 ? [] : updated.slice(firstValidIndex);
 
           setHistoryData(name, sliced);
-
-          // Recompute window peaks from retained history
-          let maxCpu = 0;
-          let maxMem = 0;
-          for (const e of sliced) {
-            if (e.cpu > maxCpu) maxCpu = e.cpu;
-            if (e.memoryBytes > maxMem) maxMem = e.memoryBytes;
-          }
-          setWindowPeaks(name, { cpu: maxCpu, memoryBytes: maxMem });
         }
       });
     }, POLL_RESOURCES_INTERVAL_MS);
@@ -136,23 +104,9 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
     return historyData[processName] ?? [];
   };
 
-  const getProcessSessionPeaks = (
-    processName: string,
-  ): { cpu: number; memoryBytes: number } | undefined => {
-    return sessionPeaks[processName];
-  };
-
-  const getProcessWindowPeaks = (
-    processName: string,
-  ): { cpu: number; memoryBytes: number } | undefined => {
-    return windowPeaks[processName];
-  };
-
   return {
     getProcessResources,
     getProcessResourceHistory,
-    getProcessSessionPeaks,
-    getProcessWindowPeaks,
     startResourcePolling,
   };
 };

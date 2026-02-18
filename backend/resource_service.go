@@ -4,6 +4,7 @@ import (
 	"math"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -67,8 +68,9 @@ func (s *ResourceService) getProcessStats(pid int) ProcessResourceData {
 		}
 	}
 
+	normalizedCPU := totalCPU / float64(runtime.NumCPU())
 	return ProcessResourceData{
-		CPU:         math.Round(totalCPU*10) / 10,
+		CPU:         math.Round(normalizedCPU*10) / 10,
 		MemoryBytes: totalRSSKb * 1024,
 	}
 }

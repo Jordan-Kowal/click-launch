@@ -8,7 +8,6 @@ type ResourceChartProps = {
   history: () => ResourceHistoryEntry[];
   theme: () => "nord" | "forest";
   historyMinutes: () => number;
-  sessionPeakMemory: () => number;
 };
 
 const MEMORY_STEP = 256 * 1024 * 1024; // 256 MB
@@ -169,7 +168,13 @@ export const ResourceChart = (props: ResourceChartProps) => {
 
   const [tooltip, setTooltip] = createSignal<TooltipData | null>(null);
 
-  const getMemMax = () => ceilMemoryScale(props.sessionPeakMemory());
+  const getMemMax = () => {
+    let max = 0;
+    for (const entry of props.history()) {
+      if (entry.memoryBytes > max) max = entry.memoryBytes;
+    }
+    return ceilMemoryScale(max);
+  };
 
   const onCursor = (u: uPlot) => {
     const { left, top, idx } = u.cursor;
