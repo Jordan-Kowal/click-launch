@@ -6,6 +6,7 @@ import type { ProcessLogData } from "@/types";
 import { LogType } from "@/types";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
 import { formatTimestamp } from "@/utils/formatters";
+import { stripAnsiCodes } from "@/utils/logExport";
 
 type ProcessLogRowProps = {
   log: ProcessLogData;
@@ -41,7 +42,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   const toast = useToast();
 
   const copyLogLine = (text: string) => {
-    navigator.clipboard.writeText(text).then(
+    navigator.clipboard.writeText(stripAnsiCodes(text)).then(
       () => toast.success("Copied to clipboard"),
       () => toast.error("Failed to copy"),
     );
