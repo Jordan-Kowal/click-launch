@@ -21,12 +21,12 @@ export const ProjectActions = () => {
           onClick={handleOpenProject}
         >
           <FolderOpen />
-          Open new project
+          Open new projects
         </button>
       </div>
       <div class="divider md:divider-horizontal" />
       <div class="card rounded-box p-6 flex-1 flex flex-col">
-        <h2 class="card-title mb-4 justify-center !mt-1">
+        <h2 class="card-title mb-4 justify-center mt-1!">
           <History class="w-5 h-5" />
           Recent Projects
         </h2>

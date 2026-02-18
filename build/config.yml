@@ -32,7 +32,7 @@ dev_mode:
       type: background
     - cmd: go mod tidy
       type: blocking
-    - cmd: wails3 task build
+    - cmd: wails3 task dev:build
       type: blocking
     - cmd: wails3 task run
       type: primary

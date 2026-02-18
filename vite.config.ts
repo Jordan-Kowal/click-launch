@@ -8,14 +8,7 @@ export default defineConfig(() => ({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
-  plugins: [
-    devtools(),
-    solidPlugin(),
-    tailwindcss(),
-  ],
-  server: {
-    port: 5173,
-  },
+  plugins: [devtools(), solidPlugin(), tailwindcss()],
   resolve: {
     alias: {
       "@": `${import.meta.dirname}/src`,
