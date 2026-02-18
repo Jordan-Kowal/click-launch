@@ -15,7 +15,7 @@ On top on new major features, we also migrated the app:
 - from `Electron` to `Wails v3`.
 - from `node` and `pnpm` to `bun`
 
-This led to a massive bundle size reduction (-93%), lower memory usage, and faster startup.
+This led to a massive bundle size reduction (-90%), lower memory usage, and faster startup.
 
 ### 🚀 Features
 
@@ -30,12 +30,12 @@ This led to a massive bundle size reduction (-93%), lower memory usage, and fast
 - Added **copy log line** button, visible on hover.
 - Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
   - **Theme switching** between Nord (light) and Forest (dark) themes.
-  - **Log buffer size** control (100-50,000 lines per process).
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
   - **Toggle resource monitor** to show or hide CPU/memory columns.
-  - **Toggle timestamps** to show or hide the timestamp prefix on log lines.
   - **Resource history retention** which determines how long resource usage data is kept.
+  - **Log buffer size** control (100-50,000 lines per process).
+  - **Toggle timestamps** to show or hide the timestamp prefix on log lines.
 
 ### ✨ Improvements
 
@@ -48,8 +48,8 @@ This led to a massive bundle size reduction (-93%), lower memory usage, and fast
 ### 🔧 Others
 
 - Migrated from `Electron` to `Wails v3`.
-- Centralized all dev commands under `go` tasks.
 - Migrated from `node` and `pnpm` to `bun`
+- Centralized all dev commands under `go` tasks.
 - Refactored main components for better readability and maintainability.
 - Added top-level **ErrorBoundary** to catch uncaught rendering errors with a fallback UI.
 - Added `bump-version.sh` script to automate version bumping.
