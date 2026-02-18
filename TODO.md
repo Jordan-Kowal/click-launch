@@ -13,7 +13,8 @@ Feature ideas worth implementing:
 3. Harden InstallUpdate: The auto-update mechanism (`AppService.InstallUpdate`) pipes a remote script from GitHub `main` branch directly into bash. If the GitHub account is compromised, this becomes a remote code execution vector. Mitigations: pin to a tagged release URL instead of `main` (fetch latest release tag first, then download that specific version), and/or verify a checksum after download before executing.
 4. Fix bug where changing resource history length instantly updates. Meaning that if I have 25min and want to switch to 100min, I'll type 1, and it will directly slice all the history to the new length, leading to data loss. Maybe wait until defocus.
 5. Fix hot-reloading bug that doesn't kill the ongoing process (but refreshes the UI and losing the process state)
-6. Improve resource usage graph using terminal-like UI rather than uplot?
+6. Why is updating the TODO.md triggering a hot-reload/re-render of the app?
+7. Improve resource usage graph using terminal-like UI rather than uplot?
 
 ---
 
