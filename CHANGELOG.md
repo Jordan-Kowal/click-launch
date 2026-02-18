@@ -10,12 +10,12 @@
 
 ## TBD
 
-- 🔧 **Migrated from Electron to Wails v3 (Go)**: drastically reduced bundle size, lower memory usage, and faster startup.
-- 🔧 **Consolidated developer commands under Taskfile**: single entry point via `task` for dev, build, lint, test, and check.
-- 🚀 Added **restart button** for running processes: quickly restart a process without manually stopping and starting it.
-- 🚀 Added **resource history**: per-process CPU/memory charts with peak indicators with 15-minute retention (customizable in the settings panel)
+On top on new major features, we also migrated the app:
 
-## 2.0.0 - 2026-02-14
+- from `Electron` to `Wails v3`.
+- from `node` and `pnpm` to `bun`
+
+This led to a massive bundle size reduction (-93%), lower memory usage, and faster startup.
 
 ### 🚀 Features
 
@@ -24,7 +24,8 @@
   - `restart`: auto-restart with configurable retries, delay, and visual status indicators.
   - `cwd`: working directory override (relative to config file or absolute).
   - `group`: organize processes into collapsible groups with per-group start/stop.
-- Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard.
+- Added **resource monitoring**: real-time CPU and memory usage displayed per process in the dashboard, with live charts.
+- Added **restart button** for running processes: quickly restart a process without manually stopping and starting it.
 - Added **log export**: export process logs as text files to `logs/click-launch/` in the project root directory.
 - Added **copy log line** button, visible on hover.
 - Added **settings panel**: global application settings accessible via the cog icon in the navigation bar.
@@ -33,6 +34,7 @@
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
   - **Toggle resource monitor** to show or hide CPU/memory columns.
+  - **Resource history retention** which determines how long resource usage data is kept.
 
 ### ✨ Improvements
 
@@ -44,10 +46,13 @@
 
 ### 🔧 Others
 
+- Migrated from `Electron` to `Wails v3`.
+- Centralized all dev commands under `go` tasks.
+- Migrated from `node` and `pnpm` to `bun`
 - Refactored main components for better readability and maintainability.
 - Added top-level **ErrorBoundary** to catch uncaught rendering errors with a fallback UI.
-- Updated GitHub Actions to actions/cache@v4.
-- Added `pnpm version:bump` script to automate version bumping.
+- Added `bump-version.sh` script to automate version bumping.
+- Added `claude-postwrite.sh` hook to help Claude automatically format/lint code after a change.
 
 ## 1.5.0 - 2026-01-24
 

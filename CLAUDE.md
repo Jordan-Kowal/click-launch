@@ -15,7 +15,7 @@ Reference these for project details:
 
 Desktop app for managing your local dev stack - configure once, launch everything with a click.
 
-Tech stack: SolidJS, Vite, Tailwind CSS v4 + DaisyUI, Wails v3 (Go), Lucide Solid, Biome, pnpm
+Tech stack: SolidJS, Vite, Tailwind CSS v4 + DaisyUI, Wails v3 (Go), Lucide Solid, Bun
 
 ## Project Structure
 

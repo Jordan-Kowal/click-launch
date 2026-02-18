@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 info:
   companyName: "Jordan Kowal"
@@ -6,7 +6,7 @@ info:
   productIdentifier: "app.jkdev.click-launch"
   description: "Desktop app for managing your local dev stack"
   copyright: "(c) 2025, Jordan Kowal"
-  version: "2.0.0"
+  version: "1.5.0"
 
 dev_mode:
   root_path: .
@@ -28,9 +28,9 @@ dev_mode:
       - "*.go"
     git_ignore: true
   executes:
-    - cmd: pnpm install
+    - cmd: bun install
       type: once
-    - cmd: pnpm vite --port {{.VITE_PORT}} --strictPort
+    - cmd: bun run vite --port {{.VITE_PORT}} --strictPort
       type: background
     - cmd: go mod tidy
       type: blocking

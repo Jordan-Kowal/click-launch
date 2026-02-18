@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm tsc 2>&1 | head -30 || true"
+            "command": "bun run tsc 2>&1 | head -30 || true"
           }
         ]
       }
@@ -35,8 +35,8 @@
   "permissions": {
     "allow": [
       "Bash(task:*)",
-      "Bash(pnpm biome:check:*)",
-      "Bash(pnpm tsc:*)",
+      "Bash(bun run biome:check:*)",
+      "Bash(bun run tsc:*)",
       "Bash(go test:*)",
       "Bash(golangci-lint:*)"
     ]

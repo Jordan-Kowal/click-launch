@@ -3,8 +3,7 @@
 ## Prerequisites
 
 - [Go 1.24+](https://go.dev/dl/)
-- [Node.js 24+](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
+- [Bun](https://bun.sh/)
 - [Wails v3](https://v3alpha.wails.io/) (`go install github.com/wailsapp/wails/v3/cmd/wails3@latest`)
 - [Task](https://taskfile.dev/) (`go install github.com/go-task/task/v3/cmd/task@latest`)
 - [golangci-lint](https://golangci-lint.run/)
@@ -13,7 +12,7 @@
 
 ```shell
 git config core.hooksPath .githooks
-pnpm install
+bun install
 task dev
 ```
 
@@ -37,5 +36,5 @@ All commands go through [Task](https://taskfile.dev/) (see `Taskfile.yml`):
 We use GitHub Actions:
 
 - [code-quality](.github/workflows/code-quality.yml): runs biome, tsc, Go tests, and golangci-lint
-- [dependabot](.github/dependabot.yml): updates npm and Go dependencies monthly
+- [dependabot](.github/dependabot.yml): updates Bun and Go dependencies monthly
 - [build-and-release](.github/workflows/build-and-release.yml): builds and releases the application

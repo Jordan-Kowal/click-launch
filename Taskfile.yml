@@ -33,8 +33,8 @@ tasks:
   lint:
     summary: Runs all linters (biome, tsc, golangci-lint)
     cmds:
-      - pnpm biome:check
-      - pnpm tsc
+      - bun run biome:check
+      - bun run tsc
       - golangci-lint run
 
   test:
@@ -56,4 +56,4 @@ tasks:
   version:bump:
     summary: Bumps the app version across all config files
     cmds:
-      - node scripts/bump-version.mjs
+      - sh scripts/bump-version.sh {{.CLI_ARGS}}

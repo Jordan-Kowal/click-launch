@@ -14,7 +14,7 @@ for f in "$@"; do
 done
 
 if [ -n "$TS_FILES" ]; then
-  pnpm biome:check:fix $TS_FILES
+  bun run biome:check:fix $TS_FILES
 fi
 
 if [ -n "$GO_FILES" ]; then

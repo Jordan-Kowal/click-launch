@@ -1,6 +1,6 @@
 {
   "name": "click-launch",
-  "version": "2.0.0",
+  "version": "1.5.0",
   "type": "module",
   "license": "MIT",
   "author": "Jordan Kowal",
@@ -28,7 +28,7 @@
     "biome:check": "biome check ./src",
     "biome:check:fix": "biome check ./src --write --unsafe",
     "tsc": "tsc",
-    "reinstall": "rimraf pnpm-lock.yaml node_modules/ && pnpm cache delete && pnpm install"
+    "reinstall": "rimraf bun.lock node_modules/ && bun install"
   },
   "dependencies": {
     "@solidjs/router": "0.15.4",
@@ -45,7 +45,6 @@
     "@tailwindcss/typography": "0.5.19",
     "@tailwindcss/vite": "4.1.18",
     "@types/js-yaml": "4.0.9",
-    "@types/node": "25.2.2",
     "daisyui": "5.5.18",
     "postcss": "8.5.6",
     "rimraf": "6.1.2",

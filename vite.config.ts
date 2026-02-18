@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import devtools from "solid-devtools/vite";
 import { defineConfig } from "vite";
@@ -19,8 +18,8 @@ export default defineConfig(() => ({
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
-      "@backend": resolve(__dirname, "./frontend/bindings/github.com/Jordan-Kowal/click-launch/backend"),
+      "@": `${import.meta.dirname}/src`,
+      "@backend": `${import.meta.dirname}/frontend/bindings/github.com/Jordan-Kowal/click-launch/backend`,
     },
   },
   base: "./",

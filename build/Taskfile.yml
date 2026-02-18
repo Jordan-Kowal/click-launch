@@ -11,14 +11,14 @@ tasks:
     summary: Install frontend dependencies
     sources:
       - package.json
-      - pnpm-lock.yaml
+      - bun.lock
     generates:
       - node_modules
     preconditions:
-      - sh: pnpm --version
-        msg: "pnpm is not installed. Install it: npm install -g pnpm"
+      - sh: bun --version
+        msg: "bun is not installed. Install it: https://bun.sh"
     cmds:
-      - pnpm install
+      - bun install
 
   build:frontend:
     label: "build:frontend (DEV={{.DEV}})"
@@ -39,7 +39,7 @@ tasks:
           BUILD_FLAGS:
             ref: .BUILD_FLAGS
     cmds:
-      - pnpm vite build
+      - bun run vite build
     env:
       PRODUCTION: '{{if eq .DEV "true"}}false{{else}}true{{end}}'
 
@@ -72,4 +72,4 @@ tasks:
     deps:
       - task: install:frontend:deps
     cmds:
-      - pnpm vite --port {{.VITE_PORT}} --strictPort
+      - bun run vite --port {{.VITE_PORT}} --strictPort
