@@ -85,12 +85,8 @@ export const ProcessActions = (props: ProcessActionsProps) => {
       </Switch>
 
       <div
-        class={!canRestart() && !isRestarting() ? "tooltip tooltip-bottom" : ""}
-        data-tip={
-          !canRestart() && !isRestarting()
-            ? "Process must be running"
-            : undefined
-        }
+        class="tooltip tooltip-bottom"
+        data-tip={!canRestart() ? "Process must be running" : ""}
       >
         <button
           type="button"
