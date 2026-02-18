@@ -26,17 +26,14 @@ export const NavBar = () => {
 
   return (
     <>
-      <div
-        class="fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-300 w-full drag-region"
-        data-tauri-drag-region
-      >
-        <div class="flex flex-row items-center gap-2 mx-auto w-35 text-center py-1">
+      <div class="fixed top-0 left-0 shadow-xs not-prose z-999 bg-base-300 w-full drag-region">
+        <div class="flex flex-row items-center gap-2 mx-auto w-35 text-center py-2">
           <div class="max-w-4">
             <Logo />
           </div>
           <span class="font-bold text-sm">Click Launch</span>
         </div>
-        <div class="flex items-center gap-0 absolute -top-0.5 right-1">
+        <div class="flex items-center gap-0 absolute top-0.5 right-1">
           <div class="tooltip tooltip-left" data-tip="Settings">
             <button
               type="button"

@@ -84,11 +84,11 @@ html {
     --toastify-font-family: "Nunito Sans", sans-serif;
 }
 
-/* Electron window dragging */
+/* Wails window dragging */
 .drag-region {
-    -webkit-app-region: drag;
+    --wails-draggable: drag;
 }
 
 .no-drag {
-    -webkit-app-region: no-drag;
+    --wails-draggable: no-drag;
 }
