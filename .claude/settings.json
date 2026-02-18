@@ -16,16 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm biome:check:fix $CLAUDE_FILE_PATHS"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "for f in $CLAUDE_FILE_PATHS; do case $f in *.go) gofmt -w $f ;; esac; done && golangci-lint run"
+            "command": "./scripts/claude-postwrite.sh $CLAUDE_FILE_PATHS"
           }
         ]
       }
