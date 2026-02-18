@@ -27,7 +27,7 @@ export const formatLogsAsText = (
         log.code !== null ? `code ${log.code}` : `signal ${log.signal}`;
       return `[${ts}] [exit] Process exited with ${detail}`;
     }
-    return `[${ts}] [${log.type}] ${stripAnsiCodes(log.output)}`;
+    return `[${ts}] [${log.type}] ${stripAnsiCodes(log.output).trimEnd()}`;
   });
 
   return `${header + lines.join("\n")}\n`;
