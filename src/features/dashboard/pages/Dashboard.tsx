@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "@solidjs/router";
 import { Square } from "lucide-solid";
 import {
   createEffect,
+  createMemo,
   Match,
   onCleanup,
   onMount,
@@ -22,25 +23,27 @@ const DashboardPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const selectedFile = Array.isArray(searchParams.file)
-    ? searchParams.file[0]
-    : searchParams.file;
+
+  const selectedFile = createMemo(() => {
+    const file = searchParams.file;
+    return Array.isArray(file) ? file[0] : file;
+  });
 
   createEffect(() => {
-    if (!selectedFile) {
+    if (!selectedFile()) {
       toast.error("No project file selected");
       navigate(routePaths.projectSelection);
     }
   });
 
-  if (!selectedFile) {
-    return null;
-  }
-
   return (
-    <DashboardProvider selectedFile={selectedFile}>
-      <Dashboard />
-    </DashboardProvider>
+    <Show when={selectedFile()} keyed>
+      {(file) => (
+        <DashboardProvider selectedFile={file}>
+          <Dashboard />
+        </DashboardProvider>
+      )}
+    </Show>
   );
 };
 
