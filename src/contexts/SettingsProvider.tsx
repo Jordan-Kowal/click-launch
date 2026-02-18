@@ -1,5 +1,5 @@
 import { createEffect, createMemo, type JSX, useContext } from "solid-js";
-import { useLocalStorage } from "../hooks";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
   DEFAULT_SETTINGS,
   MAX_LOG_BUFFER_SIZE,

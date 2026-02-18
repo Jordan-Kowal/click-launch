@@ -32,7 +32,6 @@ bin
 .task
 frontend/bindings
 build/appicon.png
-build/darwin/icons.icns
 build/darwin/Assets.car
 
 # macOS

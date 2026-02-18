@@ -1,5 +1,5 @@
 import toast from "solid-toast";
-import { useSettingsContext } from "@/contexts";
+import { useSettingsContext } from "@/contexts/SettingsProvider";
 
 /** Wraps solid-toast to respect the "showNotifications" setting. Use this instead of importing toast directly. */
 export const useToast = () => {

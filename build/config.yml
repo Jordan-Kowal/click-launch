@@ -18,8 +18,6 @@ dev_mode:
       - node_modules
       - bin
       - dist
-      - dist-electron
-      - release
     file:
       - .DS_Store
       - .gitignore
@@ -28,9 +26,9 @@ dev_mode:
       - "*.go"
     git_ignore: true
   executes:
-    - cmd: bun install
+    - cmd: wails3 task common:install:frontend:deps
       type: once
-    - cmd: bun run vite --port {{.VITE_PORT}} --strictPort
+    - cmd: wails3 task common:dev:frontend
       type: background
     - cmd: go mod tidy
       type: blocking

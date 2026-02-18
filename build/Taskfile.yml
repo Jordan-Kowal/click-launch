@@ -57,16 +57,6 @@ tasks:
     cmds:
       - wails3 generate bindings -f '{{.BUILD_FLAGS}}' -clean=true || echo "No bindings to generate (no services registered yet)"
 
-  generate:icons:
-    summary: Generates Windows .ico and Mac .icns from an image
-    dir: build
-    sources:
-      - "appicon.png"
-    generates:
-      - "darwin/icons.icns"
-    cmds:
-      - wails3 generate icons -input appicon.png -macfilename darwin/icons.icns
-
   dev:frontend:
     summary: Runs the frontend in development mode
     deps:

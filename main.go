@@ -12,7 +12,7 @@ import (
 //go:embed all:dist
 var assets embed.FS
 
-//go:embed public/logo.png
+//go:embed public/app-icon.png
 var appIcon []byte
 
 // Keep in sync with package.json and build/config.yml
