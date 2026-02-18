@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo $CLAUDE_FILE_PATHS | tr ' ' '\\n' | grep '\\.go$' | xargs -r gofmt -w"
+            "command": "for f in $CLAUDE_FILE_PATHS; do case $f in *.go) gofmt -w $f ;; esac; done && golangci-lint run"
           }
         ]
       }
@@ -43,6 +43,7 @@
   },
   "permissions": {
     "allow": [
+      "Bash(task:*)",
       "Bash(pnpm biome:check:*)",
       "Bash(pnpm tsc:*)",
       "Bash(go test:*)",

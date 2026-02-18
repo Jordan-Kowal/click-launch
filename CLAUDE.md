@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Reference these for project details:
 
 - @README.md - Project overview and setup instructions
-- @package.json - Available scripts and dependencies
+- @Taskfile.yml - Developer commands (dev, build, lint, test, check)
 - @tsconfig.json - TypeScript configuration and path aliases
 - @biome.json - Linting, formatting rules, and SolidJS domain settings
 
@@ -41,6 +41,21 @@ backend/
 **Feature-specific** (`src/features/{name}/{type}/`) — used by single feature only
 
 When in doubt: default to feature-specific (easier to promote later)
+
+## Developer Commands
+
+All commands go through [Task](https://taskfile.dev/) (see `Taskfile.yml`):
+
+| Command             | Description                             |
+| ------------------- | --------------------------------------- |
+| `task dev`          | Start app in dev mode (Go + Vite)       |
+| `task build`        | Production build                        |
+| `task package`      | Build + bundle into `.app`              |
+| `task lint`         | All linters (biome, tsc, golangci-lint) |
+| `task test`         | All tests (Go)                          |
+| `task check`        | lint + test (pre-commit hook)           |
+| `task clean`        | Remove build artifacts                  |
+| `task version:bump` | Bump version across config files        |
 
 ## Context Management
 

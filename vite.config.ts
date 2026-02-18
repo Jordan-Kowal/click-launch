@@ -29,15 +29,6 @@ export default defineConfig(() => ({
     outDir: "dist",
     emptyOutDir: true,
     minify: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Split vendor chunks for better caching
-          "solid-vendor": ["solid-js", "@solidjs/router"],
-          "ui-vendor": ["lucide-solid", "solid-toast"],
-        },
-      },
-    },
   },
   optimizeDeps: {
     include: [
@@ -46,6 +37,9 @@ export default defineConfig(() => ({
       "lucide-solid",
       "solid-toast",
       "js-yaml",
+      "uplot",
+      "@tanstack/solid-virtual",
+      "@wailsio/runtime",
     ],
   },
 }));

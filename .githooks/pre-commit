@@ -2,17 +2,5 @@
 set -eu
 
 echo "---------- Git hook: pre-commit ----------"
-
-echo ">>> [1/4] Running biome"
-pnpm biome:check
-
-echo ">>> [2/4] Running tsc"
-pnpm tsc
-
-echo ">>> [3/4] Running Go tests"
-go test ./backend/...
-
-echo ">>> [4/4] Running Go linter"
-golangci-lint run
-
+task check
 echo "------------------------------------------"

@@ -29,3 +29,31 @@ tasks:
     summary: Runs the application in development mode
     cmds:
       - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}
+
+  lint:
+    summary: Runs all linters (biome, tsc, golangci-lint)
+    cmds:
+      - pnpm biome:check
+      - pnpm tsc
+      - golangci-lint run
+
+  test:
+    summary: Runs all tests
+    cmds:
+      - go test -race ./backend/...
+
+  check:
+    summary: Runs all quality checks (lint + test)
+    cmds:
+      - task: lint
+      - task: test
+
+  clean:
+    summary: Removes build artifacts
+    cmds:
+      - rm -rf dist bin
+
+  version:bump:
+    summary: Bumps the app version across all config files
+    cmds:
+      - node scripts/bump-version.mjs
