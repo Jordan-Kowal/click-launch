@@ -1,5 +1,6 @@
 import { ArrowLeft, X } from "lucide-solid";
 import { type JSX, Match, Switch } from "solid-js";
+import { NAVBAR_HEIGHT } from "@/components/layout/constants";
 import { useDashboardContext } from "../contexts";
 import { ProcessStatus } from "../enums";
 import { ProcessActions } from "./ProcessActions";
@@ -51,7 +52,8 @@ export const ProcessDrawerHeader = (props: ProcessDrawerHeaderProps) => {
       </div>
       <button
         type="button"
-        class="btn btn-sm btn-circle absolute right-4 top-8"
+        class="btn btn-sm btn-circle absolute right-4"
+        style={{ top: `${NAVBAR_HEIGHT + 8}px` }}
         onClick={props.onClose}
       >
         <X size={16} />

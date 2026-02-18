@@ -1,5 +1,6 @@
 import { FileService } from "@backend";
 import { createStore } from "solid-js/store";
+import { NAVBAR_HEIGHT } from "@/components/layout/constants";
 import { useSettingsContext } from "@/contexts";
 import { useToast } from "@/hooks";
 import { formatLogsAsText, generateExportFilename } from "@/utils/logExport";
@@ -122,7 +123,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         onClick={props.onClose}
         aria-label="Close drawer"
       />
-      <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6 relative">
+      <div
+        class="w-[95vw] h-full bg-base-100 flex flex-col relative"
+        style={{ "padding-top": `${NAVBAR_HEIGHT + 4}px` }}
+      >
         <ProcessDrawerHeader
           title="Logs"
           processName={props.processName}

@@ -1,4 +1,5 @@
 import { createEffect, onCleanup, Show } from "solid-js";
+import { NAVBAR_HEIGHT } from "@/components/layout/constants";
 import { useSettingsContext } from "@/contexts";
 import { formatBytes, formatCpu } from "@/utils/formatters";
 import { useDashboardContext } from "../contexts";
@@ -42,7 +43,10 @@ export const ResourceDrawer = (props: ResourceDrawerProps) => {
         onClick={props.onClose}
         aria-label="Close drawer"
       />
-      <div class="w-[95vw] h-full bg-base-100 flex flex-col pt-6 relative overflow-y-auto">
+      <div
+        class="w-[95vw] h-full bg-base-100 flex flex-col relative overflow-y-auto"
+        style={{ "padding-top": `${NAVBAR_HEIGHT + 4}px` }}
+      >
         <ProcessDrawerHeader
           title="Resources"
           processName={props.processName}
