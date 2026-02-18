@@ -34,6 +34,7 @@ This led to a massive bundle size reduction (-93%), lower memory usage, and fast
   - **Toggle notifications** to suppress or enable toast messages.
   - **Toggle grouping** to show a flat process list or grouped view.
   - **Toggle resource monitor** to show or hide CPU/memory columns.
+  - **Toggle timestamps** to show or hide the timestamp prefix on log lines.
   - **Resource history retention** which determines how long resource usage data is kept.
 
 ### ✨ Improvements

@@ -1,5 +1,6 @@
 import { Copy } from "lucide-solid";
-import { createMemo, For, type JSX } from "solid-js";
+import { createMemo, For, type JSX, Show } from "solid-js";
+import { useSettingsContext } from "@/contexts";
 import { useToast } from "@/hooks";
 import type { ProcessLogData } from "@/types";
 import { LogType } from "@/types";
@@ -36,6 +37,7 @@ const highlightSearchTerm = (
 };
 
 export const ProcessLogRow = (props: ProcessLogRowProps) => {
+  const { settings } = useSettingsContext();
   const toast = useToast();
 
   const copyLogLine = (text: string) => {
@@ -47,7 +49,9 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   if (props.log.type === LogType.EXIT) {
     return (
       <div>
-        <div>{formatTimestamp(props.log.timestamp)}</div>
+        <Show when={settings().showTimestamps}>
+          <div>{formatTimestamp(props.log.timestamp)}</div>
+        </Show>
         <div>{props.log.code}</div>
         <div>{props.log.signal}</div>
       </div>
@@ -89,9 +93,11 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
       >
         <Copy size={14} />
       </button>
-      <span class="text-gray-400 italic">
-        [{formatTimestamp(props.log.timestamp)}]{" "}
-      </span>
+      <Show when={settings().showTimestamps}>
+        <span class="text-gray-400 italic">
+          [{formatTimestamp(props.log.timestamp)}]{" "}
+        </span>
+      </Show>
       <For each={segments()}>
         {(segment) => (
           <span class={segment.classes.join(" ")}>

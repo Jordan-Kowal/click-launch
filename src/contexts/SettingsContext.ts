@@ -6,6 +6,7 @@ export type Settings = {
   showNotifications: boolean;
   showGrouping: boolean;
   showResourceMonitor: boolean;
+  showTimestamps: boolean;
   resourceHistoryMinutes: number;
 };
 
@@ -21,6 +22,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showNotifications: true,
   showGrouping: true,
   showResourceMonitor: true,
+  showTimestamps: true,
   resourceHistoryMinutes: 15,
 };
 

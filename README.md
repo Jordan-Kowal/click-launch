@@ -255,6 +255,7 @@ Click the **cog icon** in the navigation bar to open the settings panel. Changes
 | Theme                  | Toggle | Nord    | Switch between Nord (light) and Forest (dark) themes      |
 | Show grouping          | Toggle | On      | Show processes in collapsible groups or as a flat list    |
 | Show resource monitor  | Toggle | On      | Show or hide CPU/memory usage columns                     |
+| Show timestamps        | Toggle | On      | Show or hide the timestamp prefix on each log line        |
 | Log buffer size        | Number | 10000   | Maximum log lines kept per process (100-50,000)           |
 | Show notifications     | Toggle | On      | Enable or suppress toast notifications                    |
 | History duration (min) | Number | 15      | Minutes of resource history to retain per process (1-120) |

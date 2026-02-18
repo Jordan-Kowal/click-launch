@@ -135,6 +135,17 @@ export const SettingsModal = (props: SettingsModalProps) => {
 
             <SettingsSection title="Logs">
               <SettingsRow
+                label="Show timestamps"
+                tooltip="Show/hide the timestamp prefix on each log line"
+              >
+                <input
+                  type="checkbox"
+                  class="toggle toggle-sm toggle-primary"
+                  checked={settings().showTimestamps}
+                  onChange={handleToggle("showTimestamps")}
+                />
+              </SettingsRow>
+              <SettingsRow
                 label="Log buffer size"
                 tooltip={`How many logs are kept in memory (from ${MIN_LOG_BUFFER_SIZE.toLocaleString()} to ${MAX_LOG_BUFFER_SIZE.toLocaleString()})`}
               >
