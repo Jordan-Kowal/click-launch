@@ -14,3 +14,13 @@ export const formatBytes = (bytes: number, decimals = 0): string => {
 export const formatCpu = (percent: number): string => {
   return `${percent.toFixed(1)}%`;
 };
+
+/** Formats an ISO/UTC timestamp to local "HH:MM:SS.μμμμμμ" with fixed 6-digit microseconds. */
+export const formatTimestamp = (iso: string): string => {
+  const date = new Date(iso);
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const hms = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  const fracMatch = iso.match(/\.(\d+)/);
+  const micros = (fracMatch?.[1] ?? "0").padEnd(6, "0").slice(0, 6);
+  return `${hms}.${micros}`;
+};

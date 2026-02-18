@@ -51,7 +51,7 @@ while true; do
   if [ $((counter % 5)) -eq 0 ]; then
     echo "[$timestamp] ✓ Server running on http://localhost:$port"
   else
-    echo -ne "[$timestamp] Processing request #$counter..."
+    echo "[$timestamp] Processing request #$counter"
   fi
 
   sleep 1

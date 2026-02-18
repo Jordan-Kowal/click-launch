@@ -4,6 +4,7 @@ import { useToast } from "@/hooks";
 import type { ProcessLogData } from "@/types";
 import { LogType } from "@/types";
 import { parseAnsiToSegments } from "@/utils/ansiToHtml";
+import { formatTimestamp } from "@/utils/formatters";
 
 type ProcessLogRowProps = {
   log: ProcessLogData;
@@ -46,7 +47,7 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
   if (props.log.type === LogType.EXIT) {
     return (
       <div>
-        <div>{props.log.timestamp}</div>
+        <div>{formatTimestamp(props.log.timestamp)}</div>
         <div>{props.log.code}</div>
         <div>{props.log.signal}</div>
       </div>
@@ -88,7 +89,9 @@ export const ProcessLogRow = (props: ProcessLogRowProps) => {
       >
         <Copy size={14} />
       </button>
-      <span class="text-gray-400 italic">[{props.log.timestamp}] </span>
+      <span class="text-gray-400 italic">
+        [{formatTimestamp(props.log.timestamp)}]{" "}
+      </span>
       <For each={segments()}>
         {(segment) => (
           <span class={segment.classes.join(" ")}>

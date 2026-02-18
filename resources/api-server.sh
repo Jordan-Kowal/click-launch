@@ -50,13 +50,13 @@ while true; do
       hit_rate=$((RANDOM % 100))
       echo "[$timestamp] Cache hit rate: ${hit_rate}%"
     else
-      echo -ne "[$timestamp] Handling request #$counter (cached)..."
+      echo "[$timestamp] Handling request #$counter (cached)"
     fi
   else
     if [ $((counter % 4)) -eq 0 ]; then
       echo "[$timestamp] Request #$counter completed (no cache)"
     else
-      echo -ne "[$timestamp] Handling request #$counter..."
+      echo "[$timestamp] Handling request #$counter"
     fi
   fi
 

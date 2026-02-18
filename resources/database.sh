@@ -46,7 +46,7 @@ while true; do
     if [ $((counter % 3)) -eq 0 ]; then
       echo "[$timestamp] INFO: Database connection pool stable (4/10 active)"
     else
-      echo -ne "[$timestamp] Processing query #$counter..."
+      echo "[$timestamp] Processing query #$counter"
     fi
   else
     if [ $((counter % 5)) -eq 0 ]; then
