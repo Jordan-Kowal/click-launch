@@ -54,6 +54,7 @@ All commands go through [Task](https://taskfile.dev/) (see `Taskfile.yml`):
 | `task lint`         | All linters (biome, tsc, golangci-lint) |
 | `task test`         | All tests (Go)                          |
 | `task check`        | lint + test (pre-commit hook)           |
+| `task upgrade`      | Update all deps to latest + run checks  |
 | `task clean`        | Remove build artifacts                  |
 | `task version:bump` | Bump version across config files        |
 

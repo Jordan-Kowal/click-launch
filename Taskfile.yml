@@ -55,6 +55,14 @@ tasks:
       - task: lint
       - task: test
 
+  upgrade:
+    summary: Updates all dependencies to latest versions and runs checks
+    cmds:
+      - bun update --latest
+      - go get -u ./...
+      - go mod tidy
+      - task: check
+
   clean:
     summary: Removes build artifacts
     cmds:
