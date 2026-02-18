@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"log"
+	"os"
 
 	"github.com/Jordan-Kowal/click-launch/backend"
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -56,6 +57,7 @@ func main() {
 	app.Menu.Set(menu)
 
 	// Main window with macOS hidden title bar
+	isDevMode := os.Getenv("FRONTEND_DEVSERVER_URL") != ""
 	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:  "Click Launch",
 		Width:  1200,
@@ -65,6 +67,17 @@ func main() {
 			TitleBar: application.MacTitleBarHiddenInset,
 		},
 	})
+
+	// Open devtools automatically in dev mode (once, on first show)
+	if isDevMode {
+		devToolsOpened := false
+		window.RegisterHook(events.Common.WindowShow, func(_ *application.WindowEvent) {
+			if !devToolsOpened {
+				devToolsOpened = true
+				window.OpenDevTools()
+			}
+		})
+	}
 
 	// macOS: hide window on close instead of quitting (dock reactivation handled by Wails)
 	window.RegisterHook(events.Common.WindowClosing, func(event *application.WindowEvent) {
