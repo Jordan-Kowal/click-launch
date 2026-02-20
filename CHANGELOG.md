@@ -11,6 +11,7 @@
 ## TBD
 
 - 🐞 Fixed non-source files triggering Vite hot-reload during development.
+- 🐞 Fixed number settings (log buffer size, resource history duration) applying on every keystroke, causing data loss. Values now commit on blur or Enter.
 
 ## 2.0.0 - 2026-02-20
 

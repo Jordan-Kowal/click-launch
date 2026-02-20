@@ -11,8 +11,7 @@ Feature ideas worth implementing:
 1. Allow displaying multiple logs simultaneously
 2. Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
 3. Harden InstallUpdate: The auto-update mechanism (`AppService.InstallUpdate`) pipes a remote script from GitHub `main` branch directly into bash. If the GitHub account is compromised, this becomes a remote code execution vector. Mitigations: pin to a tagged release URL instead of `main` (fetch latest release tag first, then download that specific version), and/or verify a checksum after download before executing.
-4. Fix bug where changing resource history length instantly updates. Meaning that if I have 25min and want to switch to 100min, I'll type 1, and it will directly slice all the history to the new length, leading to data loss. Maybe wait until defocus.
-5. Fix hot-reloading bug that doesn't kill the ongoing process (but refreshes the UI and losing the process state)
+4. Fix hot-reloading bug that doesn't kill the ongoing process (but refreshes the UI and losing the process state)
 
 ---
 
