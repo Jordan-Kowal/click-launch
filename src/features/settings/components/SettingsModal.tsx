@@ -9,6 +9,7 @@ import {
   type Settings,
 } from "@/contexts/SettingsContext";
 import { useToast } from "@/hooks/useToast";
+import { NumberSettingInput } from "./NumberSettingInput";
 import { SettingsRow } from "./SettingsRow";
 import { SettingsSection } from "./SettingsSection";
 
@@ -24,22 +25,6 @@ export const SettingsModal = (props: SettingsModalProps) => {
   const handleBackdropClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
       props.onClose();
-    }
-  };
-
-  const handleLogBufferChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const value = Number.parseInt(target.value, 10);
-    if (!Number.isNaN(value)) {
-      updateSetting("logBufferSize", value);
-    }
-  };
-
-  const handleResourceHistoryChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const value = Number.parseInt(target.value, 10);
-    if (!Number.isNaN(value)) {
-      updateSetting("resourceHistoryMinutes", value);
     }
   };
 
@@ -149,13 +134,10 @@ export const SettingsModal = (props: SettingsModalProps) => {
                 label="Log buffer size"
                 tooltip={`How many logs are kept in memory (from ${MIN_LOG_BUFFER_SIZE.toLocaleString()} to ${MAX_LOG_BUFFER_SIZE.toLocaleString()})`}
               >
-                <input
-                  type="number"
-                  class="input input-sm input-bordered w-28 text-right"
-                  value={settings().logBufferSize}
+                <NumberSettingInput
+                  settingKey="logBufferSize"
                   min={MIN_LOG_BUFFER_SIZE}
                   max={MAX_LOG_BUFFER_SIZE}
-                  onInput={handleLogBufferChange}
                 />
               </SettingsRow>
             </SettingsSection>
@@ -165,13 +147,10 @@ export const SettingsModal = (props: SettingsModalProps) => {
                 label="History duration (min)"
                 tooltip={`How many minutes of resource history to keep (from ${MIN_RESOURCE_HISTORY_MINUTES} to ${MAX_RESOURCE_HISTORY_MINUTES})`}
               >
-                <input
-                  type="number"
-                  class="input input-sm input-bordered w-28 text-right"
-                  value={settings().resourceHistoryMinutes}
+                <NumberSettingInput
+                  settingKey="resourceHistoryMinutes"
                   min={MIN_RESOURCE_HISTORY_MINUTES}
                   max={MAX_RESOURCE_HISTORY_MINUTES}
-                  onInput={handleResourceHistoryChange}
                 />
               </SettingsRow>
             </SettingsSection>
