@@ -20,7 +20,7 @@ export const VersionStatus = () => {
     ].join("\n\n");
     const confirmed = confirm(message);
     if (confirmed) {
-      AppService.InstallUpdate();
+      AppService.InstallUpdate(latestVersion()!);
     }
   };
 

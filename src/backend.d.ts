@@ -14,7 +14,7 @@ declare module "@backend" {
   export const AppService: {
     GetVersion(): Promise<string>;
     GetResourcePath(filename: string): Promise<string>;
-    InstallUpdate(): Promise<void>;
+    InstallUpdate(version: string): Promise<void>;
   };
 
   export const ConfigService: {

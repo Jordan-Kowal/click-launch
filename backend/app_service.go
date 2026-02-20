@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -27,14 +28,16 @@ func (s *AppService) GetResourcePath(filename string) string {
 	return "/" + filename
 }
 
-// InstallUpdate spawns a background shell that downloads and runs the update installer,
+// InstallUpdate spawns a background shell that downloads and runs the pinned update installer,
 // then quits the app. The background shell sleeps 2s to let the app exit first.
-func (s *AppService) InstallUpdate() {
-	cmd := exec.Command("sh", "-c", `(
+func (s *AppService) InstallUpdate(version string) {
+	url := fmt.Sprintf("https://raw.githubusercontent.com/Jordan-Kowal/click-launch/v%s/setup.sh", version)
+	script := fmt.Sprintf(`(
 		sleep 2
-		curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash >> /dev/null 2>&1
+		curl -fsSL %s | bash >> /dev/null 2>&1
 		open /Applications/ClickLaunch.app
-	) &`)
+	) &`, url)
+	cmd := exec.Command("sh", "-c", script) //nolint:gosec // version comes from GitHub API, not user input
 	if err := cmd.Start(); err != nil {
 		return
 	}
