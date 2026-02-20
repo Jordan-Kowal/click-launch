@@ -15,7 +15,7 @@ On top on new major features, we also migrated the app:
 - from `Electron` to `Wails v3`.
 - from `node` and `pnpm` to `bun`
 
-This led to a massive bundle size reduction (-90%), lower memory usage, and faster startup.
+This led to a massive bundle size reduction (-97%, from 270mo to 9mo), lower memory usage, and faster startup.
 
 ### 🚀 Features
 
