@@ -10,7 +10,9 @@
 
 ## TBD
 
+- 🐞 Fixed CI Go version mismatch (1.24 → 1.25) to match `go.mod`.
 - 🔧 Added `push` trigger to code-quality CI workflow to seed Go cache for PR branches.
+- 🔧 Switched all CI jobs to `macos-latest` to match the target platform.
 
 ## 2.0.1 - 2026-02-21
 
