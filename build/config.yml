@@ -6,7 +6,7 @@ info:
   productIdentifier: "app.jkdev.click-launch"
   description: "Desktop app for managing your local dev stack"
   copyright: "(c) 2025, Jordan Kowal"
-  version: "2.0.0"
+  version: "2.0.1"
 
 dev_mode:
   root_path: .

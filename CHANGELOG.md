@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 2.0.1 - 2026-02-21
 
 - 🐞 Fixed non-source files triggering Vite hot-reload during development.
 - 🐞 Fixed number settings (log buffer size, resource history duration) applying on every keystroke, causing data loss. Values now commit on blur or Enter.
