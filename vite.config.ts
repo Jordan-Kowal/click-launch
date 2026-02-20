@@ -15,6 +15,34 @@ export default defineConfig(() => ({
       "@backend": `${import.meta.dirname}/frontend/bindings/github.com/Jordan-Kowal/click-launch/backend`,
     },
   },
+  server: {
+    watch: {
+      ignored: [
+        // Directories
+        "**/.claude/**",
+        "**/.githooks/**",
+        "**/.github/**",
+        "**/.zed/**",
+        "**/backend/**",
+        "**/bin/**",
+        "**/build/**",
+        "**/dist/**",
+        "**/docs/**",
+        "**/frontend/**",
+        "**/logs/**",
+        "**/resources/**",
+        "**/scripts/**",
+        // File extensions
+        "**/*.go",
+        "**/*.lock",
+        "**/*.md",
+        "**/*.mod",
+        "**/*.sh",
+        "**/*.sum",
+        "**/*.yml",
+      ],
+    },
+  },
   base: "./",
   build: {
     target: "esnext",

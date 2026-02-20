@@ -14,7 +14,6 @@ Feature ideas worth implementing:
 4. Fix bug where changing resource history length instantly updates. Meaning that if I have 25min and want to switch to 100min, I'll type 1, and it will directly slice all the history to the new length, leading to data loss. Maybe wait until defocus.
 5. Fix hot-reloading bug that doesn't kill the ongoing process (but refreshes the UI and losing the process state)
 6. Why is updating the TODO.md triggering a hot-reload/re-render of the app?
-7. Improve resource usage graph using terminal-like UI rather than uplot?
 
 ---
 
