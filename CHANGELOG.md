@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 2.0.0 - 2026-02-20
 
 On top on new major features, we also migrated the app:
 
