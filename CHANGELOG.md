@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🐞 Fixed non-source files triggering Vite hot-reload during development.
+
 ## 2.0.0 - 2026-02-20
 
 On top on new major features, we also migrated the app:
