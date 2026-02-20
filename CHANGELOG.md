@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🔧 Added `push` trigger to code-quality CI workflow to seed Go cache for PR branches.
+
 ## 2.0.1 - 2026-02-21
 
 - 🐞 Fixed non-source files triggering Vite hot-reload during development.
