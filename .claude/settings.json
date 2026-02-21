@@ -1,4 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(task:*)",
+      "Bash(bun run biome:check:*)",
+      "Bash(bun run tsc:*)",
+      "Bash(go test:*)",
+      "Bash(golangci-lint:*)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {
@@ -32,13 +41,8 @@
       }
     ]
   },
-  "permissions": {
-    "allow": [
-      "Bash(task:*)",
-      "Bash(bun run biome:check:*)",
-      "Bash(bun run tsc:*)",
-      "Bash(go test:*)",
-      "Bash(golangci-lint:*)"
-    ]
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   }
 }

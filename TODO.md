@@ -10,6 +10,7 @@ Feature ideas worth implementing:
 
 1. Allow displaying multiple logs simultaneously
 2. Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
+3. Update screenshots
 
 ---
 
