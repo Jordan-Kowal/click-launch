@@ -10,16 +10,16 @@
 
 ## TBD
 
-- 🐞 Fixed CI Go version mismatch (1.24 → 1.25) to match `go.mod`.
+- 🔧 Fixed CI Go version mismatch (1.24 → 1.25) to match `go.mod`.
 - 🔧 Added `push` trigger to code-quality CI workflow to seed Go cache for PR branches.
 - 🔧 Switched all CI jobs to `macos-latest` to match the target platform.
 - 🔧 Upgraded all GitHub Actions to latest major versions.
 
 ## 2.0.1 - 2026-02-21
 
-- 🐞 Fixed non-source files triggering Vite hot-reload during development.
-- 🐞 Fixed number settings (log buffer size, resource history duration) applying on every keystroke, causing data loss. Values now commit on blur or Enter.
-- 🔧 Hardened auto-update to fetch the install script from the specific release tag instead of the main branch.
+- ✨ Fixed number settings (log buffer size, resource history duration) applying on every keystroke, causing data loss. Values now commit on blur or Enter.
+- ✨ Hardened auto-update to fetch the install script from the specific release tag instead of the main branch.
+- 🔧 Fixed non-source files triggering Vite hot-reload during development.
 
 ## 2.0.0 - 2026-02-20
 
