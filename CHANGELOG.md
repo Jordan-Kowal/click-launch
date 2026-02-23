@@ -10,6 +10,7 @@
 
 ## TBD
 
+- 🐞 Fixed bug where you could not upgrade to the latest version.
 - 🔧 Fixed CI Go version mismatch (1.24 → 1.25) to match `go.mod`.
 - 🔧 Added `push` trigger to code-quality CI workflow for quality insurance and to seed Go cache for PR branches.
 - 🔧 Switched all CI jobs to `macos-latest` to match the target platform.

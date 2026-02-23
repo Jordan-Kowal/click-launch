@@ -12,18 +12,6 @@ export const VersionStatus = () => {
     return latest !== null && latest !== getCurrentVersion();
   };
 
-  const handleInstallUpdate = () => {
-    const message = [
-      `A new version (${latestVersion()}) is available.`,
-      "The app will close, update, and reopen automatically.",
-      "Do you want to proceed?",
-    ].join("\n\n");
-    const confirmed = confirm(message);
-    if (confirmed) {
-      AppService.InstallUpdate(latestVersion()!);
-    }
-  };
-
   onMount(() => {
     const checkUpdates = async () => {
       const latest = await getLatestVersion();
@@ -66,7 +54,7 @@ export const VersionStatus = () => {
             <button
               type="button"
               class="btn btn-sm btn-primary"
-              onClick={handleInstallUpdate}
+              onClick={() => AppService.InstallUpdate(latestVersion()!)}
             >
               Upgrade
             </button>
