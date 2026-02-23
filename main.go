@@ -17,7 +17,7 @@ var assets embed.FS
 var appIcon []byte
 
 // Keep in sync with package.json and build/config.yml
-const appVersion = "2.0.1"
+const appVersion = "2.0.2"
 
 func main() {
 	app := application.New(application.Options{

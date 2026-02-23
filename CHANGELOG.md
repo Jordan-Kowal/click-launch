@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## TBD
+## 2.0.2 - 2026-02-23
 
 - 🐞 Fixed bug where you could not upgrade to the latest version.
 - 🔧 Fixed CI Go version mismatch (1.24 → 1.25) to match `go.mod`.
