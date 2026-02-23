@@ -20,6 +20,8 @@ var appIcon []byte
 const appVersion = "2.0.2"
 
 func main() {
+	backend.FixPath()
+
 	app := application.New(application.Options{
 		Name:        "Click Launch",
 		Description: "Desktop app for managing your local dev stack",
