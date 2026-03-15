@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- 🚀 Add a "Go back" button on the dashboard to return to project selection.
+- ✨ Skip the warning modal when navigating home with no running processes.
 - 🐞 Hide the homepage button on the welcome page where it serves no purpose.
 - 🔧 Upgraded all JS and Go dependencies to latest versions.
 

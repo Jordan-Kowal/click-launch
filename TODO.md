@@ -12,8 +12,7 @@ Feature ideas worth implementing:
 2. Feat: Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
 3. Fix: emptying the logs should empty the search bar
 4. Feat: Only show active processes (on the dashboard)
-5. Feat: Add a "Go back" button on the dashboard to go back to homepage. Same behavior as the Homepage button in the header (with the warning modal)
-6. Fix: Clicking on the homepage button (or go back) shouldn't prompt the warning modal if no processes are running
+5. Update deps
 
 ---
 
