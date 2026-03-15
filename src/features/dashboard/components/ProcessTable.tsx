@@ -1,20 +1,43 @@
-import { createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
 import { useDashboardContext } from "../contexts";
+import { ProcessStatus } from "../enums";
 import { ProcessGroupHeader } from "./ProcessGroupHeader";
 import { ProcessLogDrawer } from "./ProcessLogDrawer";
 import { ProcessRow } from "./ProcessRow";
 import { ResourceDrawer } from "./ResourceDrawer";
 
-export const ProcessTable = () => {
-  const { rootDirectory, getGroupedProcesses, hasGroups, isGroupCollapsed } =
-    useDashboardContext();
+type ProcessTableProps = {
+  hideIdle: boolean;
+};
+
+export const ProcessTable = (props: ProcessTableProps) => {
+  const {
+    rootDirectory,
+    getGroupedProcesses,
+    hasGroups,
+    isGroupCollapsed,
+    getProcessStatus,
+  } = useDashboardContext();
   const { settings } = useSettingsContext();
   const [selectedProcessName, setSelectedProcessName] = createSignal<
     string | null
   >(null);
   const [selectedResourceProcessName, setSelectedResourceProcessName] =
     createSignal<string | null>(null);
+
+  const filteredGroups = createMemo(() => {
+    const groups = getGroupedProcesses();
+    if (!props.hideIdle) return groups;
+    return groups
+      .map((group) => ({
+        ...group,
+        processes: group.processes.filter(
+          (p) => getProcessStatus(p.name) !== ProcessStatus.STOPPED,
+        ),
+      }))
+      .filter((group) => group.processes.length > 0);
+  });
 
   let drawerCheckboxRef!: HTMLInputElement;
   let resourceDrawerCheckboxRef!: HTMLInputElement;
@@ -71,37 +94,51 @@ export const ProcessTable = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <For each={getGroupedProcesses()}>
-                    {(group) => (
-                      <>
-                        <Show when={hasGroups() && settings().showGrouping}>
-                          <ProcessGroupHeader
-                            groupName={group.name}
-                            totalCount={group.processes.length}
-                          />
-                        </Show>
-                        <Show
-                          when={
-                            !hasGroups() ||
-                            !settings().showGrouping ||
-                            !isGroupCollapsed(group.name)
-                          }
+                  <Show
+                    when={filteredGroups().length > 0}
+                    fallback={
+                      <tr>
+                        <td
+                          colspan="4"
+                          class="text-center text-base-content/50 py-8"
                         >
-                          <For each={group.processes}>
-                            {(process, index) => (
-                              <ProcessRow
-                                process={process}
-                                index={index()}
-                                rootDirectory={rootDirectory()!}
-                                onOpenLogs={openModal}
-                                onOpenResourceDrawer={openResourceDrawer}
-                              />
-                            )}
-                          </For>
-                        </Show>
-                      </>
-                    )}
-                  </For>
+                          No active processes
+                        </td>
+                      </tr>
+                    }
+                  >
+                    <For each={filteredGroups()}>
+                      {(group) => (
+                        <>
+                          <Show when={hasGroups() && settings().showGrouping}>
+                            <ProcessGroupHeader
+                              groupName={group.name}
+                              totalCount={group.processes.length}
+                            />
+                          </Show>
+                          <Show
+                            when={
+                              !hasGroups() ||
+                              !settings().showGrouping ||
+                              !isGroupCollapsed(group.name)
+                            }
+                          >
+                            <For each={group.processes}>
+                              {(process, index) => (
+                                <ProcessRow
+                                  process={process}
+                                  index={index()}
+                                  rootDirectory={rootDirectory()!}
+                                  onOpenLogs={openModal}
+                                  onOpenResourceDrawer={openResourceDrawer}
+                                />
+                              )}
+                            </For>
+                          </Show>
+                        </>
+                      )}
+                    </For>
+                  </Show>
                 </tbody>
               </table>
             </div>
