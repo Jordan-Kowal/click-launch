@@ -11,6 +11,7 @@
 ## Unreleased
 
 - 🐞 Hide the homepage button on the welcome page where it serves no purpose.
+- 🔧 Upgraded all JS and Go dependencies to latest versions.
 
 ## 2.0.2 - 2026-02-23
 
