@@ -14,7 +14,6 @@ Feature ideas worth implementing:
 4. Feat: Only show active processes (on the dashboard)
 5. Feat: Add a "Go back" button on the dashboard to go back to homepage. Same behavior as the Homepage button in the header (with the warning modal)
 6. Fix: Clicking on the homepage button (or go back) shouldn't prompt the warning modal if no processes are running
-7. Update deps
 
 ---
 
