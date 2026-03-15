@@ -4,6 +4,7 @@ import { ArrowLeft, Square } from "lucide-solid";
 import {
   createEffect,
   createMemo,
+  createSignal,
   Match,
   onCleanup,
   onMount,
@@ -50,6 +51,7 @@ const DashboardPage = () => {
 const Dashboard = () => {
   const { isLoading, errors, yamlConfig, hasRunningProcesses } =
     useDashboardContext();
+  const [hideIdle, setHideIdle] = createSignal(false);
   let modalRef!: HTMLDialogElement;
 
   const handleReloadConfirm = async () => {
@@ -117,8 +119,17 @@ const Dashboard = () => {
                   <Square size={16} />
                 </button>
               </Show>
+              <label class="flex items-center gap-1.5 text-sm cursor-pointer ml-auto">
+                <span class="text-base-content/60">Active only</span>
+                <input
+                  type="checkbox"
+                  class="toggle toggle-sm toggle-primary"
+                  checked={hideIdle()}
+                  onChange={() => setHideIdle(!hideIdle())}
+                />
+              </label>
             </div>
-            <ProcessTable />
+            <ProcessTable hideIdle={hideIdle()} />
           </BaseLayout>
         </Match>
       </Switch>
