@@ -1,7 +1,7 @@
 import { ProcessService } from "@backend";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { House, Settings } from "lucide-solid";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { SettingsModal } from "@/features/settings/components";
 import { routePaths } from "@/routes";
 import { Logo } from "../ui/Logo";
@@ -43,15 +43,17 @@ export const NavBar = () => {
               <Settings size={18} />
             </button>
           </div>
-          <div class="tooltip tooltip-left" data-tip="Homepage">
-            <button
-              type="button"
-              class="btn btn-ghost btn-circle btn-sm no-drag"
-              onClick={onHomeButtonClick}
-            >
-              <House size={20} />
-            </button>
-          </div>
+          <Show when={location.pathname !== routePaths.projectSelection}>
+            <div class="tooltip tooltip-left" data-tip="Homepage">
+              <button
+                type="button"
+                class="btn btn-ghost btn-circle btn-sm no-drag"
+                onClick={onHomeButtonClick}
+              >
+                <House size={20} />
+              </button>
+            </div>
+          </Show>
         </div>
       </div>
       <Modal ref={modalRef!} onConfirm={handleConfirm} closable={true}>

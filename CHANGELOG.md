@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## Unreleased
+
+- 🐞 Hide the homepage button on the welcome page where it serves no purpose.
+
 ## 2.0.2 - 2026-02-23
 
 - 🐞 Fixed bug where you could not upgrade to the latest version.
