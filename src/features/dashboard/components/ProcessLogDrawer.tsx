@@ -82,13 +82,17 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
 
   const keyboard = useDrawerKeyboard({
     isOpen: () => props.isOpen,
-    onClose: () => props.onClose(),
+    onClose: () => handleClose(),
     searchInputRef: () => searchInputRef,
   });
 
+  const handleClose = () => {
+    logSearch.clearSearch();
+    props.onClose();
+  };
+
   const clearAll = () => {
     logStore.clearLogs();
-    logSearch.clearSearch();
   };
 
   const exportLogs = async () => {
@@ -120,7 +124,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
       <button
         type="button"
         class="drawer-overlay"
-        onClick={props.onClose}
+        onClick={handleClose}
         aria-label="Close drawer"
       />
       <div
@@ -130,7 +134,7 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
         <ProcessDrawerHeader
           title="Logs"
           processName={props.processName}
-          onClose={props.onClose}
+          onClose={handleClose}
         >
           <ProcessResources
             resources={resources()}
