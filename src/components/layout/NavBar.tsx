@@ -1,28 +1,14 @@
-import { ProcessService } from "@backend";
-import { useLocation, useNavigate } from "@solidjs/router";
+import { useLocation } from "@solidjs/router";
 import { House, Settings } from "lucide-solid";
 import { createSignal, Show } from "solid-js";
 import { SettingsModal } from "@/features/settings/components";
 import { routePaths } from "@/routes";
+import { GoHomeButton } from "../ui/GoHomeButton";
 import { Logo } from "../ui/Logo";
-import { Modal } from "../ui/Modal";
 
 export const NavBar = () => {
-  let modalRef!: HTMLDialogElement;
   const location = useLocation();
-  const navigate = useNavigate();
   const [showSettings, setShowSettings] = createSignal(false);
-
-  const handleConfirm = async () => {
-    await ProcessService.StopAll();
-    navigate(routePaths.projectSelection);
-  };
-
-  const onHomeButtonClick = () => {
-    if (location.pathname !== routePaths.projectSelection) {
-      modalRef?.showModal();
-    }
-  };
 
   return (
     <>
@@ -45,21 +31,11 @@ export const NavBar = () => {
           </div>
           <Show when={location.pathname !== routePaths.projectSelection}>
             <div class="tooltip tooltip-left" data-tip="Homepage">
-              <button
-                type="button"
-                class="btn btn-ghost btn-circle btn-sm no-drag"
-                onClick={onHomeButtonClick}
-              >
-                <House size={20} />
-              </button>
+              <GoHomeButton icon={House} size={20} class="no-drag" />
             </div>
           </Show>
         </div>
       </div>
-      <Modal ref={modalRef!} onConfirm={handleConfirm} closable={true}>
-        <h1 class="text-xl font-bold">Return to project selection?</h1>
-        <p>Any ongoing processes will be shut down.</p>
-      </Modal>
       <SettingsModal
         isOpen={showSettings()}
         onClose={() => setShowSettings(false)}
