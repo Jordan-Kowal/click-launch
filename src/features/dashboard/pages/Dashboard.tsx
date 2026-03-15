@@ -1,6 +1,6 @@
 import { ProcessService } from "@backend";
 import { useNavigate, useSearchParams } from "@solidjs/router";
-import { Square } from "lucide-solid";
+import { ArrowLeft, Square } from "lucide-solid";
 import {
   createEffect,
   createMemo,
@@ -11,7 +11,7 @@ import {
   Switch,
 } from "solid-js";
 import { BaseLayout, HeroLayout } from "@/components/layout";
-import { LoadingRing, Modal, ScreenTitle } from "@/components/ui";
+import { GoHomeButton, LoadingRing, Modal, ScreenTitle } from "@/components/ui";
 import { useToast } from "@/hooks";
 import { routePaths } from "@/routes";
 import { ErrorList, ProcessTable } from "../components";
@@ -90,13 +90,17 @@ const Dashboard = () => {
         </Match>
         <Match when={errors().length > 0}>
           <BaseLayout>
-            <ScreenTitle title="Dashboard" />
+            <div class="flex flex-row gap-2 items-center">
+              <GoHomeButton icon={ArrowLeft} size={20} />
+              <ScreenTitle title="Dashboard" />
+            </div>
             <ErrorList />
           </BaseLayout>
         </Match>
         <Match when={!isLoading() && errors().length === 0}>
           <BaseLayout>
             <div class="flex flex-row gap-2 items-center">
+              <GoHomeButton icon={ArrowLeft} size={20} />
               <ScreenTitle
                 title={`Dashboard for ${yamlConfig()!.project_name}`}
               />
