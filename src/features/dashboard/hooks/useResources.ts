@@ -1,5 +1,5 @@
 import { ProcessService, ResourceService } from "@backend";
-import { onCleanup } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useSettingsContext } from "@/contexts";
 import type {
@@ -92,6 +92,14 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
     }, POLL_RESOURCES_INTERVAL_MS);
   };
 
+  // Reactively start polling when active processes appear
+  createEffect(() => {
+    const hasActive = Object.values(processesData).some((p) =>
+      isProcessActive(p.status),
+    );
+    if (hasActive) startResourcePolling();
+  });
+
   const getProcessResources = (
     processName: string,
   ): ProcessResourceData | undefined => {
@@ -107,6 +115,5 @@ export const useResources = ({ processesData }: UseResourcesParams) => {
   return {
     getProcessResources,
     getProcessResourceHistory,
-    startResourcePolling,
   };
 };

@@ -18,13 +18,11 @@ const POLL_STATUS_INTERVAL_MS = 1000;
 type UseProcessesParams = {
   yamlConfig: () => YamlConfig | null;
   rootDirectory: () => string | null;
-  onProcessStarted?: () => void;
 };
 
 export const useProcesses = ({
   yamlConfig,
   rootDirectory,
-  onProcessStarted,
 }: UseProcessesParams) => {
   const toast = useToast();
 
@@ -221,7 +219,6 @@ export const useProcesses = ({
         maxRetries: processConfig.restart?.max_retries ?? 3,
       });
       startPolling();
-      onProcessStarted?.();
     } else {
       setProcessesData(processName, "status", ProcessStatus.STOPPED);
       toast.error(`Failed to start ${processName}`);

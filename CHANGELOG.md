@@ -15,6 +15,7 @@
 - ✨ Skip the warning modal when navigating home with no running processes.
 - 🐞 Hide the homepage button on the welcome page where it serves no purpose.
 - 🐞 Keep search input value when clearing process logs.
+- 🔧 Refactored DashboardProvider: replaced mutable ref callback with a reactive `createEffect` in `useResources`, making inter-hook communication fully reactive.
 - 🔧 Upgraded all JS and Go dependencies to latest versions.
 
 ## 2.0.2 - 2026-02-23
