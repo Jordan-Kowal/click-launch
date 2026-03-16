@@ -8,6 +8,15 @@
 - 🔧 Others
 - 💥 Breaking
 
+## Unreleased
+
+- ✨ Add a "Hide idle" toggle on the dashboard to filter out stopped processes.
+- ✨ Add a "Go back" button on the dashboard to return to project selection.
+- ✨ Skip the warning modal when navigating home with no running processes.
+- 🐞 Hide the homepage button on the welcome page where it serves no purpose.
+- 🐞 Keep search input value when clearing process logs.
+- 🔧 Upgraded all JS and Go dependencies to latest versions.
+
 ## 2.0.2 - 2026-02-23
 
 - 🐞 Fixed bug where you could not upgrade to the latest version.
