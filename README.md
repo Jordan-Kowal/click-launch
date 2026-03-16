@@ -60,6 +60,7 @@
 - **Resource monitoring**: Real-time CPU and memory usage per process, with historical charts
 - **Log export**: Export process logs as plain text files for sharing or debugging
 - **Settings panel**: Customize theme, log buffer, notifications, grouping, and resource monitor display
+- **Error isolation**: Per-page error boundaries keep the app shell intact if a feature crashes
 
 | Homepage                              | Dashboard                               | Log Drawer                                |
 | ------------------------------------- | --------------------------------------- | ----------------------------------------- |

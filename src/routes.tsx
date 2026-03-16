@@ -3,7 +3,10 @@ import {
   type DashboardRouteKey,
   dashboardRoutes,
 } from "@/features/dashboard/routes.tsx";
-import { type ProjectRouteKey, projectRoutes } from "@/features/home/routes";
+import {
+  type ProjectRouteKey,
+  projectRoutes,
+} from "@/features/home/routes.tsx";
 
 export type RouteKey = ProjectRouteKey | DashboardRouteKey;
 

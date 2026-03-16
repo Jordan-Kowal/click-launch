@@ -2,20 +2,20 @@ import type { RouteDefinition } from "@solidjs/router";
 import { ErrorBoundary, lazy } from "solid-js";
 import { ErrorFallback } from "@/components/ui";
 
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const ProjectSelection = lazy(() => import("./pages/ProjectSelection"));
 
-export type DashboardRouteKey = "dashboard";
+export type ProjectRouteKey = "projectSelection";
 
-export const dashboardRoutes: Record<DashboardRouteKey, RouteDefinition> = {
-  dashboard: {
-    path: "/dashboard",
+export const projectRoutes: Record<ProjectRouteKey, RouteDefinition> = {
+  projectSelection: {
+    path: "/",
     component: () => (
       <ErrorBoundary
         fallback={(error, reset) => (
           <ErrorFallback error={error} reset={reset} />
         )}
       >
-        <Dashboard />
+        <ProjectSelection />
       </ErrorBoundary>
     ),
   },
