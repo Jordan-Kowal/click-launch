@@ -23,22 +23,14 @@ type DashboardProviderProps = {
 export const DashboardProvider = (props: DashboardProviderProps) => {
   const config = useConfig(props.selectedFile);
 
-  // Use a mutable ref so useProcesses can call startResourcePolling
-  // after useResources is initialized (avoids circular dependency)
-  let onProcessStarted = () => {};
-
   const processes = useProcesses({
     yamlConfig: config.yamlConfig,
     rootDirectory: config.rootDirectory,
-    onProcessStarted: () => onProcessStarted(),
   });
 
   const resources = useResources({
     processesData: processes.processesData,
   });
-
-  // Wire up the callback now that resources is available
-  onProcessStarted = resources.startResourcePolling;
 
   const grouping = useGrouping({
     yamlConfig: config.yamlConfig,
