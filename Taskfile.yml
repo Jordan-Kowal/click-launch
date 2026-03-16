@@ -42,7 +42,7 @@ tasks:
     cmds:
       - bun run biome:check
       - bun run tsc
-      - golangci-lint run
+      - golangci-lint run ./backend/...
 
   test:
     summary: Runs all tests
