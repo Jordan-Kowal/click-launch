@@ -13,7 +13,7 @@
 ```shell
 git config core.hooksPath .githooks
 bun install
-task dev
+go mod tidy
 ```
 
 ## Developer Commands
