@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -99,7 +100,7 @@ func TestStart_Success(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	result := svc.Start(t.TempDir(), "echo hello", nil, nil)
+	result := svc.Start(t.TempDir(), "echo hello", nil, nil, "")
 
 	if !result.Success {
 		t.Fatalf("expected success, got error: %s", result.Error)
@@ -117,7 +118,7 @@ func TestStart_InvalidCwd(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	result := svc.Start("/nonexistent/path/that/does/not/exist", "echo hello", nil, nil)
+	result := svc.Start("/nonexistent/path/that/does/not/exist", "echo hello", nil, nil, "")
 
 	if result.Success {
 		t.Fatal("expected failure for non-existent cwd")
@@ -135,7 +136,7 @@ func TestStop_ExistingProcess(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	start := svc.Start(t.TempDir(), "sleep 30", nil, nil)
+	start := svc.Start(t.TempDir(), "sleep 30", nil, nil, "")
 	if !start.Success {
 		t.Fatalf("start failed: %s", start.Error)
 	}
@@ -162,7 +163,7 @@ func TestIsRunning_Running(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	start := svc.Start(t.TempDir(), "sleep 30", nil, nil)
+	start := svc.Start(t.TempDir(), "sleep 30", nil, nil, "")
 	if !start.Success {
 		t.Fatalf("start failed: %s", start.Error)
 	}
@@ -186,7 +187,7 @@ func TestIsRunning_AfterStop(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	start := svc.Start(t.TempDir(), "sleep 30", nil, nil)
+	start := svc.Start(t.TempDir(), "sleep 30", nil, nil, "")
 	if !start.Success {
 		t.Fatalf("start failed: %s", start.Error)
 	}
@@ -206,8 +207,8 @@ func TestBulkStatus(t *testing.T) {
 	t.Cleanup(svc.StopAll)
 
 	dir := t.TempDir()
-	start1 := svc.Start(dir, "sleep 30", nil, nil)
-	start2 := svc.Start(dir, "sleep 30", nil, nil)
+	start1 := svc.Start(dir, "sleep 30", nil, nil, "")
+	start2 := svc.Start(dir, "sleep 30", nil, nil, "")
 	if !start1.Success || !start2.Success {
 		t.Fatal("start failed")
 	}
@@ -230,7 +231,7 @@ func TestGetRunningProcessPids(t *testing.T) {
 	svc, _ := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	start := svc.Start(t.TempDir(), "sleep 30", nil, nil)
+	start := svc.Start(t.TempDir(), "sleep 30", nil, nil, "")
 	if !start.Success {
 		t.Fatalf("start failed: %s", start.Error)
 	}
@@ -258,8 +259,8 @@ func TestStopAll_StopsProcesses(t *testing.T) {
 	svc, _ := newTestProcessService()
 
 	dir := t.TempDir()
-	start1 := svc.Start(dir, "sleep 30", nil, nil)
-	start2 := svc.Start(dir, "sleep 30", nil, nil)
+	start1 := svc.Start(dir, "sleep 30", nil, nil, "")
+	start2 := svc.Start(dir, "sleep 30", nil, nil, "")
 	if !start1.Success || !start2.Success {
 		t.Fatal("start failed")
 	}
@@ -280,7 +281,7 @@ func TestLogBatching_EmitsEvents(t *testing.T) {
 	svc, emitter := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	svc.Start(t.TempDir(), "echo hello", nil, nil)
+	svc.Start(t.TempDir(), "echo hello", nil, nil, "")
 
 	if !emitter.waitForEvent(eventProcessLogBatch) {
 		t.Fatal("expected process-log:batch event to be emitted")
@@ -292,7 +293,7 @@ func TestExitLog_EmittedOnExit(t *testing.T) {
 	svc, emitter := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	svc.Start(t.TempDir(), "echo hello", nil, nil)
+	svc.Start(t.TempDir(), "echo hello", nil, nil, "")
 
 	// Wait for process to exit and logs to flush
 	time.Sleep(500 * time.Millisecond)
@@ -331,7 +332,7 @@ func TestCrashEvent_NonZeroExit(t *testing.T) {
 	svc, emitter := newTestProcessService()
 	t.Cleanup(svc.StopAll)
 
-	svc.Start(t.TempDir(), "sh -c 'exit 1'", nil, nil)
+	svc.Start(t.TempDir(), "sh -c 'exit 1'", nil, nil, "")
 
 	if !emitter.waitForEvent(eventProcessCrash) {
 		t.Fatal("expected process-crash event")
@@ -368,7 +369,7 @@ func TestRestart_TriggeredOnCrash(t *testing.T) {
 		DelayMs:    intPtr(100),
 	}
 
-	svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil)
+	svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil, "")
 
 	// Wait for crash + restart cycle
 	if !emitter.waitForEvent(eventProcessCrash) {
@@ -409,7 +410,7 @@ func TestRestart_MaxRetriesExceeded(t *testing.T) {
 		DelayMs:    intPtr(10),
 	}
 
-	svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil)
+	svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil, "")
 
 	// Wait for all retries to exhaust (initial crash + 1 retry + final crash)
 	time.Sleep(1 * time.Second)
@@ -442,7 +443,7 @@ func TestStart_CustomEnvPassedToProcess(t *testing.T) {
 	t.Cleanup(svc.StopAll)
 
 	env := map[string]string{"CLICK_LAUNCH_TEST_VAR": "hello_from_test"}
-	svc.Start(t.TempDir(), "echo $CLICK_LAUNCH_TEST_VAR", nil, env)
+	svc.Start(t.TempDir(), "echo $CLICK_LAUNCH_TEST_VAR", nil, env, "")
 
 	// Wait for process to fully exit (ensures all logs are flushed)
 	if !emitter.waitForLogContaining("exit") {
@@ -481,7 +482,7 @@ func TestStop_CancelsPendingRestart(t *testing.T) {
 		DelayMs:    intPtr(5000), // Long delay so we can cancel
 	}
 
-	start := svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil)
+	start := svc.Start(t.TempDir(), "sh -c 'exit 1'", restartCfg, nil, "")
 	if !start.Success {
 		t.Fatalf("start failed: %s", start.Error)
 	}
@@ -500,5 +501,77 @@ func TestStop_CancelsPendingRestart(t *testing.T) {
 	restartCount := emitter.countEvents("process-restart")
 	if restartCount > 0 {
 		t.Fatalf("expected no restart events after stop, got %d", restartCount)
+	}
+}
+
+func TestStartWithEnvFile(t *testing.T) {
+	t.Parallel()
+	svc, emitter := newTestProcessService()
+	t.Cleanup(svc.StopAll)
+
+	cwd, err := filepath.Abs("testdata")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// sample.env has DB_HOST=localhost, APP_ENV=development, etc.
+	result := svc.Start(cwd, "echo $DB_HOST $APP_ENV $OVERRIDE", nil, map[string]string{"OVERRIDE": "custom"}, "sample.env")
+	if !result.Success {
+		t.Fatalf("Start failed: %s", result.Error)
+	}
+
+	if !emitter.waitForLogContaining("exit") {
+		t.Fatal("process did not exit in time")
+	}
+
+	// Verify env file vars were loaded and explicit env overrides work
+	found := false
+	for _, e := range emitter.getEvents() {
+		if e.name != eventProcessLogBatch || len(e.data) == 0 {
+			continue
+		}
+		batch, ok := e.data[0].([]ProcessLogData)
+		if !ok {
+			continue
+		}
+		for _, log := range batch {
+			if log.Type == "stdout" && strings.Contains(log.Output, "localhost") && strings.Contains(log.Output, "development") && strings.Contains(log.Output, "custom") {
+				found = true
+			}
+		}
+	}
+	if !found {
+		t.Error("expected stdout to contain env file vars and explicit override")
+	}
+}
+
+func TestStartWithEnvFileMissing(t *testing.T) {
+	t.Parallel()
+	svc, _ := newTestProcessService()
+	t.Cleanup(svc.StopAll)
+
+	cwd, err := filepath.Abs("testdata")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	result := svc.Start(cwd, "echo hello", nil, nil, "nonexistent.env")
+	if result.Success {
+		t.Fatal("expected Start to fail for missing env file")
+	}
+	if !strings.Contains(result.Error, "env file") {
+		t.Errorf("expected error about env file, got: %s", result.Error)
+	}
+}
+
+func TestStartWithEmptyEnvFile(t *testing.T) {
+	t.Parallel()
+	svc, _ := newTestProcessService()
+	t.Cleanup(svc.StopAll)
+
+	// Empty string means no env file — should work normally
+	result := svc.Start(t.TempDir(), "echo hello", nil, nil, "")
+	if !result.Success {
+		t.Fatalf("Start failed: %s", result.Error)
 	}
 }

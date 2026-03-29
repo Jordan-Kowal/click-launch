@@ -28,6 +28,7 @@
     - [Root Configuration](#root-configuration)
     - [Process Configuration](#process-configuration)
     - [Environment Variables Configuration](#environment-variables-configuration)
+    - [Env File Configuration](#env-file-configuration)
     - [Restart Configuration](#restart-configuration)
     - [Argument Configuration (All Types)](#argument-configuration-all-types)
     - [Toggle-Specific Configuration](#toggle-specific-configuration)
@@ -112,6 +113,7 @@ Create a `config.yml` file in your project directory to define your development 
 | `processes[].group`        | `string` | ❌       | Group name for organizing processes                                     | `"Backend"`              |
 | `processes[].cwd`          | `string` | ❌       | Working directory for the process (relative to config file or absolute) | `"./packages/api"`       |
 | `processes[].env`          | `object` | ❌       | Custom environment variables                                            | See env config below     |
+| `processes[].env_file`     | `string` | ❌       | Path to a `.env` file (relative to `cwd` or absolute)                   | `".env"`                 |
 | `processes[].restart`      | `object` | ❌       | Auto-restart configuration                                              | See restart config below |
 | `processes[].args`         | `array`  | ❌       | List of configurable arguments                                          | See argument types below |
 
@@ -135,6 +137,34 @@ processes:
 - If present, must be an object with string keys and string values
 - Empty string values are allowed (useful for declaring a variable exists)
 - Values override any existing system environment variables with the same name
+
+### Env File Configuration
+
+Load environment variables from a `.env` file. The file path is resolved relative to the process's working directory (`cwd`). Variables from the env file are loaded first, then any explicit `env` values override them.
+
+```yaml
+processes:
+  - name: "API Server"
+    base_command: "pnpm start"
+    cwd: "./packages/api"
+    env_file: ".env"
+    env:
+      NODE_ENV: development # overrides .env value if present
+```
+
+**Supported `.env` format:**
+
+- `KEY=VALUE` pairs, one per line
+- Lines starting with `#` are comments
+- Blank lines are ignored
+- Quoted values are unquoted (`"hello world"` → `hello world`)
+- `export KEY=VALUE` syntax is supported
+
+**Precedence** (highest to lowest):
+
+1. Explicit `env` values (from YAML config, editable in UI)
+2. `.env` file values
+3. System environment variables
 
 ### Process Grouping Configuration
 
@@ -204,6 +234,7 @@ processes:
   - name: "Web Server"
     group: "Frontend"
     base_command: "pnpm start"
+    env_file: ".env"
     restart:
       enabled: true
       max_retries: 3

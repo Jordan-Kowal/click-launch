@@ -1,0 +1,15 @@
+project_name: "Test Project"
+
+processes:
+  - name: "With env file"
+    base_command: "echo hello"
+    env_file: ".env"
+
+  - name: "With env file and env vars"
+    base_command: "echo world"
+    env_file: "./config/.env.local"
+    env:
+      OVERRIDE: "yes"
+
+  - name: "Without env file"
+    base_command: "echo test"

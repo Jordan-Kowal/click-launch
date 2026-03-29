@@ -10,6 +10,7 @@
 
 ## Unreleased
 
+- 🚀 Add `env_file` support per process: load environment variables from a `.env` file, with explicit `env` values taking precedence.
 - ✨ Add a "Hide idle" toggle on the dashboard to filter out stopped processes.
 - ✨ Add a "Go back" button on the dashboard to return to project selection.
 - ✨ Skip the warning modal when navigating home with no running processes.

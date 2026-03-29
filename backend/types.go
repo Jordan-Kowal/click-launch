@@ -26,6 +26,7 @@ type ProcessConfig struct {
 	BaseCommand string            `json:"base_command" yaml:"base_command"`
 	Group       *string           `json:"group,omitempty" yaml:"group,omitempty"`
 	Cwd         *string           `json:"cwd,omitempty" yaml:"cwd,omitempty"`
+	EnvFile     *string           `json:"env_file,omitempty" yaml:"env_file,omitempty"`
 	Env         map[string]string `json:"env,omitempty" yaml:"env,omitempty"`
 	Restart     *RestartConfig    `json:"restart,omitempty" yaml:"restart,omitempty"`
 	Args        []ArgConfig       `json:"args,omitempty" yaml:"args,omitempty"`

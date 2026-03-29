@@ -38,6 +38,7 @@ declare module "@backend" {
       command: string,
       restartConfig: Record<string, any> | null,
       env: Record<string, string>,
+      envFile: string,
     ): Promise<ProcessStartResult>;
     Stop(id: string): Promise<ProcessStopResult>;
     StopAll(): Promise<void>;

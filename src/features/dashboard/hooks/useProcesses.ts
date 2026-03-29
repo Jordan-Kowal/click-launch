@@ -208,7 +208,14 @@ export const useProcesses = ({
     const storeEnv = processesData[processName]?.envValues;
     const env =
       storeEnv && Object.keys(storeEnv).length > 0 ? { ...storeEnv } : {};
-    const result = await ProcessService.Start(cwd, command, restartConfig, env);
+    const envFile = processConfig.env_file ?? "";
+    const result = await ProcessService.Start(
+      cwd,
+      command,
+      restartConfig,
+      env,
+      envFile,
+    );
 
     if (result.success && result.processId) {
       setProcessesData(processName, {
