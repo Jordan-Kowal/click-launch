@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## Unreleased
+## TBD
 
 - ✨ Add a "Hide idle" toggle on the dashboard to filter out stopped processes.
 - ✨ Add a "Go back" button on the dashboard to return to project selection.
