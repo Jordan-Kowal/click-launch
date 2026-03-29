@@ -104,6 +104,12 @@ export const ProcessRow = (props: ProcessRowProps) => {
                 {envSummary()}
               </div>
             </Show>
+            <Show when={props.process.env_file}>
+              <div class="text-xs text-base-content/60">
+                <span class="font-semibold">Env file:</span>{" "}
+                {props.process.env_file}
+              </div>
+            </Show>
             <Show when={hasOptions()}>{button()}</Show>
           </div>
           <Show when={hasOptions()}>

@@ -1,0 +1,10 @@
+project_name: "Test Project"
+
+processes:
+  - name: "Non-string env_file"
+    base_command: "echo hello"
+    env_file: 123
+
+  - name: "Empty env_file"
+    base_command: "echo world"
+    env_file: ""

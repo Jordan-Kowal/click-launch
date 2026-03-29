@@ -358,7 +358,7 @@ func extractExitInfo(cmd *exec.Cmd) (*int, *string) {
 // --- Exported methods (Wails bindings) ---
 
 // Start spawns a new process and returns its ID.
-func (s *ProcessService) Start(cwd string, command string, restartConfig *RestartConfig, env map[string]string) ProcessStartResult {
+func (s *ProcessService) Start(cwd string, command string, restartConfig *RestartConfig, env map[string]string, envFile string) ProcessStartResult {
 	if _, err := os.Stat(cwd); os.IsNotExist(err) {
 		return ProcessStartResult{
 			Success: false,
@@ -366,8 +366,28 @@ func (s *ProcessService) Start(cwd string, command string, restartConfig *Restar
 		}
 	}
 
+	// Load env file vars (if specified) and merge with explicit env
+	mergedEnv := make(map[string]string)
+	if envFile != "" {
+		resolvedPath := resolveEnvFilePath(envFile, cwd)
+		fileEnv, err := parseEnvFile(resolvedPath)
+		if err != nil {
+			return ProcessStartResult{
+				Success: false,
+				Error:   fmt.Sprintf("Failed to load env file %q: %s", envFile, err.Error()),
+			}
+		}
+		for k, v := range fileEnv {
+			mergedEnv[k] = v
+		}
+	}
+	// Explicit env overrides file env
+	for k, v := range env {
+		mergedEnv[k] = v
+	}
+
 	processID := uuid.New().String()
-	if err := s.spawnProcess(processID, cwd, command, restartConfig, 0, env); err != nil {
+	if err := s.spawnProcess(processID, cwd, command, restartConfig, 0, mergedEnv); err != nil {
 		return ProcessStartResult{
 			Success: false,
 			Error:   err.Error(),

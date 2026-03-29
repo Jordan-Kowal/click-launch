@@ -150,6 +150,21 @@ var configTestCases = []configTestCase{
 		shouldBeValid:  true,
 	},
 	{
+		name:           "valid env_file config",
+		filename:       "valid-env-file-config.yml",
+		expectedErrors: []ValidationError{},
+		shouldBeValid:  true,
+	},
+	{
+		name:     "invalid env_file config (non-string and empty)",
+		filename: "invalid-env-file-config.yml",
+		expectedErrors: []ValidationError{
+			{Message: "env_file must be a non-empty string", Path: "processes[0]"},
+			{Message: "env_file must be a non-empty string", Path: "processes[1]"},
+		},
+		shouldBeValid: false,
+	},
+	{
 		name:     "invalid group config (non-string and empty)",
 		filename: "invalid-group-config.yml",
 		expectedErrors: []ValidationError{

@@ -116,3 +116,10 @@ processes:
     group: "Infrastructure"
     base_command: "bash show-cwd.sh"
     cwd: "./resources"
+
+  - name: "Env File Demo"
+    base_command: "bash ./resources/env-demo.sh"
+    env_file: "./resources/example.env"
+    env:
+      VAR2: overridden
+      VAR3: from_explicit_env

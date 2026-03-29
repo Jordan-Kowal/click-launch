@@ -31,6 +31,7 @@ export type YamlConfig = {
     group?: string;
     cwd?: string;
     env?: ProcessEnv;
+    env_file?: string;
     restart?: RestartConfig;
     args?: {
       type: ArgType;

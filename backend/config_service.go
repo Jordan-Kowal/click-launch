@@ -115,6 +115,9 @@ func validateProcess(raw any, basePath string, errors *[]ValidationError) {
 	if _, exists := process["cwd"]; exists {
 		validateString("cwd", process["cwd"], true, basePath, errors)
 	}
+	if _, exists := process["env_file"]; exists {
+		validateString("env_file", process["env_file"], true, basePath, errors)
+	}
 	if _, exists := process["env"]; exists {
 		validateEnvConfig(process["env"], basePath+".env", errors)
 	}

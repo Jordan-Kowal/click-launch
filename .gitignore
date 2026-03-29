@@ -39,3 +39,6 @@ build/darwin/Assets.car
 
 # Lock files
 resources/infinite_process.lock
+
+# Docs
+docs/
