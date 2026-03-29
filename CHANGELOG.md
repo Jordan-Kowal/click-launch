@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## Unreleased
+## 2.1.0 - 2026-03-29
 
 - 🚀 Add `env_file` support per process: load environment variables from a `.env` file, with explicit `env` values taking precedence.
 - ✨ Add a "Hide idle" toggle on the dashboard to filter out stopped processes.
