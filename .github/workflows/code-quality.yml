@@ -18,7 +18,7 @@ jobs:
       # No bun cache — installs are fast enough (~2s) that cache overhead isn't worth it
       - uses: oven-sh/setup-bun@v2
 
-      - run: bun install
+      - run: bun install --frozen-lockfile
 
       - name: Run Biome
         run: bun run biome:check
@@ -31,7 +31,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - run: bun install
+      - run: bun install --frozen-lockfile
 
       - name: Run TSC
         run: bun run tsc

@@ -12,7 +12,7 @@
 
 ```shell
 git config core.hooksPath .githooks
-bun install
+bun install --frozen-lockfile
 go mod tidy
 ```
 
