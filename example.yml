@@ -123,3 +123,5 @@ processes:
     env:
       VAR2: overridden
       VAR3: from_explicit_env
+      VAR4: "prefix_$VAR1"
+      VAR5: "prefix_$VAR3"
