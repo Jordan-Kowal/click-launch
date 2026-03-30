@@ -14,6 +14,7 @@
 git config core.hooksPath .githooks
 bun install --frozen-lockfile
 go mod tidy
+task dev:build
 ```
 
 ## Developer Commands
