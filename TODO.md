@@ -13,6 +13,7 @@ Feature ideas worth implementing:
 3. Allow displaying logs of multiple processes simultaneously
 4. Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
 5. Migrate to apple ID developer program rollout
+6. Worktree support: Add top-level `worktrees: [absolute paths]` and per-process `worktree: true` flag. Worktree-eligible processes expand (in Go, post-validation) to N+1 instances (root + each worktree), with auto-assigned group = path basename. Expanded name = `"<name> (<basename>)"`. Validation: worktree paths must be absolute, basenames unique across worktrees + root basename; `worktree: true` forbids `group` and requires a non-empty relative `cwd`; `worktrees` must be non-empty when any process is worktree-eligible. Schema additive (not breaking). Frontend grouping/state reused unchanged. Cross-worktree "launch everywhere" action deferred. Full spec: `docs/superpowers/specs/2026-04-19-worktrees-design.md`.
 
 ---
 
