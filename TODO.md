@@ -10,9 +10,9 @@ Feature ideas worth implementing:
 
 1. Add frontend tests: Add `vitest` + `@solidjs/testing-library`. Focus on hooks with business logic (`useLogStore`, `useProcesses`, `useGrouping`) rather than UI components. Mock Wails bindings via simple object stubs.
 2. Per-feature error boundaries: Wrap each feature's root component in `<ErrorBoundary>` using the existing `ErrorFallback` component. Place boundaries in route definitions so each page catches its own errors independently, keeping the app shell intact.
-3. Bindings sync check: Add a Task command that runs `wails3 generate bindings` then `bun run tsc --noEmit`, and hook it into `task check` so CI catches `backend.d.ts` drift.
-4. Allow displaying logs of multiple processes simultaneously
-5. Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
+3. Allow displaying logs of multiple processes simultaneously
+4. Drag-and-drop process reordering: Allow reordering processes via drag and drop on the dashboard. With groups enabled: reorder groups relative to each other, and reorder processes within a group. Without groups: reorder the flat list freely. Persist the custom order in localStorage per project (keyed by config file path). Handle config changes gracefully — new processes appear at the end, removed processes are pruned from the saved order.
+5. Migrate to apple ID developer program rollout
 
 ---
 

@@ -8,6 +8,10 @@
 - 🔧 Others
 - 💥 Breaking
 
+## TBD
+
+- 🐞 Fixed dev-mode boot crash by generating Wails bindings before starting Vite.
+
 ## 2.1.0 - 2026-03-29
 
 - 🚀 Add `env_file` support per process: load environment variables from a `.env` file, with explicit `env` values taking precedence.
