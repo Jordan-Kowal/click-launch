@@ -27,6 +27,12 @@ bundle-stats.html
 .claude/settings.local.json
 docs/plans
 
+# Secrets / credentials
+.env*
+!.env.example
+*.pem
+*.key
+
 # Go / Wails
 bin
 .task

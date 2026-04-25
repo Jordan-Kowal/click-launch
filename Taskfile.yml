@@ -1,4 +1,6 @@
-version: "3"
+version: '3'
+
+dotenv: ['.env']
 
 includes:
   common: ./build/Taskfile.yml
@@ -7,7 +9,7 @@ includes:
 vars:
   APP_NAME: "ClickLaunch"
   BIN_DIR: "bin"
-  VITE_PORT: "{{.WAILS_VITE_PORT | default 9245}}"
+  VITE_PORT: '{{.WAILS_VITE_PORT | default 9245}}'
 
 tasks:
   build:
@@ -32,30 +34,58 @@ tasks:
     cmds:
       - task: "darwin:run"
 
+  release:local:
+    summary: Builds a signed+notarized local release DMG (reads SIGN_IDENTITY + NOTARY_PROFILE from .env)
+    preconditions:
+      - sh: test -n "$SIGN_IDENTITY"
+        msg: "SIGN_IDENTITY not set. Copy .env.example to .env."
+      - sh: test -n "$NOTARY_PROFILE"
+        msg: "NOTARY_PROFILE not set. Copy .env.example to .env."
+    cmds:
+      - task: "darwin:release"
+
   dev:
     summary: Runs the application in development mode (use WAILS_VITE_PORT to override, e.g. WAILS_VITE_PORT=9246 task dev)
     cmds:
       - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}
 
+  generate:
+    summary: Regenerates Wails TypeScript bindings from Go services
+    cmds:
+      - task: common:generate:bindings
+        vars:
+          BUILD_FLAGS: '-tags production -trimpath -buildvcs=false -ldflags="-w -s"'
+
   lint:
-    summary: Runs all linters (biome, tsc, golangci-lint)
+    summary: Runs all linters (biome, tsc, golangci-lint, CI pins)
     cmds:
       - bun run biome:check
       - bun run tsc
       - golangci-lint run ./backend/...
+      - sh scripts/check-ci-pins.sh
 
   test:
     summary: Runs all tests
     env:
-      CGO_LDFLAGS: "-mmacosx-version-min=15.0"
+      CGO_LDFLAGS: "-mmacosx-version-min=10.15"
     cmds:
       - go test -race ./backend/...
 
+  vuln:
+    summary: Runs govulncheck (version pinned via go.mod tool directive)
+    env:
+      # golang.org/x/telemetry ships transitively with govulncheck; keep
+      # the intent explicit even though upstream default is currently off.
+      GOTELEMETRY: "off"
+    cmds:
+      - go tool govulncheck ./backend/...
+
   check:
-    summary: Runs all quality checks (lint + test)
+    summary: Runs all quality checks (lint + test + vuln)
     cmds:
       - task: lint
       - task: test
+      - task: vuln
 
   upgrade:
     summary: Updates all dependencies to latest versions and runs checks

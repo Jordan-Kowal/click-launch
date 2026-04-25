@@ -13,10 +13,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # No bun cache — installs are fast enough (~2s) that cache overhead isn't worth it
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - run: bun install --frozen-lockfile
 
@@ -27,9 +27,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - run: bun install --frozen-lockfile
 
@@ -40,9 +40,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
           go-version: "1.25"
           cache: true
@@ -54,14 +54,50 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
           go-version: "1.25"
           cache: true
 
-      - uses: golangci/golangci-lint-action@v9
+      - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9.2.0
         with:
           version: latest
           args: ./backend/...
+
+  ci-pins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check CI tool pins match go.mod
+        run: sh scripts/check-ci-pins.sh
+
+  govulncheck:
+    # Must run on macOS: Wails pulls in Linux-only cgo deps (gtk+-3.0,
+    # webkit2gtk-4.1, libsoup-3.0) under build tags that govulncheck's loader
+    # tries to compile on ubuntu-latest and then fails pkg-config lookup for.
+    # macOS is our actual target platform; the Cocoa cgo deps are already
+    # present on the runner.
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version: "1.25"
+          cache: true
+
+      # Uses the version pinned under the `tool` directive in go.mod.
+      # Keep this in lockstep with scripts/check-ci-pins.sh which asserts
+      # that go.mod actually declares govulncheck as a tool.
+      # GOTELEMETRY=off — golang.org/x/telemetry ships transitively with
+      # govulncheck; keep the intent explicit even though upstream default
+      # is currently off.
+      - name: Run govulncheck
+        env:
+          GOTELEMETRY: "off"
+        run: go tool govulncheck ./backend/...

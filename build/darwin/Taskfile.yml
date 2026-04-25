@@ -3,6 +3,14 @@ version: '3'
 includes:
   common: ../Taskfile.yml
 
+vars:
+  # Code signing identity — defaults to ad-hoc ("-") so local builds work
+  # without a cert. Real signing identity is injected by `release:local` or CI.
+  SIGN_IDENTITY: '{{.SIGN_IDENTITY | default "-"}}'
+  # Notarization keychain profile (stored via `xcrun notarytool store-credentials`).
+  # Override via NOTARY_PROFILE env var.
+  NOTARY_PROFILE: '{{.NOTARY_PROFILE | default "click-launch-notary"}}'
+
 tasks:
   build:
     summary: Builds the application for macOS
@@ -36,14 +44,81 @@ tasks:
       - task: create:app:bundle
 
   create:app:bundle:
-    summary: Creates a .app bundle
+    summary: Creates a .app bundle (signed ad-hoc by default; pass SIGN_IDENTITY for Developer ID)
     cmds:
       - mkdir -p "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/MacOS"
       - mkdir -p "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Resources"
       - cp build/darwin/icons.icns "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Resources"
       - cp "{{.BIN_DIR}}/{{.APP_NAME}}" "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/MacOS"
       - cp build/darwin/Info.plist "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents"
-      - codesign --force --deep --sign - "{{.BIN_DIR}}/{{.APP_NAME}}.app"
+      - task: sign:app
+
+  sign:app:
+    summary: Signs the .app bundle with hardened runtime and entitlements
+    cmds:
+      - |
+        codesign --force --deep --timestamp \
+          --options runtime \
+          --entitlements build/darwin/entitlements.plist \
+          --sign "{{.SIGN_IDENTITY}}" \
+          "{{.BIN_DIR}}/{{.APP_NAME}}.app"
+      - codesign --verify --verbose "{{.BIN_DIR}}/{{.APP_NAME}}.app"
+
+  notarize:app:
+    summary: Submits the .app to Apple notary service and staples the ticket
+    preconditions:
+      - sh: test "{{.SIGN_IDENTITY}}" != "-"
+        msg: "Cannot notarize ad-hoc signed app. Set SIGN_IDENTITY to a Developer ID."
+    cmds:
+      - ditto -c -k --keepParent "{{.BIN_DIR}}/{{.APP_NAME}}.app" "{{.BIN_DIR}}/{{.APP_NAME}}-notarize.zip"
+      - xcrun notarytool submit "{{.BIN_DIR}}/{{.APP_NAME}}-notarize.zip" --keychain-profile "{{.NOTARY_PROFILE}}" --wait
+      - xcrun stapler staple "{{.BIN_DIR}}/{{.APP_NAME}}.app"
+      - rm "{{.BIN_DIR}}/{{.APP_NAME}}-notarize.zip"
+
+  dmg:
+    summary: Creates a signed .dmg with drag-to-Applications layout using hdiutil
+    deps:
+      - task: package
+    cmds:
+      - rm -f "{{.BIN_DIR}}/{{.APP_NAME}}-{{.VERSION}}.dmg"
+      - rm -rf "{{.BIN_DIR}}/dmg-src"
+      - mkdir -p "{{.BIN_DIR}}/dmg-src"
+      - cp -R "{{.BIN_DIR}}/{{.APP_NAME}}.app" "{{.BIN_DIR}}/dmg-src/"
+      - ln -s /Applications "{{.BIN_DIR}}/dmg-src/Applications"
+      - |
+        hdiutil create \
+          -volname "{{.APP_NAME}}" \
+          -srcfolder "{{.BIN_DIR}}/dmg-src" \
+          -ov -format UDZO \
+          "{{.BIN_DIR}}/{{.APP_NAME}}-{{.VERSION}}.dmg"
+      - rm -rf "{{.BIN_DIR}}/dmg-src"
+    vars:
+      VERSION: '{{.VERSION | default "dev"}}'
+
+  notarize:dmg:
+    summary: Submits the .dmg to Apple notary service and staples the ticket
+    preconditions:
+      - sh: test "{{.SIGN_IDENTITY}}" != "-"
+        msg: "Cannot notarize ad-hoc signed dmg. Set SIGN_IDENTITY to a Developer ID."
+    cmds:
+      - xcrun notarytool submit "{{.BIN_DIR}}/{{.APP_NAME}}-{{.VERSION}}.dmg" --keychain-profile "{{.NOTARY_PROFILE}}" --wait
+      - xcrun stapler staple "{{.BIN_DIR}}/{{.APP_NAME}}-{{.VERSION}}.dmg"
+    vars:
+      VERSION: '{{.VERSION | default "dev"}}'
+
+  release:
+    summary: Full release flow — build, sign, notarize app, dmg, notarize dmg
+    cmds:
+      - task: package
+      - task: notarize:app
+      - task: dmg
+        vars:
+          VERSION: '{{.VERSION}}'
+      - task: notarize:dmg
+        vars:
+          VERSION: '{{.VERSION}}'
+    vars:
+      VERSION: '{{.VERSION | default "dev"}}'
 
   run:
     cmds:

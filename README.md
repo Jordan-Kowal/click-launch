@@ -46,7 +46,7 @@
 
 **Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click.
 
-**Latest release - [ClickLaunch-2.1.0.zip](https://github.com/Jordan-Kowal/click-launch/releases/download/2.1.0/ClickLaunch-2.1.0.zip)**
+**[⬇️ Download ClickLaunch 2.1.0 for macOS](https://github.com/Jordan-Kowal/click-launch/releases/download/2.1.0/ClickLaunch-2.1.0.dmg)**
 
 ## ✨ Features
 
@@ -70,28 +70,14 @@
 
 ### Download
 
-**Option 1: One-line installer (Recommended)**. It will download the latest release and install it to your Applications folder.
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Jordan-Kowal/click-launch/main/setup.sh | bash
-```
-
-**Option 2: Manual installation**
-
-1. Go to the [Releases page](https://github.com/Jordan-Kowal/click-launch/releases)
-2. Download the latest `ClickLaunch-x.x.x.zip` file
-3. Double-click the ZIP file to extract it
-4. Run: `xattr -cr ClickLaunch.app` to remove quarantine attributes (because I'm not registered on the Apple Store)
-5. Drag the ClickLaunch.app to your Applications folder
-6. Launch the app from Applications or Spotlight
+1. Click the download link above (or grab it from the [Releases page](https://github.com/Jordan-Kowal/click-launch/releases))
+2. Double-click the DMG to open it
+3. Drag `ClickLaunch.app` onto the `Applications` folder shortcut
+4. Launch ClickLaunch from Applications or Spotlight
 
 ### First Run
 
-On macOS, you may see a security warning when first opening the app. To resolve this:
-
-1. Go to **System Preferences** → **Security & Privacy**
-2. Click **"Open Anyway"** next to the ClickLaunch warning
-3. Alternatively, right-click the app and select **"Open"** from the context menu
+ClickLaunch is signed with an Apple Developer ID and notarized, so it should launch without any Gatekeeper warning on first run.
 
 ## ⚙️ Configuration
 

@@ -10,7 +10,15 @@
 
 ## TBD
 
+- 🚀 App is now signed with Apple Developer ID and notarized — no more Gatekeeper warnings or `xattr` workarounds.
+- 🚀 Installation via `.dmg` with drag-to-Applications window (replaces `.zip` + setup script).
 - 🐞 Fixed dev-mode boot crash by generating Wails bindings before starting Vite.
+- 🔧 Auto-update now downloads a version-pinned `.dmg`, verifies its Apple Developer ID signature + Gatekeeper assessment, and logs to `~/.click-launch/update.log`.
+- 🔧 Pinned all GitHub Actions in CI workflows to commit SHAs for supply chain hardening.
+- 🔧 Pinned Wails CLI and Task CLI versions in CI; added `scripts/check-ci-pins.sh` lint step that enforces CI pins match `go.mod`.
+- 🔧 Added `govulncheck` as a pinned Go tool dependency (`go.mod`), new `task vuln` and `govulncheck` CI job.
+- 🔧 Added `task release:local` + `.env` support for producing a signed, notarized DMG locally (see `CONTRIBUTING.md`).
+- 💥 Removed `setup.sh` one-line installer; download the `.dmg` from the Releases page instead.
 
 ## 2.1.0 - 2026-03-29
 
