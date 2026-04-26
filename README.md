@@ -46,7 +46,7 @@
 
 **Click Launch** is a desktop application that streamlines your local development workflow. Instead of manually starting multiple services (databases, web servers, APIs, etc.) with different commands and arguments, you configure them once in a YAML file and launch everything with a single click.
 
-**[⬇️ Download ClickLaunch 3.0.0 for macOS](https://github.com/Jordan-Kowal/click-launch/releases/download/3.0.0/ClickLaunch-3.0.0.dmg)**
+**[⬇️ Download ClickLaunch 3.0.1 for macOS](https://github.com/Jordan-Kowal/click-launch/releases/download/3.0.1/ClickLaunch-3.0.1.dmg)**
 
 ## ✨ Features
 
@@ -172,7 +172,7 @@ Configure automatic restart behavior for processes that crash unexpectedly.
 | `restart.enabled`        | `boolean` | ✅       | -       | Enable/disable auto-restart                          |
 | `restart.max_retries`    | `number`  | ❌       | `3`     | Max consecutive restart attempts before giving up    |
 | `restart.delay_ms`       | `number`  | ❌       | `1000`  | Delay in milliseconds before restarting              |
-| `restart.reset_after_ms` | `number`  | ❌       | `30000` | Reset retry counter if process runs longer than this |
+| `restart.reset_after_ms` | `number`  | ❌       | `3.0.1` | Reset retry counter if process runs longer than this |
 
 **Behavior:**
 
@@ -225,7 +225,7 @@ processes:
       enabled: true
       max_retries: 3
       delay_ms: 1000
-      reset_after_ms: 30000
+      reset_after_ms: 3.0.1
     args:
       - type: "toggle"
         name: "Arg1"

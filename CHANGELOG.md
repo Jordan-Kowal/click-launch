@@ -8,7 +8,7 @@
 - 🔧 Others
 - 💥 Breaking
 
-## Unreleased
+## 3.0.1 - 2026-04-26
 
 - 🚀 Theme picker now offers all 35 DaisyUI themes instead of just Nord/Forest.
 - 🚀 Copy a range of logs by clicking two lines, working around the virtual scroller.
