@@ -1,9 +1,6 @@
-// ANSI color codes to CSS classes mapping
-/** biome-ignore-all lint/suspicious/noControlCharactersInRegex: Authorized */
-const ANSI_COLOR_MAP: Record<string, string> = {
-  // Reset
-  "0": "text-white",
+/** biome-ignore-all lint/suspicious/noControlCharactersInRegex: ANSI parsing requires control chars */
 
+const ANSI_COLOR_MAP: Record<string, string> = {
   // Standard colors
   "30": "text-black",
   "31": "text-red-500",
@@ -24,13 +21,9 @@ const ANSI_COLOR_MAP: Record<string, string> = {
   "96": "text-cyan-400",
   "97": "text-white",
 
-  // Bold
+  // Styles
   "1": "font-bold",
-
-  // Dim
   "2": "opacity-75",
-
-  // Underline
   "4": "underline",
 };
 
@@ -43,19 +36,15 @@ export const isLiveUpdate = (text: string): boolean => {
   return /\x1b\[[0-9]*[ABCD]/.test(text) || /\x1b\[2K/.test(text);
 };
 
+// Single-pass strip of cursor control sequences that don't apply to log display.
+// Alternation order is independent — terminators don't overlap.
+const CURSOR_CONTROL_RE =
+  /\x1b\[(?:[0-9]*[KGABCD]|[0-9]*;[0-9]*H|[su]|2J|\?25[lh])/g;
+
 export const parseAnsiToSegments = (text: string): AnsiSegment[] => {
   const segments: AnsiSegment[] = [];
 
-  // First, remove cursor control sequences that don't apply to our log display
-  const cleanedText = text
-    .replace(/\x1b\[[0-9]*K/g, "") // Clear line sequences (0K, 1K, 2K)
-    .replace(/\x1b\[[0-9]*G/g, "") // Move cursor to column sequences
-    .replace(/\x1b\[[0-9]*;[0-9]*H/g, "") // Move cursor to position sequences
-    .replace(/\x1b\[[0-9]*[ABCD]/g, "") // Move cursor up/down/left/right sequences
-    .replace(/\x1b\[s/g, "") // Save cursor position
-    .replace(/\x1b\[u/g, "") // Restore cursor position
-    .replace(/\x1b\[2J/g, "") // Clear screen
-    .replace(/\x1b\[\?25[lh]/g, ""); // Show/hide cursor
+  const cleanedText = text.replace(CURSOR_CONTROL_RE, "");
 
   const ansiRegex = /\x1b\[([0-9;]*)m/g;
 

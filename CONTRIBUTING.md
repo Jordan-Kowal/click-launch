@@ -51,7 +51,7 @@ All commands go through [Task](https://taskfile.dev/) (see `Taskfile.yml`):
 | `task run`           | Runs the packaged app                                                           |
 | `task release:local` | Builds a signed + notarized local release DMG (reads `.env`)                    |
 | `task lint`          | Runs all linters (Biome, `tsc`, `golangci-lint`, CI pin check)                  |
-| `task test`          | Runs the Go test suite with the race detector                                   |
+| `task test`          | Runs the Go test suite (race detector) and the frontend Vitest suite            |
 | `task vuln`          | Runs `govulncheck` against Go deps (version pinned via `go.mod` tool directive) |
 | `task check`         | Runs `lint` + `test` + `vuln`                                                   |
 | `task generate`      | Regenerates Wails TypeScript bindings from Go services                          |
@@ -74,6 +74,6 @@ All commands go through [Task](https://taskfile.dev/) (see `Taskfile.yml`):
 
 GitHub Actions:
 
-- [code-quality](.github/workflows/code-quality.yml) — Biome, tsc, Go tests, golangci-lint, CI pin check, govulncheck.
+- [code-quality](.github/workflows/code-quality.yml) — Biome, tsc, Go tests, frontend Vitest, golangci-lint, CI pin check, govulncheck.
 - [build-and-release](.github/workflows/build-and-release.yml) — runs on release creation. Calls `code-quality` first, then signs + notarizes the macOS bundle and uploads the DMG to the GitHub release. Required secrets: `APPLE_CERT_P12_BASE64`, `APPLE_CERT_PASSWORD`, `KEYCHAIN_PASSWORD`, `APPLE_ID`, `APPLE_APP_PASSWORD`.
 - [dependabot](.github/dependabot.yml) — updates Bun and Go dependencies monthly.

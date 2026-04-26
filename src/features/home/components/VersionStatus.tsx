@@ -1,48 +1,42 @@
 import { AppService } from "@backend";
-import { Check, Download } from "lucide-solid";
-import { createSignal, onMount, Show } from "solid-js";
-import { getCurrentVersion, getLatestVersion } from "@/utils/versionCheck";
+import { AlertCircle, Check, Download } from "lucide-solid";
+import { createSignal, Match, Switch } from "solid-js";
+import { useVersionContext } from "@/contexts";
+import { getCurrentVersion } from "@/utils/versionCheck";
 
 export const VersionStatus = () => {
-  const [latestVersion, setLatestVersion] = createSignal<string | null>(null);
-  const [versionChecked, setVersionChecked] = createSignal(false);
-
-  const isUpdateAvailable = () => {
-    const latest = latestVersion();
-    return latest !== null && latest !== getCurrentVersion();
-  };
-
-  onMount(() => {
-    const checkUpdates = async () => {
-      const latest = await getLatestVersion();
-      setLatestVersion(latest);
-      setVersionChecked(true);
-    };
-    checkUpdates();
-  });
+  const { latestVersion, checkFailed, checked, isUpdateAvailable } =
+    useVersionContext();
+  const [dismissed, setDismissed] = createSignal(false);
 
   return (
-    <Show when={versionChecked()}>
-      <div class="alert alert-soft max-w-150 mx-auto">
-        <Show
-          when={isUpdateAvailable()}
-          fallback={
-            <>
-              <Check size={32} />
-              <div class="text-left">
-                <div class="font-semibold">Your version is up to date</div>
-                <div class="text-sm">You have the latest version</div>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-ghost"
-                onClick={() => setVersionChecked(false)}
-              >
-                Dismiss
-              </button>
-            </>
-          }
-        >
+    <Switch>
+      <Match when={!checked()}>
+        <div class="alert alert-soft max-w-150 mx-auto">
+          <span class="loading loading-spinner loading-sm" />
+          <div class="text-left">
+            <div class="font-semibold">Checking for updates...</div>
+          </div>
+        </div>
+      </Match>
+      <Match when={checkFailed() && !dismissed()}>
+        <div class="alert alert-soft max-w-150 mx-auto">
+          <AlertCircle size={32} />
+          <div class="text-left">
+            <div class="font-semibold">Update check failed</div>
+            <div class="text-sm">v{getCurrentVersion()} (current)</div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost"
+            onClick={() => setDismissed(true)}
+          >
+            Dismiss
+          </button>
+        </div>
+      </Match>
+      <Match when={isUpdateAvailable() && !dismissed()}>
+        <div class="alert alert-soft max-w-150 mx-auto">
           <Download size={32} />
           <div class="text-left">
             <div class="font-semibold">Update Available!</div>
@@ -61,13 +55,29 @@ export const VersionStatus = () => {
             <button
               type="button"
               class="btn btn-sm btn-ghost"
-              onClick={() => setVersionChecked(false)}
+              onClick={() => setDismissed(true)}
             >
               Dismiss
             </button>
           </div>
-        </Show>
-      </div>
-    </Show>
+        </div>
+      </Match>
+      <Match when={checked() && !dismissed()}>
+        <div class="alert alert-soft max-w-150 mx-auto">
+          <Check size={32} />
+          <div class="text-left">
+            <div class="font-semibold">Your version is up to date</div>
+            <div class="text-sm">You have the latest version</div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost"
+            onClick={() => setDismissed(true)}
+          >
+            Dismiss
+          </button>
+        </div>
+      </Match>
+    </Switch>
   );
 };

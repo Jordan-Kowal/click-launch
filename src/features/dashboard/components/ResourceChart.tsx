@@ -6,7 +6,7 @@ import { formatBytes } from "@/utils/formatters";
 
 type ResourceChartProps = {
   history: () => ResourceHistoryEntry[];
-  theme: () => "nord" | "forest";
+  theme: () => string;
   historyMinutes: () => number;
 };
 

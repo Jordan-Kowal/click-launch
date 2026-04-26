@@ -2,7 +2,11 @@ import { Router } from "@solidjs/router";
 import { type Component, ErrorBoundary, Suspense } from "solid-js";
 import { Toaster } from "solid-toast";
 import { ErrorFallback, LoadingRing } from "./components/ui";
-import { AppStorageProvider, SettingsProvider } from "./contexts";
+import {
+  AppStorageProvider,
+  SettingsProvider,
+  VersionProvider,
+} from "./contexts";
 import { routes } from "./routes";
 
 const App: Component = () => {
@@ -10,19 +14,23 @@ const App: Component = () => {
     <main class="min-w-full prose prose-sm md:prose-base">
       <SettingsProvider>
         <AppStorageProvider>
-          <ErrorBoundary
-            fallback={(error, reset) => (
-              <ErrorFallback error={error} reset={reset} />
-            )}
-          >
-            <Router
-              root={(props) => (
-                <Suspense fallback={<LoadingRing />}>{props.children}</Suspense>
+          <VersionProvider>
+            <ErrorBoundary
+              fallback={(error, reset) => (
+                <ErrorFallback error={error} reset={reset} />
               )}
             >
-              {routes}
-            </Router>
-          </ErrorBoundary>
+              <Router
+                root={(props) => (
+                  <Suspense fallback={<LoadingRing />}>
+                    {props.children}
+                  </Suspense>
+                )}
+              >
+                {routes}
+              </Router>
+            </ErrorBoundary>
+          </VersionProvider>
           <Toaster
             position="bottom-right"
             toastOptions={{

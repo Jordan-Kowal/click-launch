@@ -1,7 +1,8 @@
-import { Moon, Sun, X } from "lucide-solid";
-import { Show } from "solid-js";
+import { X } from "lucide-solid";
+import { For, Show } from "solid-js";
 import { useSettingsContext } from "@/contexts";
 import {
+  AVAILABLE_THEMES,
   MAX_LOG_BUFFER_SIZE,
   MAX_RESOURCE_HISTORY_MINUTES,
   MIN_LOG_BUFFER_SIZE,
@@ -28,8 +29,9 @@ export const SettingsModal = (props: SettingsModalProps) => {
     }
   };
 
-  const handleThemeToggle = () => {
-    updateSetting("theme", settings().theme === "nord" ? "forest" : "nord");
+  const handleThemeChange = (e: Event) => {
+    const target = e.target as HTMLSelectElement;
+    updateSetting("theme", target.value);
   };
 
   const handleToggle = (key: keyof Settings) => (e: Event) => {
@@ -66,19 +68,16 @@ export const SettingsModal = (props: SettingsModalProps) => {
 
           <div class="space-y-6 pt-4">
             <SettingsSection title="Appearance">
-              <SettingsRow
-                label="Theme"
-                tooltip="Switch between light and dark mode"
-              >
-                <label class="toggle toggle-sm text-base-content">
-                  <input
-                    type="checkbox"
-                    checked={settings().theme === "forest"}
-                    onChange={handleThemeToggle}
-                  />
-                  <Sun size={14} />
-                  <Moon size={14} />
-                </label>
+              <SettingsRow label="Theme" tooltip="Pick a DaisyUI theme">
+                <select
+                  class="select select-sm select-bordered"
+                  value={settings().theme}
+                  onChange={handleThemeChange}
+                >
+                  <For each={AVAILABLE_THEMES}>
+                    {(theme) => <option value={theme}>{theme}</option>}
+                  </For>
+                </select>
               </SettingsRow>
             </SettingsSection>
 

@@ -65,11 +65,12 @@ tasks:
       - sh scripts/check-ci-pins.sh
 
   test:
-    summary: Runs all tests
+    summary: Runs all tests (backend Go + frontend Vitest)
     env:
       CGO_LDFLAGS: "-mmacosx-version-min=10.15"
     cmds:
       - go test -race ./backend/...
+      - bun run test
 
   vuln:
     summary: Runs govulncheck (version pinned via go.mod tool directive)

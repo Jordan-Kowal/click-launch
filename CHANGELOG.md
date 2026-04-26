@@ -8,6 +8,15 @@
 - 🔧 Others
 - 💥 Breaking
 
+## Unreleased
+
+- 🚀 Theme picker now offers all 35 DaisyUI themes instead of just Nord/Forest.
+- ✨ Update confirmation dialog mentions the reopen delay and where to find the update log.
+- 🐞 Fixed log color rendering when ANSI reset codes were used.
+- 🔧 Update banner shows distinct states for checking, failed, available, and up-to-date.
+- 🔧 Added frontend tests with Vitest, wired into `task test` and CI.
+- 🔧 Added `docs/ARCHITECTURE.md` for a high-level overview of the codebase.
+
 ## 3.0.0 - 2026-04-25
 
 - 🚀 App is now signed with Apple Developer ID and notarized — no more Gatekeeper warnings or `xattr` workarounds.
