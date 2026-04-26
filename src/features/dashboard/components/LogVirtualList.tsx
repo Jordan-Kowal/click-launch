@@ -14,6 +14,10 @@ type LogVirtualListProps = {
   virtualizer: Virtualizer<HTMLDivElement, Element>;
   setLogsContainerRef: (el: HTMLDivElement) => void;
   onScrollToBottom: () => void;
+  isRangeSelecting: Accessor<boolean>;
+  rangeAnchorIdx: Accessor<number | null>;
+  isInRange: (index: number) => boolean;
+  onRowClick: (index: number) => void;
 };
 
 export const LogVirtualList = (props: LogVirtualListProps) => {
@@ -49,13 +53,43 @@ export const LogVirtualList = (props: LogVirtualListProps) => {
                 const log = () => props.displayedLogs()[virtualRow.index];
                 const isCurrentMatch = () =>
                   props.selectedLogId() === log()?.id;
+                const isAnchor = () =>
+                  props.rangeAnchorIdx() === virtualRow.index;
+                const inRange = () => props.isInRange(virtualRow.index);
+
+                const rangeClass = () => {
+                  if (!props.isRangeSelecting()) return "";
+                  if (isAnchor()) return "ring-1 ring-primary bg-primary/20";
+                  if (inRange()) return "bg-primary/10";
+                  return "hover:bg-base-content/10 cursor-pointer";
+                };
+
+                const handleSelect = () => {
+                  if (props.isRangeSelecting()) {
+                    props.onRowClick(virtualRow.index);
+                  }
+                };
 
                 return (
+                  // biome-ignore lint/a11y/noStaticElementInteractions: row click is only active in range-select mode and falls back to plain text otherwise
                   <div
                     ref={(el) =>
                       queueMicrotask(() => props.virtualizer.measureElement(el))
                     }
                     data-index={virtualRow.index}
+                    class={rangeClass()}
+                    role={props.isRangeSelecting() ? "button" : undefined}
+                    tabIndex={props.isRangeSelecting() ? 0 : undefined}
+                    onClick={handleSelect}
+                    onKeyDown={(e) => {
+                      if (
+                        props.isRangeSelecting() &&
+                        (e.key === "Enter" || e.key === " ")
+                      ) {
+                        e.preventDefault();
+                        handleSelect();
+                      }
+                    }}
                   >
                     <Show when={log()}>
                       <ProcessLogRow

@@ -8,6 +8,7 @@ import { useDashboardContext } from "../contexts";
 import { isProcessActive } from "../enums";
 import {
   useDrawerKeyboard,
+  useLogRangeSelect,
   useLogScroll,
   useLogSearch,
   useLogStore,
@@ -79,6 +80,15 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
   scrollToIndex = logScroll.virtualizer.scrollToIndex.bind(
     logScroll.virtualizer,
   );
+
+  const rangeSelect = useLogRangeSelect({
+    displayedLogs: logSearch.displayedLogs,
+    onSelectionStarted: () => toast.info("Click the first log line to copy"),
+    onAnchorPicked: () => toast.info("Now click the last line of the range"),
+    onCancelled: () => toast.info("Range copy cancelled"),
+    onCopied: (n) => toast.success(`Copied ${n} line${n === 1 ? "" : "s"}`),
+    onCopyFailed: () => toast.error("Failed to copy"),
+  });
 
   const keyboard = useDrawerKeyboard({
     isOpen: () => props.isOpen,
@@ -162,6 +172,8 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
           setUiState={setUiState}
           onExport={exportLogs}
           onClear={clearAll}
+          isRangeSelecting={rangeSelect.isSelecting}
+          onToggleRangeSelect={rangeSelect.toggle}
         />
 
         <LogVirtualList
@@ -174,6 +186,10 @@ export const ProcessLogDrawer = (props: ProcessLogDrawerProps) => {
           virtualizer={logScroll.virtualizer}
           setLogsContainerRef={logScroll.setLogsContainerRef}
           onScrollToBottom={logScroll.scrollToBottomManual}
+          isRangeSelecting={rangeSelect.isSelecting}
+          rangeAnchorIdx={rangeSelect.anchorIdx}
+          isInRange={rangeSelect.isInRange}
+          onRowClick={rangeSelect.handleRowClick}
         />
 
         {/* Keyboard shortcuts hint */}

@@ -1,6 +1,7 @@
 export { useConfig } from "./useConfig";
 export { useDrawerKeyboard } from "./useDrawerKeyboard";
 export { useGrouping } from "./useGrouping";
+export { useLogRangeSelect } from "./useLogRangeSelect";
 export { useLogScroll } from "./useLogScroll";
 export { useLogSearch } from "./useLogSearch";
 export type { LogWithId } from "./useLogStore";

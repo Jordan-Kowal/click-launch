@@ -16,5 +16,10 @@ export const useToast = () => {
         toast.error(message);
       }
     },
+    info: (message: string) => {
+      if (settings().showNotifications) {
+        toast(message);
+      }
+    },
   };
 };

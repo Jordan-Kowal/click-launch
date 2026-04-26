@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   ChevronUp,
+  Copy,
   Download,
   Regex,
   Search,
@@ -30,6 +31,8 @@ type LogSearchBarProps = {
   setUiState: SetStoreFunction<{ autoScroll: boolean; isPaused: boolean }>;
   onExport: () => void;
   onClear: () => void;
+  isRangeSelecting: Accessor<boolean>;
+  onToggleRangeSelect: () => void;
 };
 
 export const LogSearchBar = (props: LogSearchBarProps) => {
@@ -156,6 +159,22 @@ export const LogSearchBar = (props: LogSearchBarProps) => {
           />
           Pause
         </label>
+        <div
+          class="tooltip tooltip-bottom"
+          data-tip={
+            props.isRangeSelecting()
+              ? "Click two lines to copy"
+              : "Copy a range of logs"
+          }
+        >
+          <button
+            type="button"
+            class={`btn btn-xs btn-square ${props.isRangeSelecting() ? "btn-primary" : "btn-outline btn-primary"}`}
+            onClick={props.onToggleRangeSelect}
+          >
+            <Copy size={16} />
+          </button>
+        </div>
         <div class="tooltip tooltip-bottom" data-tip="Export logs">
           <button
             type="button"

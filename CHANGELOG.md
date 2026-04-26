@@ -11,6 +11,7 @@
 ## Unreleased
 
 - 🚀 Theme picker now offers all 35 DaisyUI themes instead of just Nord/Forest.
+- 🚀 Copy a range of logs by clicking two lines, working around the virtual scroller.
 - ✨ Update confirmation dialog mentions the reopen delay and where to find the update log.
 - 🐞 Fixed log color rendering when ANSI reset codes were used.
 - 🔧 Update banner shows distinct states for checking, failed, available, and up-to-date.
