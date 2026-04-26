@@ -47,4 +47,5 @@ build/darwin/Assets.car
 resources/infinite_process.lock
 
 # Docs
-docs/
+docs/*
+!docs/ARCHITECTURE.md
