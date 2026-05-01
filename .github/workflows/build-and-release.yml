@@ -29,7 +29,7 @@ jobs:
 
       - name: Install Go tools (versions pinned; must match go.mod)
         run: |
-          go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-alpha.78
+          go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-alpha.81
           go install github.com/go-task/task/v3/cmd/task@v3.50.0
 
       - name: Install frontend dependencies
