@@ -1,0 +1,5 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+[scripts]
+run = "sh scripts/conductor/run.sh"
+setup = "sh scripts/conductor/setup.sh"
